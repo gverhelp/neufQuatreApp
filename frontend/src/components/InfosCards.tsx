@@ -7,8 +7,8 @@ import '../styles/Sections.css';
 
 function InfoCards({ sectionData, chefsData } : { sectionData: SectionData, chefsData: ChefData[] }) {
     return (
-        <Container fluid className="py-5" style={{ backgroundImage: "url('/background7.png')", backgroundSize: 'cover', backgroundPosition: 'center center' }}>
-            <Container>
+        <Container fluid className="p-sm-5 px-3 py-4" style={{ backgroundImage: "url('/background7.png')", backgroundSize: 'cover', backgroundPosition: 'center center' }}>
+            {/* <Container> */}
                 <Row className="justify-content-center align-items-stretch g-4">
                     
                     {/* Uniforme Card */}
@@ -148,7 +148,7 @@ function InfoCards({ sectionData, chefsData } : { sectionData: SectionData, chef
                     </Col>
                     )}
                 </Row>
-            </Container>
+            {/* </Container>s */}
         </Container>
     );
 }

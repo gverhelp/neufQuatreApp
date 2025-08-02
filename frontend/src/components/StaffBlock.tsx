@@ -24,7 +24,7 @@ const StaffCard = ({ member }: { member: ChefData }) => {
                     <FaUserCircle size={100} color="#022864" />
                 </div>
             )}
-            <Card.Body className="text-center text-break overflow-scroll" style={{ height: "400px" }}>
+            <Card.Body className="text-center text-break overflow-y-scroll" style={{ height: "400px" }}>
                 <Card.Title className="fs-4" style={{ fontFamily: "Titan One" }}>{member.totem}</Card.Title>
                 <Card.Subtitle className="pb-2 mb-2 text-muted fs-5" style={{ borderBottom: "2px solid #022864" }}>{member.name}</Card.Subtitle>
                 <Card.Text className="fs-6">{member.bafouille}</Card.Text>
@@ -103,7 +103,7 @@ const StaffBlock = ({ sectionName }: { sectionName: string }) => {
     }
 
     return (
-        <Container fluid style={{ backgroundColor: "white", backgroundSize: 'cover', backgroundPosition: 'center center', paddingBlock: "10vh" }}>
+        <Container fluid className="px-3 py-4 p-sm-5" style={{ backgroundColor: "white", backgroundSize: 'cover', backgroundPosition: 'center center', paddingBlock: "10vh" }}>
             <h2 className="text-center pb-4 fs-1"
                 style={{ 
                     fontFamily: "Titan One", 
