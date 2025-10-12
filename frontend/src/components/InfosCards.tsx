@@ -8,11 +8,11 @@ import '../styles/Sections.css';
 function InfoCards({ sectionData } : { sectionData: SectionData }) {
     return (
         <Container fluid className="p-sm-5 px-3 py-4" style={{ backgroundImage: "url('/background7.png')", backgroundSize: 'cover', backgroundPosition: 'center center' }}>
-            <Container>
+            {/* <Container> */}
                 <Row className="justify-content-center align-items-stretch g-4">
                     
                     {/* Uniforme Card */}
-                    <Col md={6}>
+                    <Col md={12}>
                         <motion.div
                             initial={{ x: -30, opacity: 0 }}
                             whileInView={{ x: 0, opacity: 1 }}
@@ -116,7 +116,7 @@ function InfoCards({ sectionData } : { sectionData: SectionData }) {
                     }
                     
                     {/* Radio Camp Card */}
-                    {!["Unité", "Clan"].includes(sectionData?.name) && (<Col md={6}>
+                    {!["Unité", "Clan"].includes(sectionData?.name) && (<Col md={12}>
                         <motion.div
                             initial={{ x: -30, opacity: 0 }}
                             whileInView={{ x: 0, opacity: 1 }}
@@ -154,7 +154,7 @@ function InfoCards({ sectionData } : { sectionData: SectionData }) {
                     </Col>
                     )}
                 </Row>
-            </Container>s
+            {/* </Container> */}
         </Container>
     );
 }
