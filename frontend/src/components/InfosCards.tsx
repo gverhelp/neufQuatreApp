@@ -1,11 +1,11 @@
 import { motion } from 'framer-motion';
 import { Container, Row, Col, Card } from 'react-bootstrap';
 
-import { SectionData, ChefData } from '../types/interfaces';
+import { SectionData } from '../types/interfaces';
 import '../styles/Sections.css';
 
 
-function InfoCards({ sectionData, chefsData } : { sectionData: SectionData, chefsData: ChefData[] }) {
+function InfoCards({ sectionData } : { sectionData: SectionData }) {
     return (
         <Container fluid className="p-sm-5 px-3 py-4" style={{ backgroundImage: "url('/background7.png')", backgroundSize: 'cover', backgroundPosition: 'center center' }}>
             <Container>

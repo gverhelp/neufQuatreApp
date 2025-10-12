@@ -168,7 +168,7 @@ const BySectionPage = ({ sectionName }: { sectionName: string }) => {
                 </div>
             </Container>
 
-            {sectionData && <InfoCards sectionData={sectionData} chefsData={sectionData.chefs} />}
+            {sectionData && <InfoCards sectionData={sectionData} />}
         </Container>
     );
 };
