@@ -3,14 +3,24 @@ import { Container, Row, Col, Card } from 'react-bootstrap';
 
 import { SectionData } from '../types/interfaces';
 import '../styles/Sections.css';
+import { useState, useEffect } from 'react';
 
 
 function InfoCards({ sectionData } : { sectionData: SectionData }) {
+    const [isMdUp, setIsMdUp] = useState(false);
+
+    useEffect(() => {
+        const checkScreen = () => setIsMdUp(window.innerWidth <= 991);
+        checkScreen();
+        window.addEventListener('resize', checkScreen);
+        return () => window.removeEventListener('resize', checkScreen);
+    }, []);
+
     return (
         <Container fluid className="p-sm-5 px-3 py-4" style={{ backgroundImage: "url('/background7.png')", backgroundSize: 'cover', backgroundPosition: 'center center' }}>
-            {/* <Container> */}
+
+            <Container fluid={isMdUp} className="px-0 px-lg-5">
                 <Row className="justify-content-center align-items-stretch g-4">
-                    
                     {/* Uniforme Card */}
                     <Col md={12}>
                         <motion.div
@@ -154,7 +164,7 @@ function InfoCards({ sectionData } : { sectionData: SectionData }) {
                     </Col>
                     )}
                 </Row>
-            {/* </Container> */}
+            </Container>
         </Container>
     );
 }
