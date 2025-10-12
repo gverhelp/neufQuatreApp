@@ -91,17 +91,17 @@ const BySectionPage = ({ sectionName }: { sectionName: string }) => {
                 ) : (
                 sectionData && (
                     <ContentBlock
-                    bgImg="/background5.png"
-                    title={
-                        sectionData.name === "Unité"
-                        ? "L'Unité"
-                        : sectionData.name === "Clan"
-                        ? "Le Clan"
-                        : `Les ${sectionData.name}`
-                    }
-                    text={sectionData.description}
-                    subtitle={sectionsPath.filter((section) => section.slug === sectionName.toLowerCase())[0].age}
-                    imgSrc={sectionData.showcaseImage}
+                        bgImg="/background5.png"
+                        title={
+                            sectionData.name === "Unité"
+                            ? "L'Unité"
+                            : sectionData.name === "Clan"
+                            ? "Le Clan"
+                            : `Les ${sectionData.name}`
+                        }
+                        text={sectionData.description}
+                        subtitle={sectionsPath.filter((section) => section.slug === sectionName.toLowerCase())[0].age}
+                        imgSrc={sectionData.showcaseImage}
                     />
                 )
             )}
@@ -109,9 +109,9 @@ const BySectionPage = ({ sectionName }: { sectionName: string }) => {
             <Container fluid className="py-3 sticky-container sticky-top" style={{ backgroundColor: "#022864", zIndex: 1050 }}>
                 <Row className="g-3">
                     {sectionsPath
-                        .filter((section) => (
-                            section.slug !== sectionName.toLowerCase()
-                        ))
+                        // .filter((section) => (
+                        //     section.slug !== sectionName.toLowerCase()
+                        // ))
                         .map((section, index) => (
                             <Col key={index} className="text-center">
                                 <Link to={section.path} className="text-decoration-none text-reset">

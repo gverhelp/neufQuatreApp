@@ -35,6 +35,7 @@ const HighlightEventsBlock: React.FC<Props> = ({ events }) => {
                     backgroundImage: "url('/background2_event.png')",
                     backgroundSize: "cover",
                     backgroundPosition: "center center",
+                    minHeight: "350px",
                 }}
             >
                 <h1 
