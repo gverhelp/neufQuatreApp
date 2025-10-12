@@ -4,6 +4,7 @@ import axios from "axios";
 import "../styles/InformationsPage.css";
 import { DocumentData, InformationData } from "../types/interfaces"
 import { useEffect, useState } from "react";
+import Masonry from "react-masonry-css";
 
 
 const InformationsPage = () => {
@@ -127,98 +128,101 @@ const InformationsPage = () => {
                             {informations.length === 0 ? (
                                 <p className="text-center mt-3" style={{ fontFamily: "Titan One" }}>Aucune information à afficher pour le moment.</p>
                             ) : (
-                                <Row className="g-3 justify-content-center">
+                                <Masonry
+                                    breakpointCols={{ default: 2, 1100: 1 }}
+                                    className="my-masonry-grid"
+                                    columnClassName="my-masonry-grid_column"
+                                >
                                     {informations.map((information, index) => (
-                                        <Col md={12} lg={6} key={index}>
-                                            <motion.div
-                                                initial={{ x: -30, opacity: 0 }}
-                                                whileInView={{ x: 0, opacity: 1 }}
-                                                transition={{ duration: 0.5, delay: index * 0.1 }}
-                                                viewport={{ once: true }}
-                                                className="mt-3 h-100"
-                                            >
-                                                <Card className="shadow rounded-2 border-5 h-100" style={{ borderColor: "#022864" }}>
-                                                    <Card.Body className="text-center d-flex flex-column justify-content-center align-items-center">
-                                                        {information.image && (
-                                                            <div
-                                                                className="mb-3 d-flex justify-content-center align-items-center"
-                                                                style={{ width: "100%", maxHeight: "350px", overflow: "hidden" }}
-                                                            >
-                                                                <img
-                                                                    src={information.image}
-                                                                    alt={information.title}
-                                                                    style={{
-                                                                        width: "100%",
-                                                                        height: "100%",
-                                                                        maxWidth: "500px",
-                                                                        maxHeight: "350px",
-                                                                        objectFit: "contain",
-                                                                        borderRadius: "8px",
-                                                                        boxShadow: "0 2px 8px rgba(0,0,0,0.08)"
-                                                                    }}
-                                                                />
-                                                            </div>
-                                                        )}
-                                                        {information.video && (
-                                                            <div
-                                                                className="mb-3 d-flex justify-content-center align-items-center"
-                                                                style={{ width: "100%", maxHeight: "400px", overflow: "hidden" }}
-                                                            >
-                                                                <video
-                                                                    controls
-                                                                    style={{
-                                                                        width: "100%",
-                                                                        height: "100%",
-                                                                        maxWidth: "500px",
-                                                                        maxHeight: "400px",
-                                                                        objectFit: "contain",
-                                                                        borderRadius: "8px",
-                                                                        boxShadow: "0 2px 8px rgba(0,0,0,0.08)"
-                                                                    }}
-                                                                >
-                                                                    <source src={information.video} type="video/mp4" />
-                                                                    Votre navigateur ne supporte pas les vidéos HTML5.
-                                                                </video>
-                                                            </div>
-                                                        )}
-                                                        {information.videoLink && (
-                                                            <iframe
-                                                                className="mb-3"
-                                                                width="100%"
-                                                                height="400px"
-                                                                src={information.videoLink}
-                                                                title={information.title}
-                                                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                                                allowFullScreen
-                                                            ></iframe>
-                                                        )}
-                                                        <Card.Title className="fs-5" style={{ fontFamily: "Titan One" }}>
-                                                            {information.title}
-                                                        </Card.Title>
-                                                        <Card.Text className="text-center">
-                                                            {information.description}
-                                                        </Card.Text>
-                                                        {information.link && (
-                                                            <Button
-                                                                className="download-btn rounded-2 d-inline-block text-decoration-none text-white text-center"
+                                        <motion.div
+                                            key={index}
+                                            initial={{ x: -30, opacity: 0 }}
+                                            whileInView={{ x: 0, opacity: 1 }}
+                                            transition={{ duration: 0.5, delay: index * 0.1 }}
+                                            viewport={{ once: true }}
+                                            className="mt-3"
+                                        >
+                                            <Card className="shadow rounded-2 border-5" style={{ borderColor: "#022864" }}>
+                                                <Card.Body className="text-center d-flex flex-column justify-content-center align-items-center">
+                                                    {information.image && (
+                                                        <div
+                                                            className="mb-3 d-flex justify-content-center align-items-center"
+                                                            style={{ width: "100%", maxHeight: "350px", overflow: "hidden" }}
+                                                        >
+                                                            <img
+                                                                src={information.image}
+                                                                alt={information.title}
                                                                 style={{
-                                                                    backgroundColor: "#022864",
-                                                                    borderColor: "#022864",
-                                                                    textShadow: "2px 2px 4px rgba(0, 0, 0, 0.7)"
+                                                                    width: "100%",
+                                                                    height: "100%",
+                                                                    maxWidth: "500px",
+                                                                    maxHeight: "350px",
+                                                                    objectFit: "contain",
+                                                                    borderRadius: "8px",
+                                                                    boxShadow: "0 2px 8px rgba(0,0,0,0.08)"
                                                                 }}
-                                                                target="_blank"
-                                                                rel="noopener noreferrer"
-                                                                href={information.link}
+                                                            />
+                                                        </div>
+                                                    )}
+                                                    {information.video && (
+                                                        <div
+                                                            className="mb-3 d-flex justify-content-center align-items-center"
+                                                            style={{ width: "100%", maxHeight: "400px", overflow: "hidden" }}
+                                                        >
+                                                            <video
+                                                                controls
+                                                                style={{
+                                                                    width: "100%",
+                                                                    height: "100%",
+                                                                    maxWidth: "500px",
+                                                                    maxHeight: "400px",
+                                                                    objectFit: "contain",
+                                                                    borderRadius: "8px",
+                                                                    boxShadow: "0 2px 8px rgba(0,0,0,0.08)"
+                                                                }}
                                                             >
-                                                                En savoir plus
-                                                            </Button>
-                                                        )}
-                                                    </Card.Body>
-                                                </Card>
-                                            </motion.div>
-                                        </Col>
+                                                                <source src={information.video} type="video/mp4" />
+                                                                Votre navigateur ne supporte pas les vidéos HTML5.
+                                                            </video>
+                                                        </div>
+                                                    )}
+                                                    {information.videoLink && (
+                                                        <iframe
+                                                            className="mb-3"
+                                                            width="100%"
+                                                            height="400px"
+                                                            src={information.videoLink}
+                                                            title={information.title}
+                                                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                                            allowFullScreen
+                                                        ></iframe>
+                                                    )}
+                                                    <Card.Title className="fs-5" style={{ fontFamily: "Titan One" }}>
+                                                        {information.title}
+                                                    </Card.Title>
+                                                    <Card.Text className="text-center">
+                                                        {information.description}
+                                                    </Card.Text>
+                                                    {information.link && (
+                                                        <Button
+                                                            className="download-btn rounded-2 d-inline-block text-decoration-none text-white text-center"
+                                                            style={{
+                                                                backgroundColor: "#022864",
+                                                                borderColor: "#022864",
+                                                                textShadow: "2px 2px 4px rgba(0, 0, 0, 0.7)"
+                                                            }}
+                                                            target="_blank"
+                                                            rel="noopener noreferrer"
+                                                            href={information.link}
+                                                        >
+                                                            En savoir plus
+                                                        </Button>
+                                                    )}
+                                                </Card.Body>
+                                            </Card>
+                                        </motion.div>
                                     ))}
-                                </Row>
+                                </Masonry>
                             )}
                         </Col>
                     </Row>

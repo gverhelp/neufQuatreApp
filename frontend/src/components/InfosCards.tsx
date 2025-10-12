@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { Container, Row, Col, Card, ListGroup, ListGroupItem } from 'react-bootstrap';
+import { Container, Row, Col, Card } from 'react-bootstrap';
 
 import { SectionData, ChefData } from '../types/interfaces';
 import '../styles/Sections.css';
@@ -8,7 +8,7 @@ import '../styles/Sections.css';
 function InfoCards({ sectionData, chefsData } : { sectionData: SectionData, chefsData: ChefData[] }) {
     return (
         <Container fluid className="p-sm-5 px-3 py-4" style={{ backgroundImage: "url('/background7.png')", backgroundSize: 'cover', backgroundPosition: 'center center' }}>
-            {/* <Container> */}
+            <Container>
                 <Row className="justify-content-center align-items-stretch g-4">
                     
                     {/* Uniforme Card */}
@@ -60,24 +60,22 @@ function InfoCards({ sectionData, chefsData } : { sectionData: SectionData, chef
                         >
                         <Card className="p-3 border-5 shadow h-100" style={{ borderColor: "#022864" }}>
                             <Card.Body>
-                                <Card.Title className="fs-4" style={{ fontFamily: "Titan One" }}>Annuaire staff</Card.Title>
+                                <Card.Title className="fs-4" style={{ fontFamily: "Titan One" }}>Contacts</Card.Title>
                                 <Card.Text className="fs-6">
                                     Besoin d'informations?
                                     <br />
-                                    Contactez notre staff, soit par email (de préférence), soit par message ou par appel si cela est urgent :
-                                </Card.Text>
-                                <ListGroup variant="flush">
-                                    {sectionData?.email &&
-                                        <ListGroupItem className="fw-bold" style={{ borderColor: "#022864" }}>
-                                            Email de la section : {sectionData?.email}
-                                        </ListGroupItem>
+                                    Vous pouvez contacter le staff de la section via l'email ci-dessous :
+                                    <br />
+                                    <br />
+                                    {sectionData?.email ? (
+                                        <div className="fw-bold">
+                                            {sectionData?.email}
+                                        </div>) :
+                                        (<div className="text-muted fst-italic">
+                                            Email non disponible pour le moment.
+                                        </div>)
                                     }
-                                    {chefsData.map((member, index) => (
-                                        <ListGroupItem key={index} style={{ borderColor: "#022864" }}>
-                                            {member.totem} : {member.phoneNumber}
-                                        </ListGroupItem>
-                                    ))}
-                                </ListGroup>
+                                </Card.Text>
                             </Card.Body>
                         </Card>
                         </motion.div>
@@ -101,7 +99,15 @@ function InfoCards({ sectionData, chefsData } : { sectionData: SectionData, chef
                                         sont à faire sur le compte bancaire suivant :
                                         <br />
                                         <br />
-                                        <span className="fw-bold">{sectionData?.bankAccount}</span>
+                                        {sectionData?.bankAccount ? (
+                                               <span className="fw-bold">{sectionData?.bankAccount}</span>
+                                            ) : (
+                                                <span className="text-muted fst-italic">Compte bancaire non disponible pour le moment.</span>
+                                            )
+                                        }
+                                        <br />
+                                        <br />
+                                        Merci de mentionner en communication le nom et prénom de votre enfant ainsi que l'activité concernée.
                                     </Card.Text>
                                 </Card.Body>
                             </Card>
@@ -148,7 +154,7 @@ function InfoCards({ sectionData, chefsData } : { sectionData: SectionData, chef
                     </Col>
                     )}
                 </Row>
-            {/* </Container>s */}
+            </Container>s
         </Container>
     );
 }
