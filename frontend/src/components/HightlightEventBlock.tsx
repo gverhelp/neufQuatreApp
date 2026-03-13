@@ -30,28 +30,55 @@ const HighlightEventsBlock: React.FC<Props> = ({ events }) => {
         <>
             <Container
                 fluid
-                className="px-3 pt-4 pb-5 px-sm-5"
+                className="px-3 px-sm-5"
                 style={{
+                    position: "relative",
+                    display: "flex",
+                    flexDirection: "column",
                     backgroundImage: "url('/background2_event.png')",
                     backgroundSize: "cover",
                     backgroundPosition: "center center",
-                    minHeight: "350px",
+                    minHeight: "55vh",
+                    paddingTop: "2.5rem",
+                    paddingBottom: "2.5rem",
                 }}
             >
-                <h1 
-                    className="text-center mb-4" 
-                    style={{ 
-                        fontFamily: "Titan One", 
-                        color: "white", 
-                        textShadow: "2px 2px 4px rgba(0, 0, 0, .5)" 
+                <h1
+                    aria-hidden
+                    style={{
+                        position: "absolute",
+                        top: "0.9rem",
+                        left: "50%",
+                        transform: "translateX(-50%)",
+                        zIndex: 20,
+                        margin: 0,
+                        fontFamily: "Titan One",
+                        color: "white",
+                        textShadow: "2px 2px 4px rgba(0, 0, 0, .5)",
+                        fontSize: "clamp(1.3rem, 4vw, 2.2rem)",
+                        textAlign: "center",
+                        padding: "0.25rem 0.75rem",
                     }}
                 >
                     À ne pas manquer !
                 </h1>
 
-                <Row className="g-4 justify-content-center">
-                    {highlightEvents.map((event, index) => (
-                        <Col key={event.id} md={6} xl={4}>
+                <div
+                    style={{
+                        flex: 1,
+                        width: "100%",
+                        zIndex: 10,
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        paddingLeft: "clamp(1rem, 6vw, 6rem)",
+                        paddingRight: "clamp(1rem, 6vw, 6rem)",
+                    }}
+                >
+                    <div style={{ width: "100%", maxWidth: 1200 }}>
+                        <Row className="g-4 justify-content-center" style={{ width: "100%", margin: 0 }}>
+                            {highlightEvents.map((event, index) => (
+                                <Col key={event.id} sm={10} md={6} xl={4}>
                             <motion.div
                                 initial={{ y: 30, opacity: 0 }}
                                 viewport={{ once: true }}
@@ -101,6 +128,8 @@ const HighlightEventsBlock: React.FC<Props> = ({ events }) => {
                         </Col>
                     ))}
                 </Row>
+                        </div>
+                    </div>
             </Container>
 
             <Container fluid className="py-3 text-center sticky-container sticky-top" style={{ backgroundColor: "#022864", zIndex: 1050 }}>
