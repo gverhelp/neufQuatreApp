@@ -37,7 +37,7 @@
 .sections-intro-strip {
     background: #022864;
     background-size: 24px 24px;
-    padding: 3rem 1.5rem;
+    padding: 1.5rem 1.5rem;
     text-align: center;
     color: white;
 }
@@ -510,7 +510,7 @@
     font-weight: 700;
     color: #022864;
     background: #eef2f9;
-    border-radius: 50px;
+    border-radius: 10px;
     padding: 0.4rem 1rem;
     text-decoration: none;
     border: 1.5px solid #c2d0e8;
@@ -637,5 +637,184 @@
     }
     .section-back-btn svg {
         font-size: 1.2rem;
+    }
+}
+
+/* ─────────────────────────────────────────────
+   CarouselBlock
+───────────────────────────────────────────── */
+.cb-wrapper {
+    position: relative;
+    background: #0a0a0a;
+}
+
+/* Fixed-height carousel */
+.cb-carousel,
+.cb-carousel .carousel-inner,
+.cb-carousel .carousel-item {
+    height: 60vh;
+    min-height: 320px;
+}
+
+/* Images */
+.cb-image {
+    height: 60vh;
+    min-height: 320px;
+    object-fit: cover;
+    filter: brightness(0.88);
+    transition: filter 0.4s ease;
+}
+
+.cb-carousel:hover .cb-image {
+    filter: brightness(0.95);
+}
+
+/* Gradient overlay for caption readability */
+.cb-carousel .carousel-item::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+        to bottom,
+        transparent 40%,
+        rgba(0, 0, 0, 0.65) 100%
+    );
+    pointer-events: none;
+}
+
+/* Caption */
+.cb-caption {
+    bottom: 2.5rem;
+    left: 0;
+    right: 0;
+    text-align: center;
+    padding: 0 2rem;
+}
+
+.cb-caption-text {
+    display: inline-block;
+    font-family: 'Roboto', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 500;
+    letter-spacing: 0.03em;
+    color: rgba(255, 255, 255, 0.92);
+    background: rgba(2, 40, 100, 0.5);
+    backdrop-filter: blur(6px);
+    border-radius: 50px;
+    padding: 0.35rem 1.1rem;
+    margin: 0;
+    max-width: 560px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Photo counter badge */
+.cb-counter {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    z-index: 10;
+    font-family: 'Roboto', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    color: white;
+    background: rgba(2, 40, 100, 0.6);
+    backdrop-filter: blur(4px);
+    border-radius: 50px;
+    padding: 0.3rem 0.8rem;
+}
+
+/* Navigation arrows */
+.cb-carousel .carousel-control-prev,
+.cb-carousel .carousel-control-next {
+    width: 48px;
+    height: 48px;
+    top: 50%;
+    transform: translateY(-50%);
+    border-radius: 50%;
+    background: rgba(2, 40, 100, 0.55);
+    backdrop-filter: blur(4px);
+    opacity: 0;
+    transition: opacity 0.2s ease, background 0.2s ease;
+    margin: 0 0.75rem;
+}
+
+.cb-carousel:hover .carousel-control-prev,
+.cb-carousel:hover .carousel-control-next {
+    opacity: 1;
+}
+
+.cb-carousel .carousel-control-prev:hover,
+.cb-carousel .carousel-control-next:hover {
+    background: rgba(2, 40, 100, 0.85);
+}
+
+.cb-carousel .carousel-control-prev-icon,
+.cb-carousel .carousel-control-next-icon {
+    width: 1.1rem;
+    height: 1.1rem;
+}
+
+/* Indicator dots */
+.cb-carousel .carousel-indicators {
+    bottom: 0.6rem;
+    gap: 6px;
+    margin: 0;
+}
+
+.cb-carousel .carousel-indicators [data-bs-target] {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(255, 255, 255, 0.45);
+    transition: background 0.25s ease, transform 0.25s ease;
+    flex-shrink: 0;
+    margin: 0;
+}
+
+.cb-carousel .carousel-indicators .active {
+    background: white;
+    transform: scale(1.35);
+}
+
+/* Empty state */
+.cb-empty {
+    height: 30vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background: #eef2f9;
+    gap: 0.75rem;
+}
+
+.cb-empty-icon {
+    color: #022864;
+    opacity: 0.35;
+}
+
+.cb-empty-text {
+    font-family: 'Roboto', sans-serif;
+    font-size: 0.95rem;
+    color: #6b7280;
+    margin: 0;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .cb-carousel,
+    .cb-carousel .carousel-inner,
+    .cb-carousel .carousel-item,
+    .cb-image {
+        height: 38vh;
+        min-height: 220px;
+    }
+
+    .cb-caption-text {
+        font-size: 0.8rem;
+        padding: 0.28rem 0.9rem;
     }
 }

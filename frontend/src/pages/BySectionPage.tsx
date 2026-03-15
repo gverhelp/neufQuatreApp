@@ -1,3 +1,4 @@
+import React from "react";
 import {
     Container,
     Col,
@@ -51,6 +52,17 @@ const PlaceholderBlock = () => (
     </Container>
 )
 
+const sectionColors: { [k: string]: string } = {
+    baladins:   "#00A0DD",
+    lutins:     "#CC0739",
+    louveteaux: "#186E54",
+    guides:     "#1D325A",
+    eclaireurs: "#015AA9",
+    pionniers:  "#DA1F29",
+    clan:       "#FEB800",
+    unite:      "#022864",
+};
+
 const BySectionPage = ({ sectionName }: { sectionName: string }) => {
     const baseURL = import.meta.env.VITE_API_URL;
     const [sectionData, setSectionData] = useState<SectionData | null>(null);
@@ -92,7 +104,25 @@ const BySectionPage = ({ sectionName }: { sectionName: string }) => {
     }
 
     return (
-        <Container fluid className="p-0">
+        <Container
+            fluid
+            className="p-0"
+            style={{
+                // expose section color to CSS via variables so all borders can use it
+                ['--accent' as any]: sectionData
+                    ? sectionColors[sectionData.slug] ?? '#022864'
+                    : sectionColors[sectionName.toLowerCase()] ?? '#022864',
+                ['--border-color' as any]: sectionData
+                    ? sectionColors[sectionData.slug] ?? '#022864'
+                    : sectionColors[sectionName.toLowerCase()] ?? '#022864',
+                ['--btn-color' as any]: sectionData
+                    ? sectionColors[sectionData.slug] ?? '#022864'
+                    : sectionColors[sectionName.toLowerCase()] ?? '#022864',
+                ['--dot-color' as any]: sectionData
+                    ? sectionColors[sectionData.slug] ?? '#022864'
+                    : sectionColors[sectionName.toLowerCase()] ?? '#022864',
+            } as React.CSSProperties}
+        >
 
             {/* ── Back navigation ── */}
             <Link to="/sections" className="section-back-btn text-decoration-none">

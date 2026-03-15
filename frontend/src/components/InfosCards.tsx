@@ -63,21 +63,21 @@ function InfoCards({ sectionData }: { sectionData: SectionData }) {
                         <p className="info-card-text">{sectionData.uniformDescription}</p>
 
                         <Row className="g-3 mt-1 mb-4">
-                            <Col sm={6}>
+                            <Col xs={12}>
                                 <img
                                     src="/UniformePourTous.webp"
                                     alt="Uniforme pour tous"
-                                    className="img-fluid rounded-3 shadow-sm w-100"
-                                    style={{ objectFit: 'cover', maxHeight: '340px' }}
+                                    className="rounded-3 shadow-sm w-100"
+                                    style={{ maxHeight: '240px', objectFit: 'contain', background: '#f6f9fc' }}
                                 />
                             </Col>
                             {sectionData.uniformImage && (
-                                <Col sm={6}>
+                                <Col xs={12}>
                                     <img
                                         src={sectionData.uniformImage}
                                         alt="Uniforme de section"
-                                        className="img-fluid rounded-3 shadow-sm w-100"
-                                        style={{ objectFit: 'cover', maxHeight: '340px' }}
+                                        className="rounded-3 shadow-sm w-100"
+                                        style={{ maxHeight: '240px', objectFit: 'contain', background: '#f6f9fc' }}
                                     />
                                 </Col>
                             )}
@@ -112,7 +112,7 @@ function InfoCards({ sectionData }: { sectionData: SectionData }) {
                                 href={`mailto:${sectionData.email}`}
                                 className="info-card-email-pill"
                             >
-                                ✉&nbsp;{sectionData.email}
+                                {sectionData.email}
                             </a>
                         ) : (
                             <span

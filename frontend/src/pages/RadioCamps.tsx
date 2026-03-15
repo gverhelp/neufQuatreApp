@@ -1,136 +1,99 @@
-import { Container, Button, Row, Col } from "react-bootstrap";
+import React from "react";
+import { Container, Row, Col } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { BsGeoAltFill } from "react-icons/bs";
+import { BsGeoAltFill, BsArrowRight } from "react-icons/bs";
+import "../styles/RadioCamps.css";
+
+const sections = [
+    { label: "Baladins",    top: "28%", left: "13%", path: "/radio-camps/baladins",    delay: 0,    color: "#00A0DD" },
+    { label: "Lutins",      top: "68%", left: "25%", path: "/radio-camps/lutins",      delay: 0.15, color: "#CC0739" },
+    { label: "Louveteaux",  top: "22%", left: "45%", path: "/radio-camps/louveteaux",  delay: 0.3,  color: "#186E54" },
+    { label: "Guides",      top: "55%", left: "47%", path: "/radio-camps/guides",      delay: 0.45, color: "#1D325A" },
+    { label: "Éclaireurs",  top: "20%", left: "68%", path: "/radio-camps/eclaireurs",  delay: 0.6,  color: "#015AA9" },
+    { label: "Pionniers",   top: "72%", left: "80%", path: "/radio-camps/pionniers",   delay: 0.75, color: "#DA1F29" },
+];
 
 const RadioCamps = () => {
     const navigate = useNavigate();
 
-    const buttonsDesktop = [
-        { label: "Baladins", top: "25%", left: "15%", path: "/radio-camps/baladins", delay: 0 },
-        { label: "Lutins", top: "70%", left: "27%", path: "/radio-camps/lutins", delay: 0.3 },
-        { label: "Louveteaux", top: "25%", left: "47%", path: "/radio-camps/louveteaux", delay: 0.6 },
-        { label: "Guides", top: "50%", left: "48%", path: "/radio-camps/guides", delay: 0.9 },
-        { label: "Éclaireurs", top: "22%", left: "70%", path: "/radio-camps/eclaireurs", delay: 1.2 },
-        { label: "Pionniers", top: "75%", left: "83%", path: "/radio-camps/pionniers", delay: 1.5 },
-    ];
-
     return (
-        <Container
-            fluid
-            className="position-relative container-map"
-            style={{
-                backgroundImage: "url('/backgroundMap.webp')",
-                backgroundSize: "cover",
-                backgroundPosition: "center",
-            }}
-        >
-            <Container className="pt-4">
-                <h1 className="text-center"
-                    style={{ 
-                        fontFamily: "Titan One", 
-                        color: "#000000", 
-                        textShadow: "1px 1px 2px rgba(0, 0, 0, 0.2)" 
-                    }}
-                >
-                    Radio Camp
-                </h1>
-            </Container>
+        <Container fluid className="p-0">
 
-            {/* Affichage desktop */}
-            <div className="d-none d-lg-block">
-                {buttonsDesktop.map((btn, index) => (
-                    <div key={index}>
-                        <motion.button
-                            initial={{ y: 30, opacity: 0 }}
-                            whileInView={{ y: 0, opacity: 1 }}
-                            viewport={{ once: true }}
-                            className="fs-4 border-0 rounded-2 position-absolute map-btn"
-                            style={{
-                                top: btn.top,
-                                left: btn.left,
-                                fontFamily: "Titan One", 
-                                color: "white", 
-                                textShadow: "2px 2px 4px rgba(0, 0, 0, 0.7)" 
-                            }}
-                            animate={{
-                                scale: [1, 1.05, 1],
-                            }}
-                            transition={{
-                                scale: {
-                                    duration: 2.5,
-                                    ease: "easeInOut",
-                                    repeat: Infinity,
-                                    delay: index * 0.2,
-                                },
-                                y: {
-                                    duration: 0.5,
-                                    ease: "easeOut",
-                                    delay: index * 0.1,
-                                },
-                                opacity: {
-                                    duration: 0.5,
-                                    ease: "easeOut",
-                                    delay: index * 0.1,
-                                }
-                            }}
-                            onClick={() => navigate(btn.path)}
-                        >
-                            {btn.label}
-                        </motion.button>
+            {/* ── Hero strip ── */}
+            <div className="rc-hero-strip">
+                <div className="rc-hero-title">Radio Camp</div>
+            </div>
 
-                        {/* Icône d'épingle */}
+            {/* ── Desktop : carte interactive ── */}
+            <div
+                className="d-none d-lg-block rc-map-wrapper"
+                style={{
+                    backgroundImage: "url('/backgroundMap.webp')",
+                    backgroundSize: "cover",
+                    backgroundPosition: "center",
+                }}
+            >
+                {sections.map((s, index) => (
+                    <motion.div
+                        key={index}
+                        className="rc-map-pin"
+                        style={{ top: s.top, left: s.left, "--pin-color": s.color } as React.CSSProperties}
+                        initial={{ y: 20, opacity: 0 }}
+                        animate={{ y: 0, opacity: 1 }}
+                        transition={{ delay: s.delay, duration: 0.45, ease: "easeOut" }}
+                        onClick={() => navigate(s.path)}
+                    >
                         <motion.div
-                            className="position-absolute"
-                            style={{
-                                top: `calc(${btn.top} + 65px)`,
-                                left: `calc(${btn.left} + 45px)`,
-                                transform: "translateX(-50%)",
-                                color: "#022864",
-                            }}
-                            initial={{ opacity: 0, scale: 0.8 }}
-                            whileInView={{ opacity: 1, scale: 1 }}
-                            viewport={{ once: true }}
+                            className="rc-map-card"
+                            animate={{ scale: [1, 1.04, 1] }}
                             transition={{
-                                delay: index * 0.2 + 0.5,
-                                duration: 0.4,
-                                ease: "easeOut",
+                                duration: 2.8,
+                                ease: "easeInOut",
+                                repeat: Infinity,
+                                delay: index * 0.3,
                             }}
                         >
-                            <BsGeoAltFill size={24} />
+                            <span className="rc-map-card-label">{s.label}</span>
                         </motion.div>
-                    </div>
+                        <div className="rc-map-pin-icon">
+                            <BsGeoAltFill size={20} />
+                        </div>
+                    </motion.div>
                 ))}
             </div>
 
-
-            {/* Affichage mobile */}
-            <Container className="d-block d-lg-none p-4 pt-3">
-                <Row className="g-3">
-                    {buttonsDesktop.map((btn, index) => (
-                        <Col key={index} xs={12}>
+            {/* ── Mobile : grille de cartes ── */}
+            <div className="d-block d-lg-none rc-grid-wrapper">
+                <Row className="g-4">
+                    {sections.map((s, index) => (
+                        <Col key={index} xs={12} sm={6}>
                             <motion.div
-                                initial={{ x: -30, opacity: 0 }}
-                                whileInView={{ x: 0, opacity: 1 }}
+                                initial={{ y: 30, opacity: 0 }}
+                                whileInView={{ y: 0, opacity: 1 }}
                                 viewport={{ once: true }}
-                                transition={{
-                                    type: "spring",
-                                    stiffness: 100,
-                                    delay: index * 0.1,
-                                }}
+                                transition={{ delay: index * 0.08, duration: 0.4, ease: "easeOut" }}
                             >
-                            <Button
-                                className="fs-4 map-lg-btn rounded-2 w-100"
-                                onClick={() => navigate(btn.path)}
-                                style={{ backgroundColor: "#022864", borderColor: "#022864" }}
-                            >
-                                {btn.label}
-                            </Button>
+                                <div
+                                    className="rc-section-card"
+                                    style={{ "--pin-color": s.color } as React.CSSProperties}
+                                    onClick={() => navigate(s.path)}
+                                >
+                                    <div className="rc-section-card-header">
+                                        <span className="rc-section-card-title">{s.label}</span>
+                                    </div>
+                                    <div className="rc-section-card-body">
+                                        <span className="rc-section-card-cta">
+                                            Voir les émissions <BsArrowRight />
+                                        </span>
+                                    </div>
+                                </div>
                             </motion.div>
                         </Col>
                     ))}
                 </Row>
-            </Container>
+            </div>
+
         </Container>
     );
 };

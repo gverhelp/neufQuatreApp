@@ -1,3 +1,4 @@
+import React from "react";
 import { Container, Badge } from "react-bootstrap";
 import { BsGeoAltFill, BsClock } from "react-icons/bs";
 import { motion, AnimatePresence } from "framer-motion";
@@ -18,6 +19,16 @@ const SECTIONS = [
 
 const getSectionInfo = (slug: string) =>
     SECTIONS.find((s) => s.slug === slug) ?? { name: slug, color: "#022864" };
+
+const getMonthKey = (dateStr: string) => {
+    const d = new Date(dateStr);
+    return `${d.getFullYear()}-${d.getMonth()}`;
+};
+
+const getMonthLabel = (dateStr: string) =>
+    new Date(dateStr)
+        .toLocaleDateString("fr-BE", { month: "long", year: "numeric" })
+        .replace(/^\w/, (c) => c.toUpperCase());
 
 interface Props {
     events: EventData[];
@@ -145,10 +156,17 @@ const SectionEventsCards = ({ events }: Props) => {
                                     exit={{ opacity: 0 }}
                                     transition={{ duration: 0.25 }}
                                 >
-                                    {filteredEvents.map((event, index) => {
+                                    {(() => {
+                                        let lastMonthKey = "";
+                                        let cardIndex = 0;
+                                        return filteredEvents.map((event) => {
+                                        const monthKey = getMonthKey(event.start_time);
+                                        const showSeparator = monthKey !== lastMonthKey;
+                                        if (showSeparator) lastMonthKey = monthKey;
                                         const isPast = new Date(event.end_time) < now;
                                         const section = getSectionInfo(event.section);
-                                        const isLeft = index % 2 === 0;
+                                        const isLeft = cardIndex % 2 === 0;
+                                        cardIndex++;
 
                                         const cardContent = (
                                             <div
@@ -248,42 +266,58 @@ const SectionEventsCards = ({ events }: Props) => {
                                         );
 
                                         return (
-                                            <motion.div
-                                                key={event.id}
-                                                className={`timeline-item${
-                                                    isPast ? " is-past" : ""
-                                                }`}
-                                                initial={{ x: isLeft ? -24 : 24, opacity: 0 }}
-                                                whileInView={{ x: 0, opacity: isPast ? 0.5 : 1 }}
-                                                viewport={{ once: true, amount: 0.15 }}
-                                                transition={{
-                                                    duration: 0.4,
-                                                    delay: index * 0.04,
-                                                    ease: "easeOut",
-                                                }}
-                                            >
-                                                {/* Left slot */}
-                                                <div className="timeline-col timeline-left">
-                                                    {isLeft && cardContent}
-                                                </div>
+                                            <React.Fragment key={event.id}>
+                                                {showSeparator && (
+                                                    <motion.div
+                                                        className="timeline-month-separator"
+                                                        initial={{ opacity: 0, scale: 0.9 }}
+                                                        whileInView={{ opacity: 1, scale: 1 }}
+                                                        viewport={{ once: true, amount: 0.5 }}
+                                                        transition={{ duration: 0.35, ease: "easeOut" }}
+                                                    >
+                                                        <span
+                                                            className="timeline-month-pill"
+                                                            style={{ ["--line-color" as string]: activeColor }}
+                                                        >
+                                                            {getMonthLabel(event.start_time)}
+                                                        </span>
+                                                    </motion.div>
+                                                )}
+                                                <motion.div
+                                                    className={`timeline-item${
+                                                        isPast ? " is-past" : ""
+                                                    }`}
+                                                    initial={{ x: isLeft ? -24 : 24, opacity: 0 }}
+                                                    whileInView={{ x: 0, opacity: isPast ? 0.5 : 1 }}
+                                                    viewport={{ once: true, amount: 0.15 }}
+                                                    transition={{
+                                                        duration: 0.4,
+                                                        ease: "easeOut",
+                                                    }}
+                                                >
+                                                    {/* Left slot */}
+                                                    <div className="timeline-col timeline-left">
+                                                        {isLeft && cardContent}
+                                                    </div>
 
-                                                {/* Center dot */}
-                                                <div className="timeline-center">
-                                                    <div
-                                                        className="timeline-dot"
-                                                        style={{
-                                                            ["--dot-color" as string]: section.color,
-                                                        }}
-                                                    />
-                                                </div>
+                                                    {/* Center dot */}
+                                                    <div className="timeline-center">
+                                                        <div
+                                                            className="timeline-dot"
+                                                            style={{
+                                                                ["--dot-color" as string]: section.color,
+                                                            }}
+                                                        />
+                                                    </div>
 
-                                                {/* Right slot */}
-                                                <div className="timeline-col timeline-right">
-                                                    {!isLeft && cardContent}
-                                                </div>
-                                            </motion.div>
+                                                    {/* Right slot */}
+                                                    <div className="timeline-col timeline-right">
+                                                        {!isLeft && cardContent}
+                                                    </div>
+                                                </motion.div>
+                                            </React.Fragment>
                                         );
-                                    })}
+                                    });})()}
                                 </motion.div>
                             )}
                         </AnimatePresence>

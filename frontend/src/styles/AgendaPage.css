@@ -173,6 +173,56 @@
     filter: grayscale(0.45);
 }
 
+/* Month/year separator row */
+.timeline-month-separator {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    margin: 1.5rem 0 1rem;
+    position: relative;
+    z-index: 1;
+}
+
+.timeline-month-separator::before,
+.timeline-month-separator::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(
+        to var(--side, right),
+        transparent,
+        var(--line-color, #022864) 80%
+    );
+    opacity: 0.25;
+    max-width: calc(50% - 100px);
+}
+
+.timeline-month-separator::before {
+    --side: right;
+}
+
+.timeline-month-separator::after {
+    --side: left;
+}
+
+.timeline-month-pill {
+    display: inline-flex;
+    align-items: center;
+    font-family: 'Titan One', sans-serif;
+    font-size: 0.78rem;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: var(--line-color, #022864);
+    background: #eef2f9;
+    border: 1.5px solid var(--line-color, #022864);
+    border-radius: 50px;
+    padding: 4px 16px;
+    white-space: nowrap;
+    position: relative;
+    z-index: 2;
+}
+
 /* Mobile : retour à la disposition colonne simple */
 @media (max-width: 640px) {
     .timeline-wrapper::before {

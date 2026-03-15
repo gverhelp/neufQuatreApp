@@ -1,11 +1,23 @@
-import { useEffect, useState } from "react";
-import { Container, Form, Button, Card, Row, Col, Alert, Spinner, Image, Modal } from "react-bootstrap";
+import React, { useEffect, useState } from "react";
+import { Container, Form, Button, Alert, Spinner, Image, Modal, Row, Col } from "react-bootstrap";
 import { motion } from "framer-motion";
+import { BsCalendar3, BsLockFill } from "react-icons/bs";
 import axios from "axios";
 
 import { RadioCampData } from '../types/interfaces';
 import "../styles/RadioCamps.css";
 
+// ── Section colour palette ─────────────────────────────────
+const SECTION_COLORS: Record<string, string> = {
+    baladins:   "#00A0DD",
+    lutins:     "#CC0739",
+    louveteaux: "#186E54",
+    guides:     "#1D325A",
+    eclaireurs: "#015AA9",
+    pionniers:  "#DA1F29",
+    clan:       "#FEB800",
+    unite:      "#022864",
+};
 
 function getCookie(name: string): string | null {
     const value = `; ${document.cookie}`;
@@ -14,15 +26,20 @@ function getCookie(name: string): string | null {
     return null;
 }
 
+const formatDate = (dateStr: string) =>
+    new Date(dateStr).toLocaleDateString("fr-BE", { dateStyle: "short" });
+
+// ──────────────────────────────────────────────────────────
 const RadioCampBySection = ({ sectionName }: { sectionName: string }) => {
     const baseURL = import.meta.env.VITE_API_URL;
+    const accentColor = SECTION_COLORS[sectionName.toLowerCase()] ?? "#022864";
+
     const [password, setPassword] = useState("");
     const [validated, setValidated] = useState(false);
     const [loading, setLoading] = useState(false);
     const [radio_camp, setRadioCamp] = useState<RadioCampData>();
     const [error, setError] = useState("");
 
-    // Pour le modal d’image
     const [showModal, setShowModal] = useState(false);
     const [selectedImage, setSelectedImage] = useState<{ src: string; caption?: string } | null>(null);
 
@@ -36,30 +53,20 @@ const RadioCampBySection = ({ sectionName }: { sectionName: string }) => {
         setSelectedImage(null);
     };
 
-    // Vérifie le mot de passe
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setLoading(true);
         setError("");
-
         try {
             const csrftoken = getCookie("csrftoken");
-
-            const response = await axios.post(`${baseURL}/radio-camps/${sectionName.toLowerCase()}/verify-password/`,
+            const response = await axios.post(
+                `${baseURL}/radio-camps/${sectionName.toLowerCase()}/verify-password/`,
                 { password },
-                {
-                    headers: {
-                        'X-CSRFToken': csrftoken || '',
-                    },
-                    withCredentials: true,
-                }
+                { headers: { "X-CSRFToken": csrftoken || "" }, withCredentials: true }
             );
-
             if (response.data.success) {
-
                 setValidated(true);
                 localStorage.setItem(`radioCampValidated-${sectionName}`, "true");
-
             } else {
                 setError(response.data.error);
             }
@@ -77,12 +84,8 @@ const RadioCampBySection = ({ sectionName }: { sectionName: string }) => {
     useEffect(() => {
         setValidated(false);
         setRadioCamp(undefined);
-
         const isValidated = localStorage.getItem(`radioCampValidated-${sectionName}`);
-        
-        if (isValidated === "true") {
-            setValidated(true);
-        }
+        if (isValidated === "true") setValidated(true);
     }, [sectionName]);
 
     useEffect(() => {
@@ -90,190 +93,222 @@ const RadioCampBySection = ({ sectionName }: { sectionName: string }) => {
         setError("");
     }, [sectionName]);
 
-    // Une fois validé, fetch les posts
     useEffect(() => {
         if (!validated) return;
-
         const fetchPosts = async () => {
             try {
                 const response = await axios.get(`${baseURL}/radio-camps/${sectionName.toLowerCase()}`);
-
                 setRadioCamp(response.data);
             } catch (err) {
-
                 if ((err as any).response?.status === 404) {
-
                     setError("Aucun Radio Camp n'est disponible pour cette section actuellement.");
                     localStorage.removeItem(`radioCampValidated-${sectionName}`);
-
                 } else {
-                    setError("Une erreur est servenue lors du chargement des données.");
+                    setError("Une erreur est survenue lors du chargement des données.");
                 }
             }
         };
-
         fetchPosts();
     }, [validated, sectionName]);
 
-
-    // Affichage de la demande de mot de passe
+    // ── Password gate ──────────────────────────────────────
     if (!validated) {
         return (
-            <Container fluid className="py-5" style={{ height: "80vh", backgroundImage: "url('/background7.png')", backgroundSize: 'cover', backgroundPosition: 'center center' }}>
-                <Container className="d-flex justify-content-center align-items-center h-100">
-                    <Card className="p-4 shadow-lg border-5" style={{ width: "700px", borderColor: "#022864" }}>
-                        <h2 className="text-center mb-3" style={{ fontFamily: "Titan One" }}>
-                            Accès au Radio Camp {sectionName}
-                        </h2>
+            <Container
+                fluid
+                className="d-flex justify-content-center align-items-center"
+                style={{ minHeight: "82vh", background: "#eef2f9" }}
+            >
+                <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.4 }}
+                    style={{ width: "100%", maxWidth: "520px", padding: "1.5rem" }}
+                >
+                    <div className="rc-pw-card" style={{ "--rc-accent": accentColor } as React.CSSProperties}>
+                        <h2 className="rc-pw-title">Radio Camp — {sectionName}</h2>
+                        <p className="rc-pw-desc">
+                            Radio Camp permet aux parents de suivre les aventures de leurs enfants durant le camp.
+                            Introduisez le mot de passe fourni par le Staff d'Unité.{" "}
+                            Vous ne l'avez pas reçu ?{" "}
+                            <a href="/sections/unite" style={{ color: accentColor, fontWeight: 600 }}>
+                                Contactez-les ici
+                            </a>.
+                        </p>
                         <Form onSubmit={handleSubmit}>
-                            <Form.Group controlId="password" className="mb-3">
-                                <Form.Label>
-                                    <p className="fs-6 text-center">
-                                        Radio Camp est un outil mis à la disposition des parents pour leur permettre de suivre les aventures de leurs enfants durant le camp.
-                                        <br />
-                                        Pour y accéder, il vous suffit d'introduire le mot de passe fourni au préalable par le Staff d'Unité.
-                                        <br />
-                                        Si vous n'avez pas reçu de mot de passe, n'hésitez pas à les contacter. Vous trouverez leurs coordonnées <a href="/sections/unite">ici</a>.
-                                    </p>
-                                </Form.Label>
-                                <Form.Control
-                                    type="password"
-                                    value={password}
-                                    onChange={(e) => setPassword(e.target.value)}
-                                    placeholder="Entrez le mot de passe"
-                                />
-                            </Form.Group>
+                            <Form.Control
+                                type="password"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                placeholder="Mot de passe"
+                                className="rc-pw-input mb-3"
+                            />
                             <div className="d-grid">
-                                <Button className="validate-btn rounded-2 text-white text-center" type="submit" disabled={loading} 
-                                    style={{
-                                        backgroundColor: "#022864",
-                                        borderColor: "#022864",
-                                        textShadow: "2px 2px 4px rgba(0, 0, 0, 0.7)" 
-                                    }}
+                                <Button
+                                    type="submit"
+                                    disabled={loading}
+                                    className="rc-pw-btn"
+                                    style={{ backgroundColor: accentColor, borderColor: accentColor }}
                                 >
-                                    {loading ? <Spinner animation="border" size="sm" /> : "Valider"}
+                                    {loading ? <Spinner animation="border" size="sm" /> : "Accéder"}
                                 </Button>
                             </div>
                         </Form>
-                        {error && <Alert variant="warning" className="mt-3">{error}</Alert>}
-                    </Card>
-                </Container>
+                        {error && (
+                            <Alert variant="warning" className="mt-3 mb-0 py-2 text-center" style={{ fontSize: "0.88rem" }}>
+                                {error}
+                            </Alert>
+                        )}
+                    </div>
+                </motion.div>
             </Container>
         );
     }
 
-    // Affichage des posts
-    return (
-        <Container fluid className="py-4 px-5 post-padding-xl" 
-            style={{ 
-                backgroundImage: "url('/background7.png')", 
-                backgroundSize: 'cover',
-                backgroundPosition: 'center',
-                backgroundAttachment: 'fixed',
-            }}
-        >
-            <Container>
-                <h1 className="text-center" style={{ fontFamily: "Titan One", textShadow: "1px 1px 2px rgba(0, 0, 0, 0.2)" }}>
-                    {radio_camp?.title} - {sectionName}
-                </h1>
-                <h4 className="text-center text-muted mb-4" style={{ fontFamily: "Titan One" }}>
-                    {radio_camp?.start_date && new Date(radio_camp.start_date).toLocaleString("fr-BE", { dateStyle: "short" })}
-                    {" - "} 
-                    {radio_camp?.end_date && new Date(radio_camp.end_date).toLocaleString("fr-BE", { dateStyle: "short" })}
-                </h4>
-            </Container>
+    const sortedPosts = [...(radio_camp?.posts ?? [])].sort(
+        (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
+    );
 
-            {radio_camp?.posts?.length === 0 ? (
-                <Container className="position-relative text-center" style={{ top: "22.5vh" }}>
-                    <h4 style={{ fontFamily: "Titan One" }}>Aucun post pour le moment.</h4>
-                    <div style={{ fontFamily: "Titan One" }}>Venez nous voir plus tard !</div>
+    return (
+        <Container fluid className="p-0" style={{ background: "#eef2f9", minHeight: "82vh" }}>
+
+            {/* ── Coloured header bar ── */}
+            <div className="rc-header-bar" style={{ backgroundColor: "#022864" }}>
+                <div className="rc-header-title">
+                    {radio_camp?.title ?? "Radio Camp"} — {sectionName}
+                </div>
+                {radio_camp?.start_date && radio_camp?.end_date && (
+                    <div className="rc-header-dates">
+                        <BsCalendar3 size={13} />
+                        {formatDate(radio_camp.start_date)} – {formatDate(radio_camp.end_date)}
+                    </div>
+                )}
+            </div>
+
+            {sortedPosts.length === 0 ? (
+                <Container className="text-center py-5 mt-5">
+                    <div style={{ fontFamily: "Titan One", fontSize: "1.35rem", color: "#aaa" }}>
+                        Aucun post pour le moment.
+                    </div>
+                    <div style={{ fontFamily: "Roboto", color: "#bbb", marginTop: "0.4rem", fontSize: "0.95rem" }}>
+                        Revenez nous voir bientôt !
+                    </div>
                 </Container>
             ) : (
-                <Container fluid>
-                    <Row className="g-4">
-                        {radio_camp?.posts
-                            .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
-                            .map((post, index) => (
-                                <Col md={12} key={post.id}>
-                                    <motion.div
-                                        initial={{ opacity: 0, x: -50 }}
-                                        animate={{ opacity: 1, x: 0 }}
-                                        transition={{ delay: index * 0.1, duration: 0.5, ease: "easeOut" }}
-                                        className="h-100"
-                                    >
-                                        <Card className="h-100 shadow rounded-2 border-5" style={{ borderColor: "#022864" }}>
-                                            <Card.Body>
-                                                <Card.Title className="fs-3 mb-2" style={{ fontFamily: "Titan One" }}>
-                                                    {post.title}
-                                                </Card.Title>
-                                                <Card.Subtitle className="mb-3 text-muted">
-                                                    {new Date(post.date).toLocaleDateString("fr-BE", { dateStyle: "short" })}
-                                                </Card.Subtitle>
-                                                {(() => {
-                                                    const textStyle = (post.photos.length > 0 || post.videos.length > 0) 
-                                                        ? { borderBottom: "2px solid #022864" } 
-                                                        : {};
-                                                    return (
-                                                        <Card.Text className="pb-2" style={textStyle}>
-                                                            {post.content}
-                                                        </Card.Text>
-                                                    );
-                                                })()}
-                                                {post.photos.length > 0 && (
-                                                    <Row className="g-2">
-                                                        {post.photos.map((photo) => (
-                                                            <Col xs={12} sm={6} md={4} lg={2} key={photo.id}>
-                                                                <div
-                                                                    className="ratio ratio-1x1 photo-container"
-                                                                    onClick={() => handleImageClick(photo.image, photo.caption)}
-                                                                    style={{ cursor: "pointer" }}
-                                                                >
-                                                                    <Image
-                                                                        src={photo.image}
-                                                                        alt={photo.caption || ""}
-                                                                        rounded
-                                                                        style={{ objectFit: "cover", width: "100%", height: "100%" }}
-                                                                    />
-                                                                </div>
-                                                                {photo.caption && (
-                                                                    <small className="d-block text-muted mt-1">{photo.caption}</small>
-                                                                )}
-                                                            </Col>
-                                                        ))}
-                                                    </Row>
-                                                )}
-                                                {post.videos.length > 0 && (
-                                                    <Row className="g-2 mt-1">
-                                                        {post.videos.map((video) => (
-                                                            <Col xs={12} sm={6} md={4} lg={2} key={video.id}>
-                                                                <div
-                                                                    className="ratio ratio-16x9 photo-container"
-                                                                >
-                                                                    <video
-                                                                        controls
-                                                                        style={{ width: "100%", borderRadius: "6px" }}
-                                                                    >
-                                                                        <source src={video.video} type="video/mp4" />
-                                                                        Votre navigateur ne supporte pas les vidéos HTML5.
-                                                                    </video>
-                                                                </div>
-                                                                {video.caption && (
-                                                                    <small className="d-block text-muted mt-1">{video.caption}</small>
-                                                                )}
-                                                            </Col>
-                                                        ))}
-                                                    </Row>
-                                                )}
-                                            </Card.Body>
-                                        </Card>
-                                    </motion.div>
-                                </Col>
-                            ))}
-                    </Row>
+                <Container fluid className="px-3 py-5 px-sm-5" style={{ background: "#eef2f9" }}>
+                    {/* ── Timeline ── */}
+                    <div
+                        className="rc-timeline-wrapper mx-auto"
+                        style={{ "--rc-accent": accentColor } as React.CSSProperties}
+                    >
+                        {sortedPosts.map((post, index) => {
+                            const isLeft = index % 2 === 0;
+
+                            const cardContent = (
+                                <div
+                                    className={`rc-card-inner ${isLeft ? "is-left" : "is-right"}`}
+                                    style={{ "--rc-border": accentColor } as React.CSSProperties}
+                                >
+                                    {/* Date chip */}
+                                    <div className="rc-post-date" style={{ color: accentColor }}>
+                                        <BsCalendar3 size={11} />
+                                        {formatDate(post.date)}
+                                    </div>
+
+                                    {/* Title */}
+                                    <div className="rc-post-title" style={{ color: accentColor }}>
+                                        {post.title}
+                                    </div>
+
+                                    {/* Content */}
+                                    {post.content && (
+                                        <p className="rc-post-content">{post.content}</p>
+                                    )}
+
+                                    {/* Photos */}
+                                    {post.photos.length > 0 && (
+                                        <>
+                                            <div className="rc-media-divider" style={{ borderColor: accentColor + "33" }} />
+                                            <Row className="g-2">
+                                                {post.photos.map((photo) => (
+                                                    <Col xs={6} sm={4} md={3} key={photo.id}>
+                                                        <div
+                                                            className="ratio ratio-1x1 rc-photo-thumb"
+                                                            onClick={() => handleImageClick(photo.image, photo.caption)}
+                                                        >
+                                                            <Image
+                                                                src={photo.image}
+                                                                alt={photo.caption || ""}
+                                                                rounded
+                                                                style={{ objectFit: "cover", width: "100%", height: "100%" }}
+                                                            />
+                                                        </div>
+                                                        {photo.caption && (
+                                                            <small className="d-block text-muted mt-1 text-center">{photo.caption}</small>
+                                                        )}
+                                                    </Col>
+                                                ))}
+                                            </Row>
+                                        </>
+                                    )}
+
+                                    {/* Videos */}
+                                    {post.videos.length > 0 && (
+                                        <>
+                                            <div className="rc-media-divider" style={{ borderColor: accentColor + "33" }} />
+                                            <Row className="g-2">
+                                                {post.videos.map((video) => (
+                                                    <Col xs={12} md={6} key={video.id}>
+                                                        <div className="ratio ratio-16x9 rc-video-thumb">
+                                                            <video controls style={{ width: "100%", borderRadius: "8px" }}>
+                                                                <source src={video.video} type="video/mp4" />
+                                                            </video>
+                                                        </div>
+                                                        {video.caption && (
+                                                            <small className="d-block text-muted mt-1 text-center">{video.caption}</small>
+                                                        )}
+                                                    </Col>
+                                                ))}
+                                            </Row>
+                                        </>
+                                    )}
+                                </div>
+                            );
+
+                            return (
+                                <motion.div
+                                    key={post.id}
+                                    className="rc-tl-item"
+                                    initial={{ x: isLeft ? -24 : 24, opacity: 0 }}
+                                    whileInView={{ x: 0, opacity: 1 }}
+                                    viewport={{ once: true, amount: 0.12 }}
+                                    transition={{ duration: 0.45, ease: "easeOut" }}
+                                >
+                                    {/* Left slot */}
+                                    <div className="rc-tl-col rc-tl-left">
+                                        {isLeft && cardContent}
+                                    </div>
+
+                                    {/* Center dot */}
+                                    <div className="rc-tl-center">
+                                        <div
+                                            className="rc-tl-dot"
+                                            style={{ ["--dot-color" as string]: accentColor }}
+                                        />
+                                    </div>
+
+                                    {/* Right slot */}
+                                    <div className="rc-tl-col rc-tl-right">
+                                        {!isLeft && cardContent}
+                                    </div>
+                                </motion.div>
+                            );
+                        })}
+                    </div>
                 </Container>
             )}
 
-            {/* MODAL pour image */}
+            {/* ── Lightbox ── */}
             <Modal show={showModal} onHide={handleCloseModal} centered size="lg">
                 <Modal.Body className="p-0 text-center">
                     {selectedImage && (
