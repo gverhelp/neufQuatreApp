@@ -1,4 +1,7 @@
 .navbar {
+    /* Expose navbar height for other components (used to position floating elements)
+       Adjust the value if the navbar visual height changes on your layout */
+    --navbar-height: 64px;
     background-color: white;
     transition : background-color 0.3s ease-in-out;
 }

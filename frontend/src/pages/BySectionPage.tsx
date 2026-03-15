@@ -2,6 +2,7 @@ import { Container, Col, Row, ProgressBar, Alert, Placeholder } from "react-boot
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
+import { BsArrowLeft } from "react-icons/bs";
 
 import "../styles/Sections.css";
 import { SectionData } from "../types/interfaces";
@@ -86,6 +87,13 @@ const BySectionPage = ({ sectionName }: { sectionName: string }) => {
 
     return (
         <Container fluid className="p-0">
+
+            {/* ── Back navigation ── */}
+            <Link to="/sections" className="section-back-btn text-decoration-none">
+                <BsArrowLeft />
+                <span className="section-back-btn-label">Sections</span>
+            </Link>
+
             {loading ? (
                 <PlaceholderBlock />
                 ) : (
@@ -106,25 +114,6 @@ const BySectionPage = ({ sectionName }: { sectionName: string }) => {
                 )
             )}
 
-            <Container fluid className="py-3 sticky-container sticky-top" style={{ backgroundColor: "#022864", zIndex: 1050 }}>
-                <Row className="g-3">
-                    {sectionsPath
-                        // .filter((section) => (
-                        //     section.slug !== sectionName.toLowerCase()
-                        // ))
-                        .map((section, index) => (
-                            <Col key={index} className="text-center">
-                                <Link to={section.path} className="text-decoration-none text-reset">
-                                    <div className="group-card-sections rounded-2" data-group={section.slug}>
-                                        <h2 className="fs-4 m-0" style={{ fontFamily: "Titan One" }}>
-                                            {section.name}
-                                        </h2>
-                                    </div>
-                                </Link>
-                            </Col>
-                        ))}
-                </Row>
-            </Container>
 
             {sectionData && (
                 <CarouselBlock 
@@ -133,7 +122,7 @@ const BySectionPage = ({ sectionName }: { sectionName: string }) => {
                 />
             )}
 
-            {sectionName.toLowerCase() !== "unite" && sectionName.toLowerCase() !== "clan" && (
+            {/* {sectionName.toLowerCase() !== "unite" && sectionName.toLowerCase() !== "clan" && (
                 <Container fluid className="py-4 text-center" style={{ backgroundColor: "#022864" }}>
                     <h3 className="fs-3 mb-3 text-white"
                         style={{ 
@@ -152,7 +141,7 @@ const BySectionPage = ({ sectionName }: { sectionName: string }) => {
                         variant="warning"
                     />
                 </Container>
-            )}
+            )} */}
                 
             <StaffBlock sectionName={sectionName} />
 

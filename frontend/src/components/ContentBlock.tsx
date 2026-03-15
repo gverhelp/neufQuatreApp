@@ -1,7 +1,6 @@
-import { Container, Row, Col, Image } from "react-bootstrap";
+import { Container, Row, Col } from "react-bootstrap";
 import { motion } from "framer-motion";
 import "../styles/Home.css";
-
 
 interface ContentBlockProps {
     bgColor?: string;
@@ -13,45 +12,62 @@ interface ContentBlockProps {
     reverse?: boolean;
 }
 
-function ContentBlock({ bgColor = "", bgImg = "", title, subtitle = "", text, imgSrc, reverse = false }: ContentBlockProps) {
-
-    const containerStyle = bgImg 
-        ? { backgroundImage: `url(${bgImg})`, backgroundSize: 'cover', backgroundPosition: 'center center' }
-        : { backgroundColor: bgColor };
-  
+function ContentBlock({
+    title,
+    subtitle = "",
+    text,
+    imgSrc,
+    reverse = false,
+}: ContentBlockProps) {
     return (
-        <Container fluid className="p-5 d-flex justify-content-center" style={containerStyle}>
-            <Row className="align-items-center">
+        <Container fluid className="content-block-section">
+            <Row className="align-items-center g-4 g-xl-5 justify-content-center">
 
-                <Col lg={6} className={`d-flex justify-content-center colTextBlock ${reverse ? "order-lg-2" : "order-lg-1"}`}>
+                {/* Image */}
+                <Col
+                    lg={6}
+                    className={`d-flex justify-content-center ${
+                        reverse ? "order-lg-2" : "order-lg-1"
+                    }`}
+                >
                     <motion.div
-                        initial={{ x: reverse ? 30 : -30, opacity: 0 }}
+                        className="content-block-img-wrap"
+                        style={{ maxWidth: "600px", width: "100%" }}
+                        initial={{ x: reverse ? 40 : -40, opacity: 0 }}
                         whileInView={{ x: 0, opacity: 1 }}
-                        transition={{ duration: 0.5, ease: "easeOut" }}
+                        transition={{ duration: 0.65, ease: "easeOut" as const }}
                         viewport={{ once: true }}
                     >
-                        <Image fluid rounded src={imgSrc} />
+                        <img src={imgSrc} alt={title} />
                     </motion.div>
                 </Col>
 
-                <Col lg={6} className={`d-flex align-items-center colTextBlock ${reverse ? "order-lg-1 justify-content-lg-end" : "order-lg-2"}`}>
+                {/* Text */}
+                <Col
+                    lg={6}
+                    className={`d-flex align-items-center ${
+                        reverse ? "order-lg-1 justify-content-lg-end" : "order-lg-2"
+                    }`}
+                >
                     <motion.div
-                        initial={{ x: reverse ? -30 : 30, opacity: 0 }}
+                        style={{ maxWidth: "540px", width: "100%" }}
+                        initial={{ x: reverse ? -40 : 40, opacity: 0 }}
                         whileInView={{ x: 0, opacity: 1 }}
-                        transition={{ duration: 0.5, ease: "easeOut" }}
+                        transition={{ duration: 0.65, ease: "easeOut" as const, delay: 0.1 }}
                         viewport={{ once: true }}
-                        className={`${reverse ? "colTextMotionRight" : "colTextMotionLeft"}`}
                     >
-                        <div className="p-3 w-100" style={{ maxWidth: "600px" }}>
-                            <h1 className={`colTextTitle ${ subtitle ? "pb-0" : "pb-3" }`} style={{ fontFamily: "Titan One" }}>{title}</h1>
-                            {subtitle && <h2 className="pb-2 fs-4 colTextTitle" style={{ fontFamily: "Titan One" }}>{subtitle}</h2>}
-                            <p className="fw-semibold colTextText" style={{ fontFamily: "Roboto" }}>{text}</p>
-                        </div>
+                        {subtitle && (
+                            <div className="content-block-subtitle-badge">{subtitle}</div>
+                        )}
+                        <h1 className="content-block-title">{title}</h1>
+                        <div className="content-block-divider" />
+                        <p className="content-block-text">{text}</p>
                     </motion.div>
                 </Col>
+
             </Row>
         </Container>
     );
-};
+}
 
 export default ContentBlock;

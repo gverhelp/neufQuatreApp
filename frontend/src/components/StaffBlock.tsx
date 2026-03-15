@@ -1,74 +1,109 @@
-import { Container, Row, Col, Card, Alert, Placeholder } from "react-bootstrap";
+import { Container, Row, Col, Alert } from "react-bootstrap";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { motion } from "framer-motion";
 import { ChefData } from "../types/interfaces";
 import { FaUserCircle } from "react-icons/fa";
 
-const StaffCard = ({ member }: { member: ChefData }) => {
-    return (
-        <Card className="overflow-hidden border-5 rounded-2 staff-card" style={{ borderColor: "#022864" }}>
-            {member.image ? (
-                <Card.Img 
-                    className="rounded-0" 
-                    variant="top" 
-                    src={member.image} 
-                    alt={member.totem} 
-                    style={{ height: "400px", objectFit: "cover"}} 
-                />
-            ) : (
-                <div 
-                    className="d-flex justify-content-center align-items-center" 
-                    style={{ height: "400px", backgroundColor: "#f0f0f0" }}
-                >
-                    <FaUserCircle size={100} color="#022864" />
-                </div>
-            )}
-            <Card.Body className="text-center text-break overflow-y-scroll" style={{ height: "400px" }}>
-                <Card.Title className="fs-4" style={{ fontFamily: "Titan One" }}>{member.totem}</Card.Title>
-                <Card.Subtitle className="pb-2 mb-2 text-muted fs-5" style={{ borderBottom: "2px solid #022864" }}>{member.name}</Card.Subtitle>
-                <Card.Text className="fs-6">{member.bafouille}</Card.Text>
-            </Card.Body>
-        </Card>
-    );
+import "../styles/Sections.css";
+
+/* ── Couleur d'accent par section ── */
+const SECTION_COLORS: Record<string, string> = {
+    baladins:   "#00A0DD",
+    lutins:     "#CC0739",
+    louveteaux: "#186E54",
+    guides:     "#1D325A",
+    eclaireurs: "#015AA9",
+    pionniers:  "#DA1F29",
+    clan:       "#FEB800",
+    unite:      "#022864",
 };
 
-const PlaceholderCard = () => (
-    <Card className="overflow-hidden border-5 rounded-2 staff-card" style={{ borderColor: "#022864" }}>
-        <Placeholder as={Card.Img} animation="glow" style={{ height: "350px", backgroundColor: "#f0f0f0" }} />
-        <Card.Body className="text-center text-break overflow-scroll" style={{ height: "400px" }}>
-            <Placeholder as={Card.Title} animation="glow" className="fs-4">
-                <Placeholder xs={6} />
-            </Placeholder>
-            <Placeholder as={Card.Subtitle} animation="glow" className="pb-2 mb-2 text-muted fs-5">
-                <Placeholder xs={4} />
-            </Placeholder>
-            <Placeholder as={Card.Text} animation="glow" className="fs-6">
-                <Placeholder xs={8} />
-                <Placeholder xs={7} />
-                <Placeholder xs={6} />
-            </Placeholder>
-        </Card.Body>
-    </Card>
+/* ── Carte chef ── */
+const StaffCard = ({
+    member,
+    accentColor,
+}: {
+    member: ChefData;
+    accentColor: string;
+}) => (
+    <div
+        className="staff-card-v2"
+        style={{ "--accent": accentColor } as React.CSSProperties}
+    >
+        <div className="staff-card-v2-img">
+            {member.image ? (
+                <img src={member.image} alt={member.totem} />
+            ) : (
+                <div className="staff-card-v2-placeholder">
+                    <FaUserCircle size={80} color={accentColor} />
+                </div>
+            )}
+        </div>
+
+        <div className="staff-card-v2-body">
+            <div className="staff-card-v2-totem">{member.totem}</div>
+            <div className="staff-card-v2-name">{member.name}</div>
+            {member.bafouille && (
+                <p className="staff-card-v2-bio">{member.bafouille}</p>
+            )}
+        </div>
+    </div>
 );
 
+/* ── Carte fantôme (chargement) ── */
+const PlaceholderCard = ({ accentColor }: { accentColor: string }) => (
+    <div
+        className="staff-card-v2 is-ghost"
+        style={{ "--accent": accentColor } as React.CSSProperties}
+    >
+        <div className="staff-card-v2-img" />
+
+        <div className="staff-card-v2-body placeholder-glow">
+            <span
+                className="placeholder col-7 mb-2 d-block"
+                style={{ height: "22px", borderRadius: "6px" }}
+            />
+            <span
+                className="placeholder col-5 mb-3 d-block"
+                style={{ height: "14px", borderRadius: "4px" }}
+            />
+            <span className="placeholder col-10 d-block mb-1" style={{ height: "12px", borderRadius: "4px" }} />
+            <span className="placeholder col-8  d-block mb-1" style={{ height: "12px", borderRadius: "4px" }} />
+            <span className="placeholder col-6  d-block"      style={{ height: "12px", borderRadius: "4px" }} />
+        </div>
+    </div>
+);
+
+/* ── Bloc principal ── */
 const StaffBlock = ({ sectionName }: { sectionName: string }) => {
-    const baseURL = import.meta.env.VITE_API_URL;
-    const [loading, setLoading] = useState<boolean>(true);
-    const [error, setError] = useState<string | null>(null);
-    const [chefsData, setChefsData] = useState<ChefData[]>([]);
+    const baseURL   = import.meta.env.VITE_API_URL;
+    const [loading, setLoading]   = useState(true);
+    const [error,   setError]     = useState<string | null>(null);
+    const [chefs,   setChefs]     = useState<ChefData[]>([]);
+
+    const accentColor =
+        SECTION_COLORS[sectionName.toLowerCase()] ?? "#022864";
+
+    const blockTitle = (() => {
+        if (sectionName === "Unite")      return "Les chefs d'Unité";
+        if (sectionName === "Eclaireurs") return "Les chefs Éclaireurs";
+        if (sectionName === "Clan")       return "Les animateurs du Clan";
+        return `Les chefs ${sectionName}`;
+    })();
 
     useEffect(() => {
-        const fetchSectionData = async () => {
+        const fetchChefs = async () => {
             try {
                 setLoading(true);
                 setError(null);
 
-                const response = await axios.get(`${baseURL}/chefs/`);
-                const data: ChefData[] = response.data;
-                const selectedChefs = data.filter(member => member.section.toLowerCase() === sectionName.toLowerCase());
-
-                setChefsData(selectedChefs);
+                const { data } = await axios.get<ChefData[]>(`${baseURL}/chefs/`);
+                setChefs(
+                    data.filter(
+                        (m) => m.section.toLowerCase() === sectionName.toLowerCase()
+                    )
+                );
             } catch (err) {
                 console.error("Erreur lors de la récupération des données", err);
                 setError("Impossible de charger les données. Veuillez réessayer plus tard.");
@@ -77,70 +112,71 @@ const StaffBlock = ({ sectionName }: { sectionName: string }) => {
             }
         };
 
-        fetchSectionData();
+        fetchChefs();
     }, [sectionName]);
 
-    if (loading) {
-        return (
-            <Container fluid className="p-4">
-                <Row className="g-4 justify-content-center">
-                    {Array.from({ length: 4 }).map((_, index) => (
-                        <Col key={index} md={6} lg={4} xl={3}>
-                            <PlaceholderCard />
-                        </Col>
-                    ))}
-                </Row>
-            </Container>
-        );
-    }
-
-    if (error) {
-        return (
-            <Container fluid className="p-4 text-center">
-                <Alert variant="warning">{error}</Alert>
-            </Container>
-        );
-    }
-
     return (
-        <Container fluid className="px-3 py-4 p-sm-5" style={{ backgroundColor: "white", backgroundSize: 'cover', backgroundPosition: 'center center', paddingBlock: "10vh" }}>
-            <h2 className="text-center pb-4 fs-1"
-                style={{ 
-                    fontFamily: "Titan One", 
-                    color: "#000000", 
-                    textShadow: "1px 1px 2px rgba(0, 0, 0, 0.2)" 
-                }}
+        <Container fluid className="px-3 py-5 px-sm-5" style={{ background: "#eef2f9" }}>
+
+            {/* En-tête de section */}
+            <motion.div
+                className="staff-block-header"
+                initial={{ opacity: 0, y: -12 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.4 }}
+                viewport={{ once: true }}
             >
-                {(() => {
-                    if (sectionName === "Unite") {
-                        return "Les chefs D'Unité";
-                    } else if (sectionName === "Eclaireurs") {
-                        return "Les chefs Éclaireurs";
-                    } else {
-                        return `Les chefs ${sectionName}`;
-                    }
-                })()}
-            </h2>
-            {chefsData.length > 0 ? (
-                <Row className="g-4 justify-content-center">
-                    {chefsData.map((member, index) => (
-                        <Col key={index} md={6} lg={4} xl={3}>
-                            <motion.div
-                                initial={{ y: 100, opacity: 0 }}
-                                whileInView={{ y: 0, opacity: 1 }}
-                                transition={{ duration: 0.8, ease: "easeOut" }}
-                                viewport={{ once: true }}
-                                className="h-100"
-                            >
-                                <StaffCard member={member} />
-                            </motion.div>
+                <span className="staff-block-header-title">{blockTitle}</span>
+            </motion.div>
+
+            {/* Chargement */}
+            {loading && (
+                <Row className="g-4 justify-content-center mt-2">
+                    {Array.from({ length: 3 }).map((_, i) => (
+                        <Col key={i} md={8} lg={6} xl={4}>
+                            <PlaceholderCard accentColor={accentColor} />
                         </Col>
                     ))}
                 </Row>
-            ) : (
-                <p className="text-center fs-5" style={{ fontFamily: "Titan One" }}>
-                    Il semble qu'il n'y ait aucun chef dans cette section.
-                </p>
+            )}
+
+            {/* Erreur */}
+            {error && (
+                <div className="text-center mt-4">
+                    <Alert variant="warning">{error}</Alert>
+                </div>
+            )}
+
+            {/* Contenu */}
+            {!loading && !error && (
+                chefs.length > 0 ? (
+                    <Row className="g-4 justify-content-center mt-2">
+                        {chefs.map((member, index) => (
+                            <Col key={member.id} md={8} lg={6} xl={4}>
+                                <motion.div
+                                    initial={{ y: 40, opacity: 0 }}
+                                    whileInView={{ y: 0, opacity: 1 }}
+                                    transition={{
+                                        duration: 0.55,
+                                        ease: "easeOut",
+                                        delay: index * 0.07,
+                                    }}
+                                    viewport={{ once: true }}
+                                    className="h-100"
+                                >
+                                    <StaffCard member={member} accentColor={accentColor} />
+                                </motion.div>
+                            </Col>
+                        ))}
+                    </Row>
+                ) : (
+                    <p
+                        className="text-center mt-4 fs-5"
+                        style={{ fontFamily: "Titan One", color: accentColor }}
+                    >
+                        Il semble qu'il n'y ait aucun chef dans cette section.
+                    </p>
+                )
             )}
         </Container>
     );

@@ -23,7 +23,7 @@ function CarouselBlock(carouselBlockProps: CarouselBlockProps) {
     return (
         <>
         <Container fluid className="p-0">
-            <Carousel className="carousel" style={{ height: "70vh" }} interval={5000}>
+            <Carousel className="carousel" style={{ height: "70vh" }} interval={3000}>
                 {images.map((image, index) => (
                     <Carousel.Item key={index}>
                         <Image

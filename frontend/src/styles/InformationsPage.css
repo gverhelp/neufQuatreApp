@@ -1,27 +1,96 @@
+/* ───────────────────────────────────────
+   InformationsPage
+─────────────────────────────────────── */
+
+.info-content-bg {
+    background-color: #eef2f9;
+    min-height: 70vh;
+}
+
+.info-col-title {
+    font-family: 'Titan One', sans-serif;
+    color: #022864;
+    font-size: 1.4rem;
+    margin-bottom: 1rem;
+    padding-bottom: 0.4rem;
+    border-bottom: 3px solid #022864;
+    display: inline-block;
+}
+
+/* Document cards */
+.info-doc-card {
+    background: white;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    border: 1px solid #e4e9f2;
+    border-left: 4px solid #022864;
+}
+
+.info-doc-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(2, 40, 100, 0.12) !important;
+}
+
+/* Information cards */
+.info-info-card {
+    background: white;
+    overflow: hidden;
+    border: 1px solid #e4e9f2;
+    border-bottom: 4px solid #022864;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.info-info-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(2, 40, 100, 0.12) !important;
+}
+
+/* Media wrapper inside info cards */
+.info-card-media {
+    overflow: hidden;
+    background: #f0f4fb;
+    max-height: 300px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.info-card-img {
+    width: 100%;
+    height: 100%;
+    max-height: 300px;
+    object-fit: cover;
+    display: block;
+}
+
+/* Masonry grid */
+.my-masonry-grid {
+    display: flex;
+    margin-left: -1rem;
+    width: auto;
+}
+
+.my-masonry-grid_column {
+    padding-left: 1rem;
+    background-clip: padding-box;
+}
+
+.my-masonry-grid_column > div {
+    margin-bottom: 1.25rem;
+}
+
+/* Download / CTA button */
 .download-btn {
     background-color: #022864;
-    padding: 0.6rem 1.6rem;
+    padding: 0.55rem 1.4rem;
     font-family: 'Titan One', sans-serif;
-    font-size: 1.1rem;
-    /* border-radius: 6px; */
-    transition: transform 0.2s ease;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    font-size: 1rem;
+    color: white;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: 0 4px 10px rgba(2, 40, 100, 0.25);
 }
   
 .download-btn:hover {
     transform: translateY(-2px);
-}
-
-.left-side {
-    overflow-y: scroll;
-    max-height: 80vh;
-    border-right: 5px solid #022864;
-}
-
-@media (max-width: 768px) {
-    .left-side {
-        overflow-y: unset;
-        max-height: none;
-        border-right: 0px solid #022864;
-    }
+    box-shadow: 0 6px 16px rgba(2, 40, 100, 0.35);
+    color: white;
 }

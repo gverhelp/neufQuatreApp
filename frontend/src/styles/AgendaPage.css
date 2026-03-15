@@ -12,7 +12,6 @@
     padding: 0.6rem 1.6rem;
     font-family: 'Titan One', sans-serif;
     font-size: 1.1rem;
-    /* border-radius: 6px; */
     transition: transform 0.2s ease;
     box-shadow: 0 4px 8px rgba(0,0,0,0.2);
 }
@@ -213,4 +212,185 @@
     .timeline-card-inner.is-right:hover {
         transform: translateX(4px);
     }
+}
+
+
+/* ─────────────────────────────────────────────
+   AgendaBlock — redesign
+───────────────────────────────────────────── */
+
+/* Calendar wrapper card */
+.agenda-calendar-card {
+    background: white;
+    border-radius: 16px;
+    border: 1px solid #e4e9f2;
+    border-top: 4px solid #022864;
+    padding: 1.35rem 1.25rem;
+    box-shadow: 0 6px 28px rgba(2, 40, 100, 0.07);
+    transition: box-shadow 0.25s ease;
+}
+
+.agenda-calendar-card:hover {
+    box-shadow: 0 10px 36px rgba(2, 40, 100, 0.11);
+}
+
+/* Side panel cards */
+.agenda-side-card {
+    background: white;
+    border-radius: 16px;
+    border: 1px solid #e4e9f2;
+    border-top: 4px solid #022864;
+    padding: 1.1rem 1.2rem;
+    box-shadow: 0 6px 28px rgba(2, 40, 100, 0.07);
+    transition: box-shadow 0.25s ease;
+}
+
+.agenda-side-card:hover {
+    box-shadow: 0 10px 36px rgba(2, 40, 100, 0.11);
+}
+
+/* Side card header (Titan One title row) */
+.agenda-side-card-title {
+    font-family: 'Titan One', sans-serif;
+    font-size: 0.92rem;
+    color: #022864;
+    letter-spacing: 0.04em;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    border-bottom: 1px solid #e8ecf4;
+    padding-bottom: 0.65rem;
+}
+
+/* Legend pills — always filled, no hover */
+.agenda-legend-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: 'Roboto', sans-serif;
+    font-size: 0.73rem;
+    font-weight: 700;
+    color: white;
+    background: var(--pill-color, #022864);
+    border: none;
+    border-radius: 50px;
+    padding: 3px 10px 3px 7px;
+    cursor: default;
+    user-select: none;
+    pointer-events: none;
+}
+
+.agenda-legend-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.55);
+    flex-shrink: 0;
+}
+
+/* Upcoming events list */
+.agenda-upcoming-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    padding: 0.55rem 0.7rem;
+    border-radius: 10px;
+    border-left: 3px solid var(--item-color, #022864);
+    background: #f7f9fc;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.agenda-upcoming-item:hover {
+    transform: translateX(4px);
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.07);
+}
+
+.agenda-upcoming-date {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 34px;
+    padding-top: 1px;
+}
+
+.agenda-upcoming-day {
+    font-family: 'Titan One', sans-serif;
+    font-size: 1.25rem;
+    color: var(--item-color, #022864);
+    line-height: 1;
+}
+
+.agenda-upcoming-month {
+    font-family: 'Roboto', sans-serif;
+    font-size: 0.63rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: #999;
+    margin-top: 1px;
+}
+
+.agenda-upcoming-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.agenda-upcoming-title {
+    font-family: 'Roboto', sans-serif;
+    font-weight: 700;
+    font-size: 0.84rem;
+    color: #1a1a2e;
+    line-height: 1.25;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.agenda-upcoming-meta {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-family: 'Roboto', sans-serif;
+    font-size: 0.72rem;
+    color: #888;
+    font-weight: 500;
+}
+
+.agenda-upcoming-section {
+    font-family: 'Roboto', sans-serif;
+    font-size: 0.68rem;
+    color: var(--item-color, #022864);
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin-top: 3px;
+}
+
+/* Download card accent */
+.agenda-download-card {
+    border-top-color: #022864;
+}
+
+/* Download button */
+.agenda-download-btn {
+    font-family: 'Titan One', sans-serif;
+    font-size: 0.88rem;
+    letter-spacing: 0.05em;
+    background: #022864;
+    border: none;
+    border-radius: 10px;
+    padding: 0.6rem 1.25rem;
+    color: white;
+    text-decoration: none;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+    box-shadow: 0 4px 14px rgba(2, 40, 100, 0.28);
+    cursor: pointer;
+}
+
+.agenda-download-btn:hover {
+    background: #022864;
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(2, 40, 100, 0.34);
+    text-decoration: none;
 }

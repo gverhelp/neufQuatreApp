@@ -1,7 +1,6 @@
 /* group-card */
 .group-card {
     border: 2px solid transparent;
-    /* border-radius: 6px; */
     padding: 1rem;
     background-color: #fff;
     transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
@@ -30,6 +29,179 @@
 
 .group-card:hover::before {
     height: 10px;
+}
+
+/* ─────────────────────────────────────────────
+   Sections page — intro strip
+───────────────────────────────────────────── */
+.sections-intro-strip {
+    background: #022864;
+    background-size: 24px 24px;
+    padding: 3rem 1.5rem;
+    text-align: center;
+    color: white;
+}
+
+.sections-intro-eyebrow {
+    display: inline-block;
+    font-family: 'Roboto', sans-serif;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.55);
+    margin-bottom: 0.5rem;
+}
+
+.sections-intro-title {
+    font-family: 'Titan One', sans-serif;
+    font-size: clamp(2rem, 5vw, 3rem);
+    color: white;
+    margin-bottom: 0.6rem;
+    text-shadow: 0 2px 8px rgba(0,0,0,0.25);
+}
+
+.sections-intro-sub {
+    font-family: 'Roboto', sans-serif;
+    font-size: 1rem;
+    color: rgba(255, 255, 255, 0.75);
+    max-width: 520px;
+    margin: 0 auto;
+    line-height: 1.6;
+}
+
+/* ─────────────────────────────────────────────
+   Sections page — cards grid
+───────────────────────────────────────────── */
+.sections-grid-wrapper {
+    background: #eef2f9;
+    background-size: 28px 28px;
+    padding: 3.5rem 1.5rem;
+}
+
+/* Individual section card */
+.section-card {
+    --sc-color: #022864;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    border-radius: 16px;
+    overflow: hidden;
+    background: white;
+    box-shadow: 0 6px 24px rgba(2, 40, 100, 0.08);
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+    cursor: pointer;
+}
+
+.section-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 14px 36px rgba(2, 40, 100, 0.15);
+}
+
+/* Colored top header */
+.section-card-header {
+    background: var(--sc-color);
+    padding: 1.15rem 1.2rem 1rem;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 0.5rem;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Decorative circle in header */
+.section-card-header::after {
+    content: '';
+    position: absolute;
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.08);
+    bottom: -30px;
+    right: -20px;
+    pointer-events: none;
+}
+
+.section-card-name {
+    font-family: 'Titan One', sans-serif;
+    font-size: 1.3rem;
+    color: white;
+    line-height: 1.1;
+    text-shadow: 0 1px 4px rgba(0,0,0,0.2);
+}
+
+.section-card-genre-badge {
+    font-family: 'Roboto', sans-serif;
+    font-size: 0.62rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    background: rgba(255,255,255,0.2);
+    color: white;
+    border-radius: 50px;
+    padding: 2px 9px;
+    white-space: nowrap;
+    margin-top: 3px;
+    flex-shrink: 0;
+}
+
+/* Card body */
+.section-card-body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 1rem 1.2rem 1.15rem;
+}
+
+.section-card-age {
+    display: inline-block;
+    font-family: 'Roboto', sans-serif;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--sc-color);
+    border: 1.5px solid var(--sc-color);
+    border-radius: 50px;
+    padding: 2px 10px;
+    margin-bottom: 0.65rem;
+    align-self: flex-start;
+}
+
+.section-card-desc {
+    font-family: 'Roboto', sans-serif;
+    font-size: 0.86rem;
+    color: #555;
+    line-height: 1.55;
+    flex: 1;
+    margin-bottom: 1rem;
+}
+
+/* CTA row */
+.section-card-cta {
+    font-family: 'Roboto', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--sc-color);
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    transition: gap 0.2s ease;
+}
+
+.section-card:hover .section-card-cta {
+    gap: 10px;
+}
+
+.section-card-arrow {
+    transition: transform 0.2s ease;
+}
+
+.section-card:hover .section-card-arrow {
+    transform: translateX(4px);
 }
 
 /* group-card-sections */
@@ -138,5 +310,332 @@
 @media (max-width: 1052px) {
     .sticky-container {
         position: static !important;
+    }
+}
+
+
+/* ═══════════════════════════════════════════════
+   StaffBlock v2
+═══════════════════════════════════════════════ */
+
+.staff-block-header {
+    display: flex;
+    align-items: center;
+    gap: 1.2rem;
+    margin-bottom: 2rem;
+    color: #022864;
+}
+
+.staff-block-header::before,
+.staff-block-header::after {
+    content: '';
+    flex: 1;
+    height: 2px;
+    border-radius: 2px;
+}
+
+.staff-block-header::before {
+    background: linear-gradient(to right, transparent, #022864);
+}
+
+.staff-block-header::after {
+    background: linear-gradient(to left, transparent, #022864);
+}
+
+.staff-block-header-title {
+    font-family: 'Titan One', sans-serif;
+    font-size: clamp(1.35rem, 2.8vw, 2rem);
+    color: #022864;
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+/* Staff card — redesign */
+.staff-card-v2 {
+    background: white;
+    border-radius: 16px;
+    overflow: hidden;
+    border: 1px solid #e4e9f2;
+    box-shadow: 0 6px 24px rgba(2, 40, 100, 0.08);
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.staff-card-v2:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 16px 40px rgba(2, 40, 100, 0.14);
+}
+
+.staff-card-v2-img {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    background: #f0f4fb;
+    flex-shrink: 0;
+    border-bottom: 4px solid var(--accent, #022864);
+    max-height: 260px;
+}
+
+.staff-card-v2-img img {
+    width: 100%;
+    height: 100%;
+    max-height: 260px;
+    object-fit: cover;
+    object-position: center center;
+    display: block;
+    transition: transform 0.45s ease;
+}
+
+.staff-card-v2:hover .staff-card-v2-img img {
+    transform: scale(1.03);
+}
+
+.staff-card-v2-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #eef2f9;
+}
+
+.staff-card-v2-body {
+    padding: 0.75rem 1rem 0.9rem;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+.staff-card-v2-totem {
+    font-family: 'Titan One', sans-serif;
+    font-size: 1.1rem;
+    color: var(--accent, #022864);
+    line-height: 1.15;
+    margin-bottom: 0.2rem;
+}
+
+.staff-card-v2-name {
+    font-family: 'Roboto', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #6b7280;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding-bottom: 0.65rem;
+    border-bottom: 1px solid #e8ecf4;
+    margin-bottom: 0.7rem;
+}
+
+.staff-card-v2-bio {
+    font-family: 'Roboto', sans-serif;
+    font-size: 0.82rem;
+    color: #4b5563;
+    line-height: 1.6;
+    margin: 0;
+    flex: 1;
+    display: -webkit-box;
+    -webkit-line-clamp: 5;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+/* Ghost placeholder */
+.staff-card-v2.is-ghost .staff-card-v2-img {
+    animation: staff-pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes staff-pulse {
+    0%, 100% { background: #dce3ef; }
+    50%       { background: #c8d3e8; }
+}
+
+
+/* ═══════════════════════════════════════════════
+   InfoCards v2
+═══════════════════════════════════════════════ */
+
+.info-card {
+    background: white;
+    border-radius: 16px;
+    border: 1px solid #e4e9f2;
+    border-top: 4px solid var(--accent, #022864);
+    padding: 1.25rem 1.35rem;
+    box-shadow: 0 6px 28px rgba(2, 40, 100, 0.07);
+    transition: box-shadow 0.25s ease, transform 0.25s ease;
+    display: flex;
+    flex-direction: column;
+}
+
+.info-card:hover {
+    box-shadow: 0 12px 38px rgba(2, 40, 100, 0.12);
+    transform: translateY(-3px);
+}
+
+.info-card-title {
+    font-family: 'Titan One', sans-serif;
+    font-size: 0.95rem;
+    color: #022864;
+    letter-spacing: 0.04em;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    border-bottom: 1px solid #e8ecf4;
+    padding-bottom: 0.65rem;
+    margin-bottom: 0;
+}
+
+.info-card-body {
+    padding-top: 0.9rem;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.info-card-text {
+    font-family: 'Roboto', sans-serif;
+    font-size: 0.88rem;
+    color: #4b5563;
+    line-height: 1.65;
+    margin-bottom: 0.5rem;
+}
+
+.info-card-email-pill {
+    display: inline-flex;
+    align-items: center;
+    font-family: 'Roboto', sans-serif;
+    font-size: 0.88rem;
+    font-weight: 700;
+    color: #022864;
+    background: #eef2f9;
+    border-radius: 50px;
+    padding: 0.4rem 1rem;
+    text-decoration: none;
+    border: 1.5px solid #c2d0e8;
+    transition: background 0.2s ease, transform 0.2s ease;
+    margin-top: 0.5rem;
+    word-break: break-all;
+}
+
+.info-card-email-pill:hover {
+    background: #dce8f8;
+    transform: translateY(-1px);
+    color: #022864;
+    text-decoration: none;
+}
+
+.info-card-account-pill {
+    font-family: 'Roboto Mono', 'Courier New', monospace;
+    font-size: 0.92rem;
+    font-weight: 700;
+    color: #022864;
+    background: #eef2f9;
+    border-radius: 10px;
+    padding: 0.5rem 1rem;
+    border: 1.5px solid #c2d0e8;
+    letter-spacing: 0.06em;
+    margin-top: 0.5rem;
+    display: inline-block;
+}
+
+.info-card-note {
+    font-family: 'Roboto', sans-serif;
+    font-size: 0.78rem;
+    color: #9ca3af;
+    font-style: italic;
+    line-height: 1.5;
+    margin: 0;
+}
+
+.info-card-cta-label {
+    font-family: 'Roboto', sans-serif;
+    font-size: 0.88rem;
+    font-weight: 700;
+    color: #374151;
+    margin-bottom: 0.7rem;
+}
+
+.info-card-btn {
+    font-family: 'Titan One', sans-serif;
+    font-size: 0.88rem;
+    letter-spacing: 0.05em;
+    background: #022864;
+    border: none;
+    border-radius: 10px;
+    padding: 0.65rem 1.5rem;
+    color: white;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: 0 4px 14px rgba(2, 40, 100, 0.28);
+    align-self: flex-start;
+}
+
+.info-card-btn:hover {
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 22px rgba(2, 40, 100, 0.36);
+    text-decoration: none;
+}
+
+
+/* ─────────────────────────────────────────────
+   BySectionPage — floating back button
+───────────────────────────────────────────── */
+.section-back-btn {
+    position: fixed;
+    /* place below the fixed navbar using the CSS var exposed in Navbar.css */
+    top: calc(var(--navbar-height, 64px) + 2rem);
+    left: 1.1rem;
+    z-index: 1200;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    background: #022864;
+    color: rgba(255, 255, 255, 0.85);
+    font-family: 'Roboto', sans-serif;
+    font-size: 0.82rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 0.5rem 0.9rem 0.5rem 0.7rem;
+    border-radius: 999px;
+    box-shadow: 0 4px 18px rgba(2, 40, 100, 0.35);
+    transition: background 0.2s ease, color 0.2s ease, box-shadow 0.2s ease, gap 0.2s ease;
+}
+
+.section-back-btn:hover {
+    background: #033a8c;
+    color: #ffffff;
+    box-shadow: 0 8px 28px rgba(2, 40, 100, 0.48);
+    gap: 0.65rem;
+}
+
+.section-back-btn svg {
+    font-size: 1.05rem;
+    flex-shrink: 0;
+    transition: transform 0.2s ease;
+}
+
+.section-back-btn:hover svg {
+    transform: translateX(-3px);
+}
+
+@media (max-width: 576px) {
+    .section-back-btn-label {
+        display: none;
+    }
+    .section-back-btn {
+        padding: 0.55rem;
+        border-radius: 50%;
+        gap: 0;
+    }
+    .section-back-btn svg {
+        font-size: 1.2rem;
     }
 }

@@ -35,7 +35,7 @@ const HighlightEventsBlock: React.FC<Props> = ({ events }) => {
                     position: "relative",
                     display: "flex",
                     flexDirection: "column",
-                    backgroundImage: "url('/background2_event.png')",
+                    backgroundImage: "url('/background_event2.svg')",
                     backgroundSize: "cover",
                     backgroundPosition: "center center",
                     minHeight: "55vh",
@@ -55,9 +55,11 @@ const HighlightEventsBlock: React.FC<Props> = ({ events }) => {
                         fontFamily: "Titan One",
                         color: "white",
                         textShadow: "2px 2px 4px rgba(0, 0, 0, .5)",
-                        fontSize: "clamp(1.3rem, 4vw, 2.2rem)",
                         textAlign: "center",
                         padding: "0.25rem 0.75rem",
+                        whiteSpace: "nowrap",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
                     }}
                 >
                     À ne pas manquer !
@@ -79,57 +81,57 @@ const HighlightEventsBlock: React.FC<Props> = ({ events }) => {
                         <Row className="g-4 justify-content-center" style={{ width: "100%", margin: 0 }}>
                             {highlightEvents.map((event, index) => (
                                 <Col key={event.id} sm={10} md={6} xl={4}>
-                            <motion.div
-                                initial={{ y: 30, opacity: 0 }}
-                                viewport={{ once: true }}
-                                animate={{ y: 0, opacity: 1, scale: [1, 1.01, 1] }}
-                                className="h-100"
-                                transition={{
-                                    scale: {
-                                        duration: 2.5,
-                                        ease: "easeInOut",
-                                        repeat: Infinity,
-                                        delay: index * 0.2,
-                                    },
-                                    y: {
-                                        duration: 0.5,
-                                        ease: "easeOut",
-                                        delay: index * 0.1,
-                                    },
-                                    opacity: {
-                                        duration: 0.5,
-                                        ease: "easeOut",
-                                        delay: index * 0.1,
-                                    }
-                                }}
-                            >
-                                <Card className="shadow rounded-2 border-5 h-100" style={{ borderColor: "#022864" }}>
-                                    <Card.Body>
-                                        <Card.Title className="fs-4" style={{ fontFamily: "Titan One", color: "#022864" }}>
-                                            {event.title}
-                                        </Card.Title>
+                                    <motion.div
+                                        initial={{ y: 30, opacity: 0 }}
+                                        viewport={{ once: true }}
+                                        animate={{ y: 0, opacity: 1, scale: [1, 1.01, 1] }}
+                                        className="h-100"
+                                        transition={{
+                                            scale: {
+                                                duration: 2.5,
+                                                ease: "easeInOut",
+                                                repeat: Infinity,
+                                                delay: index * 0.2,
+                                            },
+                                            y: {
+                                                duration: 0.5,
+                                                ease: "easeOut",
+                                                delay: index * 0.1,
+                                            },
+                                            opacity: {
+                                                duration: 0.5,
+                                                ease: "easeOut",
+                                                delay: index * 0.1,
+                                            }
+                                        }}
+                                    >
+                                        <Card className="shadow rounded-4 border-0 h-100" style={{ borderColor: "#022864" }}>
+                                            <Card.Body>
+                                                <Card.Title className="fs-4" style={{ fontFamily: "Titan One", color: "#022864" }}>
+                                                    {event.title}
+                                                </Card.Title>
 
-                                        <Card.Subtitle className="mt-3 mb-2 text-muted d-flex align-items-center">
-                                            <BsGeoAltFill size={18} className="me-2" style={{ color: "#022864" }}/>
-                                            {event.location || "Lieu non spécifié"}
-                                        </Card.Subtitle>
+                                                <Card.Subtitle className="mt-3 mb-2 text-muted d-flex align-items-center">
+                                                    <BsGeoAltFill size={18} className="me-2" style={{ color: "#022864" }}/>
+                                                    {event.location || "Lieu non spécifié"}
+                                                </Card.Subtitle>
 
-                                        <Card.Text className="mb-3 text-muted d-flex align-items-center">
-                                            <BsCalendarEvent size={18} className="me-2" style={{ color: "#022864" }}/>
-                                            <span>
-                                                {formatDate(event.start_time, event.end_time)}
-                                            </span>
-                                        </Card.Text>
+                                                <Card.Text className="mb-3 text-muted d-flex align-items-center">
+                                                    <BsCalendarEvent size={18} className="me-2" style={{ color: "#022864" }}/>
+                                                    <span>
+                                                        {formatDate(event.start_time, event.end_time)}
+                                                    </span>
+                                                </Card.Text>
 
-                                        <Card.Text>{event.description}</Card.Text>
-                                    </Card.Body>
-                                </Card>
-                            </motion.div>
-                        </Col>
-                    ))}
-                </Row>
-                        </div>
+                                                <Card.Text>{event.description}</Card.Text>
+                                            </Card.Body>
+                                        </Card>
+                                    </motion.div>
+                                </Col>
+                            ))}
+                        </Row>
                     </div>
+                </div>
             </Container>
 
             <Container fluid className="py-3 text-center sticky-container sticky-top" style={{ backgroundColor: "#022864", zIndex: 1050 }}>
@@ -140,7 +142,7 @@ const HighlightEventsBlock: React.FC<Props> = ({ events }) => {
                         textShadow: "2px 2px 4px rgba(0, 0, 0, 0.7)" 
                     }}
                 >
-                    Agenda
+                    Calendrier
                 </div>
             </Container>
         </>

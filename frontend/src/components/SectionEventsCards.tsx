@@ -69,7 +69,7 @@ const SectionEventsCards = ({ events }: Props) => {
             fluid
             className="px-3 py-5 px-sm-5"
             style={{
-                background: "linear-gradient(160deg, #eef2f9 0%, #ffffff 45%, #f5f7fb 100%)",
+                background: "#eef2f9",
             }}
         >
             {events.length === 0 ? (
@@ -181,10 +181,11 @@ const SectionEventsCards = ({ events }: Props) => {
 
                                                     <div className="d-flex flex-column align-items-end gap-1">
                                                         {activeSection === null && (
-                                                            <Badge
-                                                                pill
+                                                            <span
+                                                                className="d-inline-block rounded-pill"
                                                                 style={{
                                                                     backgroundColor: section.color,
+                                                                    color: "white",
                                                                     fontSize: "0.68rem",
                                                                     fontFamily: "Roboto",
                                                                     fontWeight: 700,
@@ -194,7 +195,7 @@ const SectionEventsCards = ({ events }: Props) => {
                                                                 }}
                                                             >
                                                                 {section.name}
-                                                            </Badge>
+                                                            </span>
                                                         )}
                                                         {isPast && (
                                                             <Badge
