@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Container, Form, Button, Alert, Spinner, Image, Modal, Row, Col } from "react-bootstrap";
 import { motion } from "framer-motion";
-import { BsCalendar3, BsLockFill } from "react-icons/bs";
+import { BsCalendar3 } from "react-icons/bs";
 import axios from "axios";
 
 import { RadioCampData } from '../types/interfaces';

@@ -669,16 +669,13 @@
     filter: brightness(0.95);
 }
 
-/* Gradient overlay for caption readability */
+/* Gradient overlay for caption readability (disabled) */
 .cb-carousel .carousel-item::after {
     content: '';
     position: absolute;
     inset: 0;
-    background: linear-gradient(
-        to bottom,
-        transparent 40%,
-        rgba(0, 0, 0, 0.65) 100%
-    );
+    /* removed dark gradient to keep images bright */
+    background: none;
     pointer-events: none;
 }
 
