@@ -1,6 +1,5 @@
 import { Container } from "react-bootstrap";
 import { motion } from "framer-motion";
-import { BsChevronDown } from "react-icons/bs";
 import "../styles/Home.css";
 
 const fadeUp = (delay = 0) => ({
