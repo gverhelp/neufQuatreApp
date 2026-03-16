@@ -217,7 +217,7 @@ const SectionEventsCards = ({ events }: Props) => {
                                                             </div>
                                                         </div>
 
-                                                        <div className="d-flex flex-wrap gap-1 align-items-center">
+                                                        <div className="d-flex flex-wrap flex-column gap-2 align-items-end">
                                                             {activeSection === null && (
                                                                 <span
                                                                     className="d-inline-block rounded-pill"
@@ -260,7 +260,7 @@ const SectionEventsCards = ({ events }: Props) => {
                                                 {event.description && (
                                                     <div
                                                         className="mt-2 text-secondary"
-                                                        style={{ fontSize: "0.855rem", lineHeight: 1.55, paddingLeft: "3.1rem" }}
+                                                        style={{ fontSize: "0.855rem", lineHeight: 1.55}}
                                                     >
                                                         {event.description}
                                                     </div>
