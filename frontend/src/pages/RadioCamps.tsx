@@ -21,7 +21,7 @@ const RadioCamps = () => {
         <Container fluid className="p-0">
 
             {/* ── Hero strip ── */}
-            <div className="rc-hero-strip">
+            <div className="rc-hero-strip fs-2">
                 <div className="rc-hero-title">Radio Camp</div>
             </div>
 

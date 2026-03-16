@@ -34,18 +34,6 @@ interface Props {
     events: EventData[];
 }
 
-const getDateLabel = (start: string) => {
-    const d = new Date(start);
-    return d
-        .toLocaleDateString("fr-BE", {
-            weekday: "long",
-            day: "numeric",
-            month: "long",
-            year: "numeric",
-        })
-        .replace(/^\w/, (c) => c.toUpperCase());
-};
-
 const formatTimeRange = (start: string, end: string) => {
     const s = new Date(start);
     const e = new Date(end);
@@ -170,94 +158,109 @@ const SectionEventsCards = ({ events }: Props) => {
 
                                         const cardContent = (
                                             <div
-                                                className={`timeline-card-inner ${
-                                                    isLeft ? "is-left" : "is-right"
-                                                }`}
-                                                style={{
-                                                    ["--card-accent" as string]: section.color,
-                                                }}
+                                                className={`timeline-card-inner ${isLeft ? "is-left" : "is-right"}`}
+                                                style={{ ["--card-accent" as string]: section.color }}
                                             >
-                                                <div className="d-flex align-items-start justify-content-between gap-2 flex-wrap mb-2">
-                                                    <div>
-                                                        <div
-                                                            className="fw-bold mb-1"
-                                                            style={{
-                                                                fontFamily: "Titan One",
-                                                                color: section.color,
-                                                                fontSize: "1rem",
-                                                            }}
-                                                        >
-                                                            {event.title}
-                                                        </div>
-                                                        <div
-                                                            className="text-muted"
-                                                            style={{ fontSize: "0.82rem", fontWeight: 600 }}
-                                                        >
-                                                            {getDateLabel(event.start_time)}
-                                                        </div>
-                                                    </div>
+                                                {/* ── Header : date · title · badges ── */}
+                                                <div className="d-flex align-items-center gap-3">
 
-                                                    <div className="d-flex flex-column align-items-end gap-1">
-                                                        {activeSection === null && (
-                                                            <span
-                                                                className="d-inline-block rounded-pill"
-                                                                style={{
-                                                                    backgroundColor: section.color,
-                                                                    color: "white",
-                                                                    fontSize: "0.68rem",
-                                                                    fontFamily: "Roboto",
-                                                                    fontWeight: 700,
-                                                                    letterSpacing: "0.05em",
-                                                                    textTransform: "uppercase",
-                                                                    padding: "3px 10px",
-                                                                }}
-                                                            >
-                                                                {section.name}
-                                                            </span>
-                                                        )}
-                                                        {isPast && (
-                                                            <Badge
-                                                                pill
-                                                                bg="secondary"
-                                                                style={{
-                                                                    fontSize: "0.68rem",
-                                                                    fontFamily: "Roboto",
-                                                                    fontWeight: 700,
-                                                                    letterSpacing: "0.05em",
-                                                                    textTransform: "uppercase",
-                                                                    padding: "3px 10px",
-                                                                }}
-                                                            >
-                                                                Passé
-                                                            </Badge>
-                                                        )}
-                                                    </div>
-                                                </div>
-
-                                                <div className="d-flex flex-wrap gap-3 mt-2">
+                                                    {/* Date badge */}
                                                     <div
-                                                        className="d-flex align-items-center gap-1 text-muted"
-                                                        style={{ fontSize: "0.83rem" }}
+                                                        className="agenda-upcoming-date flex-shrink-0"
+                                                        style={{ ["--item-color" as string]: section.color }}
                                                     >
-                                                        <BsClock size={13} style={{ flexShrink: 0 }} />
-                                                        <span>{formatTimeRange(event.start_time, event.end_time)}</span>
+                                                        <span className="agenda-upcoming-day">
+                                                            {new Date(event.start_time).toLocaleDateString("fr-BE", { day: "2-digit" })}
+                                                        </span>
+                                                        <span className="agenda-upcoming-month">
+                                                            {new Date(event.start_time).toLocaleDateString("fr-BE", { month: "short" }).replace(".", "")}
+                                                        </span>
                                                     </div>
 
-                                                    {event.location && (
-                                                        <div
-                                                            className="d-flex align-items-center gap-1 text-muted"
-                                                            style={{ fontSize: "0.83rem" }}
-                                                        >
-                                                            <BsGeoAltFill size={13} style={{ flexShrink: 0 }} />
-                                                            <span>{event.location}</span>
+                                                    {/* Divider */}
+                                                    <div style={{ width: 1, alignSelf: "stretch", background: "#e5e5e5", flexShrink: 0 }} />
+
+                                                    {/* Title + meta + badges */}
+                                                    <div className="d-flex align-items-start justify-content-between gap-2 flex-wrap flex-grow-1 min-w-0">
+                                                        <div className="min-w-0">
+                                                            <div
+                                                                className="fw-bold"
+                                                                style={{
+                                                                    fontFamily: "Titan One",
+                                                                    color: section.color,
+                                                                    fontSize: "1rem",
+                                                                    lineHeight: 1.2,
+                                                                }}
+                                                            >
+                                                                {event.title}
+                                                            </div>
+
+                                                            {/* ── Meta : heure · lieu ── */}
+                                                            <div className="d-flex flex-wrap gap-3 mt-1">
+                                                                <div
+                                                                    className="d-flex align-items-center gap-1 text-muted"
+                                                                    style={{ fontSize: "0.8rem" }}
+                                                                >
+                                                                    <BsClock size={12} style={{ flexShrink: 0 }} />
+                                                                    <span>{formatTimeRange(event.start_time, event.end_time)}</span>
+                                                                </div>
+
+                                                                {event.location && (
+                                                                    <div
+                                                                        className="d-flex align-items-center gap-1 text-muted"
+                                                                        style={{ fontSize: "0.8rem" }}
+                                                                    >
+                                                                        <BsGeoAltFill size={12} style={{ flexShrink: 0 }} />
+                                                                        <span>{event.location}</span>
+                                                                    </div>
+                                                                )}
+                                                            </div>
                                                         </div>
-                                                    )}
+
+                                                        <div className="d-flex flex-wrap gap-1 align-items-center">
+                                                            {activeSection === null && (
+                                                                <span
+                                                                    className="d-inline-block rounded-pill"
+                                                                    style={{
+                                                                        backgroundColor: section.color,
+                                                                        color: "white",
+                                                                        fontSize: "0.66rem",
+                                                                        fontFamily: "Roboto",
+                                                                        fontWeight: 700,
+                                                                        letterSpacing: "0.05em",
+                                                                        textTransform: "uppercase",
+                                                                        padding: "2px 9px",
+                                                                        whiteSpace: "nowrap",
+                                                                    }}
+                                                                >
+                                                                    {section.name}
+                                                                </span>
+                                                            )}
+                                                            {isPast && (
+                                                                <Badge
+                                                                    pill
+                                                                    bg="secondary"
+                                                                    style={{
+                                                                        fontSize: "0.66rem",
+                                                                        fontFamily: "Roboto",
+                                                                        fontWeight: 700,
+                                                                        letterSpacing: "0.05em",
+                                                                        textTransform: "uppercase",
+                                                                        padding: "2px 9px",
+                                                                    }}
+                                                                >
+                                                                    Passé
+                                                                </Badge>
+                                                            )}
+                                                        </div>
+                                                    </div>
                                                 </div>
 
+                                                {/* ── Description ── */}
                                                 {event.description && (
                                                     <div
                                                         className="mt-2 text-secondary"
-                                                        style={{ fontSize: "0.875rem", lineHeight: 1.55 }}
+                                                        style={{ fontSize: "0.855rem", lineHeight: 1.55, paddingLeft: "3.1rem" }}
                                                     >
                                                         {event.description}
                                                     </div>

@@ -1,7 +1,7 @@
 import { Link, useLocation } from "react-router-dom";
 import '../styles/Navbar.css';
-import { Navbar, Nav, Container } from "react-bootstrap";
-import { useState, useEffect } from "react";
+import { Navbar, Container } from "react-bootstrap";
+import { useState, useEffect, useRef } from "react";
 
 
 const pages = [
@@ -10,62 +10,93 @@ const pages = [
     { name: "Sections", path: "/sections" },
     { name: "Radio Camps", path: "/radio-camps" },
     { name: "Documents et infos", path: "/documents-et-infos" },
-]
+];
 
 
 function NavigationBar() {
-    const [scrolled, setScrolled] = useState(false);
     const [menuOpen, setMenuOpen] = useState(false);
+    const [indicatorStyle, setIndicatorStyle] = useState<{ left: number; width: number; opacity: number }>({
+        left: 0,
+        width: 0,
+        opacity: 0,
+    });
 
-    const navbarBg = menuOpen ? "white" : "transparent";
-    
+    const navWrapRef = useRef<HTMLDivElement>(null);
     const location = useLocation();
     const currentPath = location.pathname;
+    const activeIndex = pages.findIndex(p => p.path === currentPath);
 
 
     useEffect(() => {
-        const handleScroll = () => {
-            setScrolled(window.scrollY > 50);
+        const updateIndicator = () => {
+            const container = navWrapRef.current;
+            if (!container || activeIndex < 0) return;
+            const links = container.querySelectorAll<HTMLElement>('.nb-link');
+            const activeLink = links[activeIndex];
+            if (activeLink) {
+                setIndicatorStyle({
+                    left: activeLink.offsetLeft,
+                    width: activeLink.offsetWidth,
+                    opacity: 1,
+                });
+            }
         };
 
-        window.addEventListener("scroll", handleScroll);
-        return () => window.removeEventListener("scroll", handleScroll);
-    }, []);
+        updateIndicator();
+        window.addEventListener('resize', updateIndicator);
+        return () => window.removeEventListener('resize', updateIndicator);
+    }, [activeIndex, menuOpen]);
 
 
     return (
         <Navbar
-            data-bs-theme={ scrolled ? "dark" : "light" }
-            bg={ scrolled ? "" : navbarBg }
+            data-bs-theme="dark"
             expand="lg"
             fixed="top"
             expanded={menuOpen}
-            className={ scrolled ? "navbar-scrolled" : "transparent" }
+            className="nb-root"
         >
             <Container>
-                <Navbar.Brand as={Link} to="/" className={`d-flex align-items-center`}>
-                    <img alt="" src="/94.png" width="70" height="50" className="me-1"/>
+                <Navbar.Brand as={Link} to="/" className="nb-brand">
+                    <img alt="" src="/94.png" width="70" height="50" className="me-2" />
                     <span className="d-none d-xl-inline">Unité Saint-Augustin</span>
                 </Navbar.Brand>
 
-                <Navbar.Toggle aria-controls="basic-navbar-nav" onClick={ () => setMenuOpen(!menuOpen) }/>
+                <button
+                    aria-controls="nb-collapse"
+                    aria-expanded={menuOpen}
+                    aria-label={menuOpen ? "Fermer le menu" : "Ouvrir le menu"}
+                    onClick={() => setMenuOpen(!menuOpen)}
+                    className={`nb-toggle d-lg-none ${menuOpen ? "nb-toggle--open" : ""}`}
+                >
+                    <span className="nb-burger-line" />
+                    <span className="nb-burger-line" />
+                    <span className="nb-burger-line" />
+                </button>
 
-                <Navbar.Collapse id="basic-navbar-nav">
+                <Navbar.Collapse id="nb-collapse">
+                    <div ref={navWrapRef} className="ms-auto nb-links">
+                        {/* Sliding active indicator — desktop only */}
+                        <span
+                            className="nb-indicator"
+                            style={{
+                                left: indicatorStyle.left,
+                                width: indicatorStyle.width,
+                                opacity: indicatorStyle.opacity,
+                            }}
+                        />
 
-                    <Nav className="ms-auto text-center">
                         {pages.map((page, index) => (
-                            <Nav.Link
+                            <Link
                                 key={index}
-                                as={Link}
                                 to={page.path}
                                 onClick={() => setMenuOpen(false)}
-                                className={`nav-link me-3 ${currentPath === page.path ? "active" : ""}`}
+                                className={`nb-link ${currentPath === page.path ? "nb-link--active" : ""}`}
                             >
                                 {page.name}
-                            </Nav.Link>
+                            </Link>
                         ))}
-                    </Nav>
-                    
+                    </div>
                 </Navbar.Collapse>
             </Container>
         </Navbar>

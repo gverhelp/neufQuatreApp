@@ -1,36 +1,157 @@
-.navbar {
-    /* Expose navbar height for other components (used to position floating elements)
-       Adjust the value if the navbar visual height changes on your layout */
+/* ─────────────────────────────────────────────
+   Navbar
+───────────────────────────────────────────── */
+
+.nb-root {
     --navbar-height: 64px;
-    background-color: white;
-    transition : background-color 0.3s ease-in-out;
-}
-
-.navbar-scrolled {
-    background-color: #022864;
+    background-color: #022864 !important;
+    box-shadow: 0 2px 16px rgba(0, 0, 0, 0.28);
 }
 
 
-.navbar-nav .nav-link {
-    border-bottom: 2px solid transparent;
+/* ── Brand ── */
+.nb-brand {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
     font-family: 'Titan One', 'Roboto', sans-serif;
-    transition: border-bottom 0.5s ease, color 0.5s ease, transform 0.25s ease;
-}
-  
-.navbar-nav .nav-link:hover {
-    color: #ffbe0b;
-    border-bottom: 2px solid #ffbe0b;
-    transform: scale(1.1);
-}
-
-.navbar-nav .nav-link.active {
-    color: #ffbe0b;
-    border-bottom: 2px solid #ffbe0b;
+    font-size: 1.15rem;
+    letter-spacing: 0.03em;
+    color: white !important;
+    text-decoration: none;
 }
 
 
-.navbar .navbar-brand {
-    font-family: 'Titan One', 'Bungee Shade', 'Archivo Black', 'Abril Fatface', 'Roboto', sans-serif;
-    font-size: 1.5em;
+/* ── Hamburger toggle (mobile) ── */
+.nb-toggle {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 5px;
+    width: 38px;
+    height: 38px;
+    padding: 0.35rem 0.45rem;
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.30);
+    border-radius: 6px;
+    cursor: pointer;
+    outline: none;
+    transition: border-color 0.2s ease;
 }
 
+.nb-toggle:focus-visible {
+    box-shadow: 0 0 0 2px rgba(255, 190, 11, 0.5);
+    border-color: rgba(255, 190, 11, 0.6);
+}
+
+.nb-burger-line {
+    display: block;
+    width: 100%;
+    height: 2px;
+    background: rgba(255, 255, 255, 0.85);
+    border-radius: 2px;
+    transform-origin: center;
+    transition: transform 0.3s ease, opacity 0.2s ease, width 0.3s ease;
+}
+
+/* Animate to ✕ */
+.nb-toggle--open .nb-burger-line:nth-child(1) {
+    transform: translateY(7px) rotate(45deg);
+}
+.nb-toggle--open .nb-burger-line:nth-child(2) {
+    opacity: 0;
+    width: 0;
+}
+.nb-toggle--open .nb-burger-line:nth-child(3) {
+    transform: translateY(-7px) rotate(-45deg);
+}
+
+
+/* ── Desktop links container ── */
+.nb-links {
+    position: relative;
+    display: flex;
+    align-items: stretch;
+}
+
+
+/* ── Individual link ── */
+.nb-link {
+    font-family: 'Titan One', 'Roboto', sans-serif;
+    font-size: 0.82rem;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.80) !important;
+    text-decoration: none;
+    padding: 0.55rem 0.9rem;
+    transition: color 0.2s ease;
+    white-space: nowrap;
+}
+
+.nb-link:hover {
+    color: #ffbe0b !important;
+}
+
+.nb-link--active {
+    color: #ffbe0b !important;
+}
+
+
+/* ── Sliding underline indicator (desktop only) ── */
+.nb-indicator {
+    position: absolute;
+    bottom: 0;
+    height: 2px;
+    background-color: #ffbe0b;
+    border-radius: 2px;
+    pointer-events: none;
+    transition:
+        left   0.35s cubic-bezier(0.4, 0, 0.2, 1),
+        width  0.35s cubic-bezier(0.4, 0, 0.2, 1),
+        opacity 0.25s ease;
+}
+
+
+/* ─────────────────────────────────────────────
+   Mobile menu  (< lg)
+───────────────────────────────────────────── */
+@media (max-width: 991px) {
+
+    /* Hide the sliding indicator on mobile */
+    .nb-indicator {
+        display: none;
+    }
+
+    /* Dropdown panel */
+    .nb-links {
+        flex-direction: column;
+        align-items: stretch;
+        padding: 0.5rem 0 0.75rem;
+        border-top: 1px solid rgba(255, 255, 255, 0.12);
+        gap: 0;
+    }
+
+    /* Mobile link rows */
+    .nb-link {
+        font-size: 0.85rem;
+        letter-spacing: 0.05em;
+        padding: 0.6rem 1rem !important;
+        margin: 0.15rem 0.5rem;
+        border-radius: 8px;
+        border-left: 3px solid transparent;
+        transition: color 0.2s ease, border-left-color 0.2s ease,
+                    background-color 0.2s ease, padding-left 0.2s ease;
+    }
+
+    .nb-link:hover {
+        border-left-color: rgba(255, 190, 11, 0.45);
+        padding-left: 1.4rem !important;
+        background-color: rgba(255, 255, 255, 0.06);
+    }
+
+    .nb-link--active {
+        border-left: 3px solid #ffbe0b !important;
+        padding-left: 1.4rem !important;
+        background-color: rgba(255, 190, 11, 0.08);
+    }
+}
