@@ -162,7 +162,7 @@ const SectionEventsCards = ({ events }: Props) => {
                                                 style={{ ["--card-accent" as string]: section.color }}
                                             >
                                                 {/* ── Header : date · title · badges ── */}
-                                                <div className="d-flex align-items-center gap-3">
+                                                <div className="d-flex align-items-start gap-3">
 
                                                     {/* Date badge */}
                                                     <div
@@ -181,8 +181,10 @@ const SectionEventsCards = ({ events }: Props) => {
                                                     <div style={{ width: 1, alignSelf: "stretch", background: "#e5e5e5", flexShrink: 0 }} />
 
                                                     {/* Title + meta + badges */}
-                                                    <div className="d-flex align-items-start justify-content-between gap-2 flex-wrap flex-grow-1 min-w-0">
-                                                        <div className="min-w-0">
+                                                    <div className="d-flex align-items-start gap-2 flex-grow-1 min-w-0">
+
+                                                        {/* Left : title + meta */}
+                                                        <div className="flex-grow-1 min-w-0">
                                                             <div
                                                                 className="fw-bold"
                                                                 style={{
@@ -190,13 +192,14 @@ const SectionEventsCards = ({ events }: Props) => {
                                                                     color: section.color,
                                                                     fontSize: "1rem",
                                                                     lineHeight: 1.2,
+                                                                    wordBreak: "break-word",
                                                                 }}
                                                             >
                                                                 {event.title}
                                                             </div>
 
                                                             {/* ── Meta : heure · lieu ── */}
-                                                            <div className="d-flex flex-wrap gap-3 mt-1">
+                                                            <div className="d-flex flex-wrap gap-2 mt-1">
                                                                 <div
                                                                     className="d-flex align-items-center gap-1 text-muted"
                                                                     style={{ fontSize: "0.8rem" }}
@@ -217,7 +220,8 @@ const SectionEventsCards = ({ events }: Props) => {
                                                             </div>
                                                         </div>
 
-                                                        <div className="d-flex flex-wrap flex-column gap-2 align-items-end">
+                                                        {/* Right : badges empilés */}
+                                                        <div className="d-flex flex-column gap-1 align-items-end flex-shrink-0">
                                                             {activeSection === null && (
                                                                 <span
                                                                     className="d-inline-block rounded-pill"
@@ -247,6 +251,7 @@ const SectionEventsCards = ({ events }: Props) => {
                                                                         letterSpacing: "0.05em",
                                                                         textTransform: "uppercase",
                                                                         padding: "2px 9px",
+                                                                        whiteSpace: "nowrap",
                                                                     }}
                                                                 >
                                                                     Passé
@@ -260,7 +265,7 @@ const SectionEventsCards = ({ events }: Props) => {
                                                 {event.description && (
                                                     <div
                                                         className="mt-2 text-secondary"
-                                                        style={{ fontSize: "0.855rem", lineHeight: 1.55}}
+                                                        style={{ fontSize: "0.855rem", lineHeight: 1.55 }}
                                                     >
                                                         {event.description}
                                                     </div>
