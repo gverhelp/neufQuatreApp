@@ -66,7 +66,7 @@ const InformationsPage = () => {
                     className="fs-2 text-white"
                     style={{ fontFamily: "Titan One", textShadow: "2px 2px 4px rgba(0,0,0,0.7)" }}
                 >
-                    Informations & Documents
+                    Documents & Informations
                 </div>
             </Container>
 

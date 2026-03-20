@@ -284,49 +284,62 @@
 /* ── Post card ── */
 .rc-card-inner {
     background: white;
-    border-radius: 12px;
-    border: 1px solid #ebebeb;
-    padding: 0.9rem 1.1rem;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.rc-card-inner.is-left {
-    border-right: 4px solid var(--rc-border, #022864);
-}
-
-.rc-card-inner.is-right {
-    border-left: 4px solid var(--rc-border, #022864);
+    border-radius: 14px;
+    border: 1px solid #e4e9f2;
+    overflow: hidden;
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.08);
+    transition: transform 0.22s ease, box-shadow 0.22s ease;
 }
 
 .rc-card-inner.is-left:hover {
-    transform: translateX(-4px);
-    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.11);
+    transform: translateX(-5px);
+    box-shadow: 0 8px 28px rgba(0, 0, 0, 0.13);
 }
 
 .rc-card-inner.is-right:hover {
-    transform: translateX(4px);
-    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.11);
+    transform: translateX(5px);
+    box-shadow: 0 8px 28px rgba(0, 0, 0, 0.13);
 }
 
-/* ── Date chip ── */
+/* ── Card header band ── */
+.rc-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.7rem 1.1rem;
+}
+
+/* ── Date ── */
 .rc-post-date {
     display: inline-flex;
     align-items: center;
-    gap: 5px;
+    gap: 8px;
     font-family: 'Roboto', sans-serif;
-    font-size: 0.75rem;
+    font-size: 0.83rem;
     font-weight: 700;
-    letter-spacing: 0.05em;
+    letter-spacing: 0.07em;
     text-transform: uppercase;
-    margin-bottom: 0.35rem;
-    opacity: 0.85;
+    color: white;
+}
+
+/* ── Post counter ── */
+.rc-card-index {
+    font-family: 'Titan One', sans-serif;
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.6);
+    letter-spacing: 0.04em;
+}
+
+/* ── Card body ── */
+.rc-card-body {
+    padding: 1rem 1.1rem;
 }
 
 /* ── Post title ── */
 .rc-post-title {
     font-family: 'Titan One', sans-serif;
     font-size: 1.1rem;
+    color: #1a1a2e;
     line-height: 1.25;
     margin-bottom: 0.5rem;
 }
@@ -335,8 +348,8 @@
 .rc-post-content {
     font-family: 'Roboto', sans-serif;
     font-size: 0.875rem;
-    color: #444;
-    line-height: 1.65;
+    color: #555;
+    line-height: 1.7;
     margin-bottom: 0;
 }
 
@@ -402,14 +415,9 @@
         width: 16px;
     }
 
-    .rc-card-inner.is-left,
-    .rc-card-inner.is-right {
-        border-left: 4px solid var(--rc-border, #022864);
-        border-right: none;
-    }
-
     .rc-card-inner.is-left:hover,
     .rc-card-inner.is-right:hover {
-        transform: translateX(4px);
+        transform: translateX(3px);
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
     }
 }

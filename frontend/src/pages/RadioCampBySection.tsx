@@ -205,73 +205,77 @@ const RadioCampBySection = ({ sectionName }: { sectionName: string }) => {
                             const isLeft = index % 2 === 0;
 
                             const cardContent = (
-                                <div
-                                    className={`rc-card-inner ${isLeft ? "is-left" : "is-right"}`}
-                                    style={{ "--rc-border": accentColor } as React.CSSProperties}
-                                >
-                                    {/* Date chip */}
-                                    <div className="rc-post-date" style={{ color: accentColor }}>
-                                        <BsCalendar3 size={11} />
-                                        {formatDate(post.date)}
+                                <div className={`rc-card-inner ${isLeft ? "is-left" : "is-right"}`}>
+
+                                    {/* ── Header band ── */}
+                                    <div className="rc-card-header" style={{ backgroundColor: accentColor }}>
+                                        <div className="rc-post-date">
+                                            <BsCalendar3 size={14} />
+                                            {formatDate(post.date)}
+                                        </div>
+                                        <span className="rc-card-index">#{index + 1}</span>
                                     </div>
 
-                                    {/* Title */}
-                                    <div className="rc-post-title" style={{ color: accentColor }}>
-                                        {post.title}
+                                    {/* ── Card body ── */}
+                                    <div className="rc-card-body">
+
+                                        {/* Title */}
+                                        <div className="rc-post-title">{post.title}</div>
+
+                                        {/* Content */}
+                                        {post.content && (
+                                            <p className="rc-post-content">{post.content}</p>
+                                        )}
+
+                                        {/* Photos */}
+                                        {post.photos.length > 0 && (
+                                            <>
+                                                <div className="rc-media-divider" style={{ borderColor: accentColor + "33" }} />
+                                                <Row className="g-2">
+                                                    {post.photos.map((photo) => (
+                                                        <Col xs={6} sm={4} md={3} key={photo.id}>
+                                                            <div
+                                                                className="ratio ratio-1x1 rc-photo-thumb"
+                                                                onClick={() => handleImageClick(photo.image, photo.caption)}
+                                                            >
+                                                                <Image
+                                                                    src={photo.image}
+                                                                    alt={photo.caption || ""}
+                                                                    rounded
+                                                                    style={{ objectFit: "cover", width: "100%", height: "100%" }}
+                                                                />
+                                                            </div>
+                                                            {photo.caption && (
+                                                                <small className="d-block text-muted mt-1 text-center">{photo.caption}</small>
+                                                            )}
+                                                        </Col>
+                                                    ))}
+                                                </Row>
+                                            </>
+                                        )}
+
+                                        {/* Videos */}
+                                        {post.videos.length > 0 && (
+                                            <>
+                                                <div className="rc-media-divider" style={{ borderColor: accentColor + "33" }} />
+                                                <Row className="g-2">
+                                                    {post.videos.map((video) => (
+                                                        <Col xs={12} md={6} key={video.id}>
+                                                            <div className="ratio ratio-16x9 rc-video-thumb">
+                                                                <video controls style={{ width: "100%", borderRadius: "8px" }}>
+                                                                    <source src={video.video} type="video/mp4" />
+                                                                </video>
+                                                            </div>
+                                                            {video.caption && (
+                                                                <small className="d-block text-muted mt-1 text-center">{video.caption}</small>
+                                                            )}
+                                                        </Col>
+                                                    ))}
+                                                </Row>
+                                            </>
+                                        )}
+
                                     </div>
-
-                                    {/* Content */}
-                                    {post.content && (
-                                        <p className="rc-post-content">{post.content}</p>
-                                    )}
-
-                                    {/* Photos */}
-                                    {post.photos.length > 0 && (
-                                        <>
-                                            <div className="rc-media-divider" style={{ borderColor: accentColor + "33" }} />
-                                            <Row className="g-2">
-                                                {post.photos.map((photo) => (
-                                                    <Col xs={6} sm={4} md={3} key={photo.id}>
-                                                        <div
-                                                            className="ratio ratio-1x1 rc-photo-thumb"
-                                                            onClick={() => handleImageClick(photo.image, photo.caption)}
-                                                        >
-                                                            <Image
-                                                                src={photo.image}
-                                                                alt={photo.caption || ""}
-                                                                rounded
-                                                                style={{ objectFit: "cover", width: "100%", height: "100%" }}
-                                                            />
-                                                        </div>
-                                                        {photo.caption && (
-                                                            <small className="d-block text-muted mt-1 text-center">{photo.caption}</small>
-                                                        )}
-                                                    </Col>
-                                                ))}
-                                            </Row>
-                                        </>
-                                    )}
-
-                                    {/* Videos */}
-                                    {post.videos.length > 0 && (
-                                        <>
-                                            <div className="rc-media-divider" style={{ borderColor: accentColor + "33" }} />
-                                            <Row className="g-2">
-                                                {post.videos.map((video) => (
-                                                    <Col xs={12} md={6} key={video.id}>
-                                                        <div className="ratio ratio-16x9 rc-video-thumb">
-                                                            <video controls style={{ width: "100%", borderRadius: "8px" }}>
-                                                                <source src={video.video} type="video/mp4" />
-                                                            </video>
-                                                        </div>
-                                                        {video.caption && (
-                                                            <small className="d-block text-muted mt-1 text-center">{video.caption}</small>
-                                                        )}
-                                                    </Col>
-                                                ))}
-                                            </Row>
-                                        </>
-                                    )}
                                 </div>
                             );
 
