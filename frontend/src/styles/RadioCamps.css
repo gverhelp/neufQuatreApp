@@ -4,10 +4,17 @@
 
 /* ── Hero strip ── */
 .rc-hero-strip {
-    background: #022864;
+    background: transparent;
     padding: 1rem 1.5rem;
     text-align: center;
     color: white;
+}
+
+/* Sur mobile, fond coloré pour lisibilité du texte blanc */
+@media (max-width: 991.98px) {
+    .rc-hero-strip {
+        background: #022864;
+    }
 }
 
 .rc-hero-title {
@@ -29,7 +36,7 @@
 /* ── Interactive map (desktop) ── */
 .rc-map-wrapper {
     position: relative;
-    height: 78vh;
+    height: calc(100vh - 75px);
     min-height: 500px;
 }
 

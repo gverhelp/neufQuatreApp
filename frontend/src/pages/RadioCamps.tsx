@@ -20,12 +20,7 @@ const RadioCamps = () => {
     return (
         <Container fluid className="p-0">
 
-            {/* ── Hero strip ── */}
-            <div className="rc-hero-strip fs-2">
-                <div className="rc-hero-title">Radio Camp</div>
-            </div>
-
-            {/* ── Desktop : carte interactive ── */}
+            {/* ── Desktop : carte interactive avec titre superposé ── */}
             <div
                 className="d-none d-lg-block rc-map-wrapper"
                 style={{
@@ -34,6 +29,10 @@ const RadioCamps = () => {
                     backgroundPosition: "center",
                 }}
             >
+                <div className="rc-hero-strip fs-2">
+                    <div className="rc-hero-title">Radio Camp</div>
+                </div>
+
                 {sections.map((s, index) => (
                     <motion.div
                         key={index}
@@ -63,35 +62,40 @@ const RadioCamps = () => {
                 ))}
             </div>
 
-            {/* ── Mobile : grille de cartes ── */}
-            <div className="d-block d-lg-none rc-grid-wrapper">
-                <Row className="g-4">
-                    {sections.map((s, index) => (
-                        <Col key={index} xs={12} sm={6}>
-                            <motion.div
-                                initial={{ y: 30, opacity: 0 }}
-                                whileInView={{ y: 0, opacity: 1 }}
-                                viewport={{ once: true }}
-                                transition={{ delay: index * 0.08, duration: 0.4, ease: "easeOut" }}
-                            >
-                                <div
-                                    className="rc-section-card"
-                                    style={{ "--pin-color": s.color } as React.CSSProperties}
-                                    onClick={() => navigate(s.path)}
+            {/* ── Mobile : titre + grille de cartes ── */}
+            <div className="d-block d-lg-none">
+                <div className="rc-hero-strip fs-2">
+                    <div className="rc-hero-title">Radio Camp</div>
+                </div>
+                <div className="rc-grid-wrapper">
+                    <Row className="g-4">
+                        {sections.map((s, index) => (
+                            <Col key={index} xs={12} sm={6}>
+                                <motion.div
+                                    initial={{ y: 30, opacity: 0 }}
+                                    whileInView={{ y: 0, opacity: 1 }}
+                                    viewport={{ once: true }}
+                                    transition={{ delay: index * 0.08, duration: 0.4, ease: "easeOut" }}
                                 >
-                                    <div className="rc-section-card-header">
-                                        <span className="rc-section-card-title">{s.label}</span>
+                                    <div
+                                        className="rc-section-card"
+                                        style={{ "--pin-color": s.color } as React.CSSProperties}
+                                        onClick={() => navigate(s.path)}
+                                    >
+                                        <div className="rc-section-card-header">
+                                            <span className="rc-section-card-title">{s.label}</span>
+                                        </div>
+                                        <div className="rc-section-card-body">
+                                            <span className="rc-section-card-cta">
+                                                Voir les émissions <BsArrowRight />
+                                            </span>
+                                        </div>
                                     </div>
-                                    <div className="rc-section-card-body">
-                                        <span className="rc-section-card-cta">
-                                            Voir les émissions <BsArrowRight />
-                                        </span>
-                                    </div>
-                                </div>
-                            </motion.div>
-                        </Col>
-                    ))}
-                </Row>
+                                </motion.div>
+                            </Col>
+                        ))}
+                    </Row>
+                </div>
             </div>
 
         </Container>
