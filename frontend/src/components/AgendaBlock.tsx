@@ -125,14 +125,6 @@ const EventModal = ({ event, onClose }: { event: EventData; onClose: () => void 
                         </div>
                     )}
 
-                    {/* Section */}
-                    <div className="agenda-modal-row">
-                        <span className="agenda-modal-icon" style={{ background: `${s.color}1a`, color: s.color }}>
-                            <BsPeopleFill size={14} />
-                        </span>
-                        <span>{s.name}</span>
-                    </div>
-
                     {/* Description */}
                     {event.description && (
                         <p className="agenda-modal-desc">{event.description}</p>
