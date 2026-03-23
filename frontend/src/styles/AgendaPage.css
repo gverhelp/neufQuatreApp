@@ -548,17 +548,29 @@
     justify-content: center;
     color: #555;
     cursor: pointer;
-    transition: background 0.2s ease, color 0.2s ease, transform 0.15s ease;
+    transition: background 0.2s ease, color 0.2s ease;
 }
 
 .agenda-modal-close:hover {
     background: #e2e7f5;
     color: #022864;
-    transform: rotate(90deg);
+}
+
+/* Title row: title on the left, badge pinned to the right */
+.agenda-modal-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+    padding-right: 2.8rem; /* space for the absolute close button */
 }
 
 .agenda-modal-badge {
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
+    flex-shrink: 0;
+    align-self: flex-start;
     font-family: 'Roboto', sans-serif;
     font-weight: 700;
     font-size: 0.68rem;
@@ -566,8 +578,8 @@
     text-transform: uppercase;
     color: white;
     border-radius: 50px;
-    padding: 3px 12px;
-    margin-bottom: 0.7rem;
+    padding: 4px 12px;
+    margin-top: 4px;
 }
 
 .agenda-modal-title {
@@ -575,8 +587,9 @@
     font-size: 1.5rem;
     color: #1a1a2e;
     line-height: 1.2;
-    margin: 0 0 0.75rem;
-    padding-right: 2.5rem;
+    margin: 0;
+    flex: 1;
+    min-width: 0;
 }
 
 .agenda-modal-divider {

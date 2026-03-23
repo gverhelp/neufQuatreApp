@@ -80,13 +80,13 @@ const EventModal = ({ event, onClose }: { event: EventData; onClose: () => void 
                     <BsXLg size={13} />
                 </button>
 
-                {/* Section badge */}
-                <span className="agenda-modal-badge" style={{ background: s.color }}>
-                    {s.name}
-                </span>
-
-                {/* Title */}
-                <h2 className="agenda-modal-title">{event.title}</h2>
+                {/* Title + section badge */}
+                <div className="agenda-modal-header">
+                    <h2 className="agenda-modal-title">{event.title}</h2>
+                    <span className="agenda-modal-badge" style={{ background: s.color }}>
+                        {s.name}
+                    </span>
+                </div>
 
                 <div className="agenda-modal-divider" />
 
