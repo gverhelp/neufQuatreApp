@@ -16,7 +16,6 @@ import {
     BsListUl,
     BsGrid3X3GapFill,
     BsXLg,
-    BsPeopleFill,
 } from "react-icons/bs";
 import axios from "axios";
 import "../styles/AgendaPage.css";
