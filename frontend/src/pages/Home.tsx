@@ -1,14 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { Link } from 'react-router-dom';
-import { motion } from 'framer-motion';
-import {
-    BsCalendar3,
-    BsPeopleFill,
-    BsFileEarmarkTextFill,
-    BsBroadcast,
-    BsArrowRight,
-} from 'react-icons/bs';
 
 import '../styles/Home.css';
 import { AccueilItem, AccueilButton } from '../types/interfaces';
@@ -16,75 +7,6 @@ import ContentBlock from '../components/ContentBlock';
 import ParallaxBlock from '../components/ParallaxBlock';
 import ImageBlock from '../components/ImageBlock';
 import { Container, Placeholder, Alert, Row, Col } from 'react-bootstrap';
-
-/* ─── Quick-access navigation cards ─── */
-const QUICK_LINKS = [
-    {
-        to: '/agenda',
-        icon: <BsCalendar3 size={22} />,
-        title: 'Agenda',
-        desc: "Consulte le programme de nos activités et les événements à venir.",
-    },
-    {
-        to: '/sections',
-        icon: <BsPeopleFill size={22} />,
-        title: 'Nos sections',
-        desc: "Découvre toutes nos sections, des Baladins jusqu'au Clan.",
-    },
-    {
-        to: '/radio-camps',
-        icon: <BsBroadcast size={22} />,
-        title: 'Radio Camps',
-        desc: "Reviens sur nos camps avec photos, vidéos et souvenirs.",
-    },
-    {
-        to: '/documents-et-infos',
-        icon: <BsFileEarmarkTextFill size={22} />,
-        title: 'Infos & docs',
-        desc: "Retrouve nos documents importants et toutes les infos pratiques.",
-    },
-];
-
-const containerVariants = {
-    hidden: {},
-    visible: { transition: { staggerChildren: 0.1 } },
-};
-
-const cardVariants = {
-    hidden: { y: 28, opacity: 0 },
-    visible: { y: 0, opacity: 1, transition: { duration: 0.48, ease: [0.25, 0.1, 0.25, 1] as const } },
-};
-
-const QuickAccessCards: React.FC = () => (
-    <section className="qac-section">
-        <Container>
-            <div className="text-center mb-0">
-                <h2 className="qac-title">Tout ce qu'il faut savoir sur la vie de la 94ème, en un clic.</h2>
-            </div>
-
-            <motion.div
-                className="qac-grid"
-                variants={containerVariants}
-                initial="hidden"
-                whileInView="visible"
-                viewport={{ once: true, amount: 0.2 }}
-            >
-                {QUICK_LINKS.map((item) => (
-                    <motion.div key={item.to} variants={cardVariants} style={{ height: '100%' }}>
-                        <Link to={item.to} className="qac-card" style={{ height: '100%' }}>
-                            <div className="qac-icon-wrap">{item.icon}</div>
-                            <div className="qac-card-title">{item.title}</div>
-                            <p className="qac-card-desc">{item.desc}</p>
-                            <span className="qac-card-arrow">
-                                Voir <BsArrowRight size={13} />
-                            </span>
-                        </Link>
-                    </motion.div>
-                ))}
-            </motion.div>
-        </Container>
-    </section>
-);
 
 
 const PlaceholderBlock = () => (
@@ -156,8 +78,6 @@ const Home: React.FC = () => {
     return (
         <>
             <ParallaxBlock buttons={accueilButtons}/>
-
-            <QuickAccessCards />
 
             {loading ? 
                 <PlaceholderBlock /> :
