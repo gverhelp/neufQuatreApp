@@ -183,7 +183,11 @@ REST_FRAMEWORK = {
     },
 }
 
+# Production security settings
+# SECURE_SSL_REDIRECT is intentionally disabled: SSL is handled by nginx.
+# SECURE_PROXY_SSL_HEADER tells Django that nginx forwarded an HTTPS request.
 if os.getenv('DJANGO_ENV') == 'production':
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
     SESSION_COOKIE_SECURE = True
     SESSION_COOKIE_HTTPONLY = True
     CSRF_COOKIE_SECURE = True
@@ -193,4 +197,3 @@ if os.getenv('DJANGO_ENV') == 'production':
     SECURE_HSTS_SECONDS = 31536000
     SECURE_HSTS_INCLUDE_SUBDOMAINS = True
     SECURE_HSTS_PRELOAD = True
-    SECURE_SSL_REDIRECT = True
