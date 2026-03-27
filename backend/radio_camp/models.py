@@ -1,6 +1,6 @@
 from django.db import models
 from sections.models import Section
-from django.contrib.auth.hashers import make_password
+from django.contrib.auth.hashers import make_password, identify_hasher
 
 
 # Create your models here.
@@ -12,8 +12,11 @@ class RadioCamp(models.Model):
     end_date = models.DateField()
 
     def save(self, *args, **kwargs):
-        if self.password and not self.password.startswith("pbkdf2_"):
-            self.password = make_password(self.password)
+        if self.password:
+            try:
+                identify_hasher(self.password)
+            except ValueError:
+                self.password = make_password(self.password)
         super().save(*args, **kwargs)
         
     class Meta:
