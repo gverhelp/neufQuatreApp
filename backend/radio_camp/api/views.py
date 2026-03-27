@@ -3,11 +3,14 @@ from .serializers import RadioCampSerializer, PostSerializer, PhotoSerializer, V
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny
+from rest_framework.throttling import AnonRateThrottle
 from rest_framework.viewsets import ReadOnlyModelViewSet
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.hashers import check_password
-# from django.views.decorators.csrf import csrf_exempt
-# from django.utils.decorators import method_decorator
+
+
+class PasswordVerifyThrottle(AnonRateThrottle):
+    scope = 'password_verify'
 
 # ViewSets for the API
 class RadioCampViewSet(ReadOnlyModelViewSet):
@@ -29,9 +32,9 @@ class VideoViewSet(ReadOnlyModelViewSet):
     
 
 # API View to verify the password for a RadioCamp
-# @method_decorator(csrf_exempt, name='dispatch')
 class VerifyRadioCampPassword(APIView):
     permission_classes = [AllowAny]
+    throttle_classes = [PasswordVerifyThrottle]
     
     def post(self, request, section_slug):
         password_input = request.data.get("password")
