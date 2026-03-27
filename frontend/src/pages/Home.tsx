@@ -22,7 +22,7 @@ const QUICK_LINKS = [
     {
         to: '/agenda',
         icon: <BsCalendar3 size={22} />,
-        title: 'Agenda & événements',
+        title: 'Agenda',
         desc: "Consulte le programme de nos activités et les événements à venir.",
     },
     {
