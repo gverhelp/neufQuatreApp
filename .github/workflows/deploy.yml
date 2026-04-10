@@ -11,7 +11,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Setup SSH
         uses: webfactory/ssh-agent@v0.9.0
@@ -27,12 +27,11 @@ jobs:
             git reset --hard
             git pull origin prod
 
-            echo "Rebuilding containers"
-            docker-compose -f docker-compose.prod.yml down
-            docker-compose -f docker-compose.prod.yml build
+            echo "Rebuilding and launching containers"
+            docker-compose -f docker-compose.prod.yml up -d --build --remove-orphans
 
-            echo "Launching app"
-            docker-compose -f docker-compose.prod.yml up -d --remove-orphans
+            echo "Pruning old images"
+            docker image prune -f
 
             echo "Deployment successful"
           EOF
