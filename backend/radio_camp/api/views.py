@@ -4,6 +4,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny
 from rest_framework.throttling import AnonRateThrottle
+from rest_framework.exceptions import Throttled
 from rest_framework.viewsets import ReadOnlyModelViewSet
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.hashers import check_password
@@ -35,7 +36,10 @@ class VideoViewSet(ReadOnlyModelViewSet):
 class VerifyRadioCampPassword(APIView):
     permission_classes = [AllowAny]
     throttle_classes = [PasswordVerifyThrottle]
-    
+
+    def throttled(self, request, wait):
+        raise Throttled(detail=f"Trop de tentatives. Réessayez dans {round(wait)} seconde(s).")
+
     def post(self, request, section_slug):
         password_input = request.data.get("password")
 

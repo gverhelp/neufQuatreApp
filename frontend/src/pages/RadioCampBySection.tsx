@@ -71,8 +71,11 @@ const RadioCampBySection = ({ sectionName }: { sectionName: string }) => {
                 setError(response.data.error);
             }
         } catch (err) {
-            if ((err as any).response?.status === 404) {
+            const status = (err as any).response?.status;
+            if (status === 404) {
                 setError("Aucun Radio Camp n'est disponible pour cette section actuellement.");
+            } else if (status === 429) {
+                setError((err as any).response?.data?.detail ?? "Trop de tentatives. Réessayez dans quelques secondes.");
             } else {
                 setError("Une erreur est survenue lors de la vérification du mot de passe.");
             }

@@ -174,11 +174,7 @@ REST_FRAMEWORK = {
             'rest_framework.renderers.BrowsableAPIRenderer',
         ]
     ),
-    'DEFAULT_THROTTLE_CLASSES': [
-        'rest_framework.throttling.AnonRateThrottle',
-    ],
     'DEFAULT_THROTTLE_RATES': {
-        'anon': '200/day',
         'password_verify': '5/minute',
     },
 }
