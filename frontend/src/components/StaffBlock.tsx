@@ -104,11 +104,11 @@ const StaffBlock = ({ sectionName }: { sectionName: string }) => {
                 setError(null);
 
                 const { data } = await axios.get<ChefData[]>(`${baseURL}/chefs/`);
-                setChefs(
-                    data.filter(
-                        (m) => m.section.toLowerCase() === sectionName.toLowerCase()
-                    )
+                const filtered = data.filter(
+                    (m) => m.section.toLowerCase() === sectionName.toLowerCase()
                 );
+                filtered.sort((a, b) => (b.chefResp ? 1 : 0) - (a.chefResp ? 1 : 0));
+                setChefs(filtered);
             } catch (err) {
                 console.error("Erreur lors de la récupération des données", err);
                 setError("Impossible de charger les données. Veuillez réessayer plus tard.");
