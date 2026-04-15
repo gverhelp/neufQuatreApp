@@ -21,7 +21,7 @@ class ChefSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Chef
-        fields = ['id', 'name', 'totem', 'bafouille', 'image', 'phoneNumber', 'section']
+        fields = ['id', 'name', 'totem', 'bafouille', 'image', 'phoneNumber', 'section', 'chefResp']
 
 
 class SectionSerializer(serializers.ModelSerializer):

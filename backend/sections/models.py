@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models import Q
 from django.utils.text import slugify
 from django.core.exceptions import ValidationError
 
@@ -46,6 +47,16 @@ class Chef(models.Model):
     image = models.ImageField(upload_to='chefs-images/', blank=True, null=True)
     phoneNumber = models.CharField(max_length=100, blank=True, null=True)
     section = models.ForeignKey(Section, on_delete=models.CASCADE, blank=False, null=False)
-    
+    chefResp = models.BooleanField(default=False, verbose_name="Chef responsable")
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=['section'],
+                condition=Q(chefResp=True),
+                name='unique_chef_resp_per_section',
+            )
+        ]
+
     def __str__(self):
         return self.name

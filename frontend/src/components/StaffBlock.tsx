@@ -42,7 +42,12 @@ const StaffCard = ({
         </div>
 
         <div className="staff-card-v2-body">
-            <div className="staff-card-v2-totem">{member.totem}</div>
+            <div className="staff-card-v2-totem-row">
+                <div className="staff-card-v2-totem">{member.totem}</div>
+                {member.chefResp && (
+                    <span className="staff-card-v2-badge">Chef responsable</span>
+                )}
+            </div>
             <div className="staff-card-v2-name">{member.name}</div>
             {member.bafouille && (
                 <p className="staff-card-v2-bio">{member.bafouille}</p>

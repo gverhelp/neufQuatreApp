@@ -43,6 +43,7 @@ export interface ChefData {
     image: string;
     phoneNumber: string;
     section: string;
+    chefResp: boolean;
 }
 
 

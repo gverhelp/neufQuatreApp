@@ -59,8 +59,8 @@ const RadioCamps = () => {
           animate={{ opacity: 1 }}
           transition={{ delay: 2.2, duration: 0.8 }}
         >
-          <BsCompass size={46} className="rc-compass-icon" />
-          <span className="rc-compass-n">N</span>
+            <span className="rc-compass-n">N</span>
+            <BsCompass size={46} className="rc-compass-icon" />
         </motion.div>
 
         {/* ── Map pins ── */}

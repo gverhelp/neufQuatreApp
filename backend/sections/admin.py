@@ -29,10 +29,10 @@ class SectionAdmin(admin.ModelAdmin):
             self.message_user(request, str(e), level=messages.ERROR)
     
 class ChefAdmin(admin.ModelAdmin):
-    list_display = ['name', 'totem', 'phoneNumber', 'section']
-    search_fields = ['name', 'totem', 'section__name']
+    list_display = ['name', 'totem', 'phoneNumber', 'section', 'chefResp']
+    search_fields = ['name', 'totem', 'section__name', 'chefResp']
     ordering = ['section']
-    list_filter = ['section']
+    list_filter = ['section', 'chefResp']
 
 admin.site.register(Section, SectionAdmin)
 admin.site.register(Chef, ChefAdmin)
