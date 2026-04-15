@@ -29,7 +29,8 @@ jobs:
 
             echo "Rebuilding, pruning, and launching containers"
             docker-compose -f docker-compose.prod.yml build --no-cache web nginx
-            docker-compose -f docker-compose.prod.yml up -d --force-recreate web nginx
+            docker-compose -f docker-compose.prod.yml down
+            docker-compose -f docker-compose.prod.yml up -d
             docker image prune -f
 
             echo "Pruning old images"
