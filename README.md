@@ -1,10 +1,10 @@
-# 🏕️ NeufQuatreApp – Site de l’unité Saint-Augustin
+# NeufQuatreApp – Site de l’unité Saint-Augustin
 
 Ce projet est une application web développée pour l’unité scoute 94ème Saint-Augustin. Elle permet de présenter l’unité, ses sections, son agenda, des documents utiles, ainsi qu'une fonctionnalité de "Radio Camp" pour suivre les actualités des camps en temps réel.
 
 ---
 
-## ✨ Fonctionnalités principales
+## Fonctionnalités principales
 
 - 🏡 Page d'accueil avec présentation de l'unité
 - 📅 Agenda des événements
@@ -14,7 +14,7 @@ Ce projet est une application web développée pour l’unité scoute 94ème Sai
 
 ---
 
-## ⚙️ Technologies utilisées
+## Technologies utilisées
 
 ### Backend
 
@@ -39,7 +39,7 @@ Ce projet est une application web développée pour l’unité scoute 94ème Sai
 
 ---
 
-## 🛠️ Développement local
+## Développement local
 
 ### 1. Cloner le projet
 ```sh
@@ -65,7 +65,7 @@ docker-compose -f docker-compose.yml up -d --build
 
 ---
 
-## 🏗️ Lancement en Production
+## Lancement en Production
 
 ### 1. Cloner le projet
 ```sh
