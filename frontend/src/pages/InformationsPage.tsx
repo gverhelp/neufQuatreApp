@@ -137,65 +137,6 @@ const PageHero: React.FC<HeroProps> = ({ docsCount, infosCount, loading }) => (
 );
 
 /* ════════════════════════════════════════════════════════
-   DOCUMENTS SECTION
-════════════════════════════════════════════════════════ */
-
-const DocumentsSection: React.FC<{ documents: DocumentData[] }> = ({ documents }) => (
-    <section className="ip-docs-section">
-        <Container>
-            <div className="ip-sec-header">
-                <motion.span className="ip-sec-eyebrow" {...fadeUp(0)}>Téléchargements</motion.span>
-                <motion.h2 className="ip-sec-heading" {...fadeUp(0.08)}>Documents</motion.h2>
-                <motion.div className="ip-sec-rule" {...fadeUp(0.14)} />
-                <motion.p className="ip-sec-sub" {...fadeUp(0.2)}>
-                    Télécharge les documents officiels de l'unité au format PDF.
-                </motion.p>
-            </div>
-
-            {documents.length === 0 ? (
-                <p className="ip-empty">Aucun document disponible pour le moment.</p>
-            ) : (
-                <motion.div
-                    className="ip-docs-grid"
-                    variants={stagger}
-                    initial="hidden"
-                    whileInView="visible"
-                    viewport={{ once: true, amount: 0.1 }}
-                >
-                    {documents.map(doc => (
-                        <motion.div key={doc.id} variants={staggerItem} className="ip-doc-card">
-                            {/* Icon */}
-                            <div className="ip-doc-icon">
-                                <BsFileEarmarkTextFill size={26} />
-                            </div>
-
-                            {/* Content */}
-                            <div className="ip-doc-content">
-                                <h3 className="ip-doc-title">{doc.title}</h3>
-                                {doc.description && (
-                                    <p className="ip-doc-desc">{doc.description}</p>
-                                )}
-                            </div>
-
-                            {/* Download button */}
-                            <a
-                                href={doc.file}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="ip-doc-btn"
-                            >
-                                <BsFileArrowDownFill size={14} />
-                                Télécharger
-                            </a>
-                        </motion.div>
-                    ))}
-                </motion.div>
-            )}
-        </Container>
-    </section>
-);
-
-/* ════════════════════════════════════════════════════════
    INFORMATION CARD
 ════════════════════════════════════════════════════════ */
 
@@ -266,39 +207,6 @@ const InfoCard: React.FC<{ info: InformationData; index: number }> = ({ info, in
         </motion.div>
     );
 };
-
-/* ════════════════════════════════════════════════════════
-   INFORMATIONS SECTION
-════════════════════════════════════════════════════════ */
-
-const InformationsSection: React.FC<{ informations: InformationData[] }> = ({ informations }) => (
-    <section className="ip-infos-section">
-        <Container>
-            <div className="ip-sec-header">
-                <motion.span className="ip-sec-eyebrow" {...fadeUp(0)}>Ressources</motion.span>
-                <motion.h2 className="ip-sec-heading" {...fadeUp(0.08)}>Informations</motion.h2>
-                <motion.div className="ip-sec-rule" {...fadeUp(0.14)} />
-                <motion.p className="ip-sec-sub" {...fadeUp(0.2)}>
-                    Toutes les informations pratiques et ressources utiles de l'unité.
-                </motion.p>
-            </div>
-
-            {informations.length === 0 ? (
-                <p className="ip-empty">Aucune information disponible pour le moment.</p>
-            ) : (
-                <Masonry
-                    breakpointCols={{ default: 3, 1199: 2, 767: 1 }}
-                    className="ip-masonry"
-                    columnClassName="ip-masonry-col"
-                >
-                    {informations.map((info, i) => (
-                        <InfoCard key={info.id} info={info} index={i} />
-                    ))}
-                </Masonry>
-            )}
-        </Container>
-    </section>
-);
 
 /* ════════════════════════════════════════════════════════
    LOADING SKELETON

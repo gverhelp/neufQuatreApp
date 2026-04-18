@@ -102,7 +102,6 @@ interface HeroProps { events: EventData[]; loading: boolean; }
 const PageHero: React.FC<HeroProps> = ({ events, loading }) => {
     const now = new Date();
     const upcoming = events.filter(e => new Date(e.start_time) >= now);
-    const activeSections = new Set(upcoming.map(e => e.section)).size;
     const nextEvent = upcoming.sort((a, b) =>
         new Date(a.start_time).getTime() - new Date(b.start_time).getTime()
     )[0];
