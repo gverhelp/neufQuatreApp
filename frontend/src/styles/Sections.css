@@ -383,7 +383,7 @@
 
 
 /* ══════════════════════════════════════════════════════════
-   SECTIONS PAGE — JOURNEY (timeline)
+   SECTIONS PAGE — JOURNEY (branching tree)
 ══════════════════════════════════════════════════════════ */
 
 .sp-journey-wrap {
@@ -393,95 +393,100 @@
     overflow: hidden;
 }
 
-.sp-journey {
-    position: relative;
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    gap: 1rem;
+
+/* ── Desktop SVG graph ── */
+
+.sp-journey-graph {
     margin-top: 3rem;
-    padding: 0 0.5rem;
 }
 
-.sp-journey-line {
-    position: absolute;
-    top: 9px;
-    left: 7%;
-    right: 7%;
-    height: 2px;
-    background: linear-gradient(
-        to right,
-        #00A0DD 0%, #CC0739 14.28%,
-        #186E54 28.57%, #1D325A 42.85%,
-        #015AA9 57.14%, #DA1F29 71.42%,
-        #FEB800 100%
-    );
-    opacity: 0.55;
-    border-radius: 2px;
+.sp-journey-svg {
+    width: 100%;
+    height: auto;
+    display: block;
 }
 
-.sp-journey-step {
-    --sc: #022864;
-    position: relative;
-    display: flex;
+.sp-journey-svg > path {
+    fill: none;
+    stroke: rgba(255, 255, 255, 0.22);
+    stroke-width: 2.5;
+    stroke-linecap: round;
+}
+
+.sp-jsvg-node {
+    cursor: default;
+}
+
+.sp-jsvg-node:hover circle:last-of-type {
+    filter: brightness(1.2);
+}
+
+.sp-jsvg-name {
+    font-family: 'Titan One', sans-serif;
+    font-size: 16px;
+    fill: #ffffff;
+}
+
+.sp-jsvg-age {
+    font-family: 'Roboto', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    fill: rgba(255, 255, 255, 0.5);
+}
+
+
+/* ── Mobile vertical list (hidden on desktop) ── */
+
+.sp-journey-mobile {
+    display: none;
+    margin-top: 2rem;
     flex-direction: column;
-    align-items: center;
-    gap: 0.65rem;
-    text-align: center;
+    gap: 0.2rem;
 }
 
-.sp-journey-dot {
-    width: 18px;
-    height: 18px;
+.sp-jm-step {
+    --sc: #022864;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.75rem 0;
+}
+
+.sp-jm-dot {
+    width: 16px;
+    height: 16px;
     border-radius: 50%;
     background: var(--sc);
     border: 3px solid rgba(255, 255, 255, 0.9);
     box-shadow: 0 0 0 3px color-mix(in srgb, var(--sc) 35%, transparent);
-    position: relative;
-    z-index: 2;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    flex-shrink: 0;
 }
 
-.sp-journey-step:hover .sp-journey-dot {
-    transform: scale(1.25);
-    box-shadow: 0 0 0 6px color-mix(in srgb, var(--sc) 35%, transparent);
+.sp-jm-name {
+    font-family: 'Titan One', sans-serif;
+    font-size: 1rem;
+    color: #ffffff;
+    line-height: 1.15;
 }
 
-.sp-journey-pill {
+.sp-jm-age {
     font-family: 'Roboto', sans-serif;
-    font-size: 0.64rem;
+    font-size: 0.72rem;
     font-weight: 700;
     letter-spacing: 0.08em;
     text-transform: uppercase;
-    color: rgba(255, 255, 255, 0.55);
-    margin-top: 0.2rem;
+    color: rgba(255, 255, 255, 0.5);
+    margin-top: 0.15rem;
 }
 
-.sp-journey-name {
-    font-family: 'Titan One', sans-serif;
-    font-size: 0.95rem;
-    color: #ffffff;
-    line-height: 1.1;
-}
 
-@media (max-width: 991px) {
-    .sp-journey {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 1.25rem 1.5rem;
-    }
-    .sp-journey-line { display: none; }
-    .sp-journey-step {
-        flex-direction: row;
-        justify-content: flex-start;
-        align-items: center;
-        gap: 0.9rem;
-        text-align: left;
-    }
-    .sp-journey-dot { flex-shrink: 0; }
-    .sp-journey-pill { margin-top: 0; }
-}
+/* ── Responsive switch ── */
 
-@media (max-width: 520px) {
-    .sp-journey { grid-template-columns: 1fr; }
+@media (max-width: 768px) {
+    .sp-journey-graph  { display: none; }
+    .sp-journey-mobile { display: flex; }
 }
 
 

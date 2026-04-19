@@ -313,10 +313,10 @@ const PostCard: React.FC<PostCardProps> = ({ index, post, onImageClick }) => (
             <header className="rcbs-post-head">
                 <div className="rcbs-post-date-wrap">
                     <div className="rcbs-post-date-num">{formatDateShort(post.date)}</div>
-                    <div className="rcbs-post-date-full">
+                    {/* <div className="rcbs-post-date-full">
                         <BsCalendar3 size={11} />
                         {formatDate(post.date)}
-                    </div>
+                    </div> */}
                 </div>
                 <span className="rcbs-post-idx">#{String(index + 1).padStart(2, '0')}</span>
             </header>

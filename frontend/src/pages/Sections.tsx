@@ -164,8 +164,31 @@ const SectionsGrid: React.FC = () => (
 );
 
 /* ════════════════════════════════════════════════════════
-   JOURNEY — inline timeline of sections by age
+   JOURNEY — horizontal branching tree (left → right)
 ════════════════════════════════════════════════════════ */
+
+const JOURNEY_NODES: { slug: string; x: number; y: number }[] = [
+    { slug: 'baladins',   x: 75,  y: 130 },
+    { slug: 'lutins',     x: 275, y: 50  },
+    { slug: 'louveteaux', x: 275, y: 210 },
+    { slug: 'guides',     x: 500, y: 50  },
+    { slug: 'eclaireurs', x: 500, y: 210 },
+    { slug: 'pionniers',  x: 725, y: 130 },
+    { slug: 'clan',       x: 925, y: 130 },
+];
+
+const R = 12;                       // dot radius in SVG units
+const JOURNEY_EDGES = [
+    `M ${75+R},130 C 175,130 190,50 ${275-R},50`,      // Baladins → Lutins
+    `M ${75+R},130 C 175,130 190,210 ${275-R},210`,     // Baladins → Louveteaux
+    `M ${275+R},50 L ${500-R},50`,                       // Lutins → Guides
+    `M ${275+R},210 L ${500-R},210`,                     // Louveteaux → Éclaireurs
+    `M ${500+R},50 C 600,50 640,130 ${725-R},130`,      // Guides → Pionniers
+    `M ${500+R},210 C 600,210 640,130 ${725-R},130`,    // Éclaireurs → Pionniers
+    `M ${725+R},130 L ${925-R},130`,                     // Pionniers → Clan
+];
+
+const JOURNEY_ORDER = ['baladins','lutins','louveteaux','guides','eclaireurs','pionniers','clan'];
 
 const JourneyBlock: React.FC = () => (
     <section className="sp-journey-wrap">
@@ -180,26 +203,62 @@ const JourneyBlock: React.FC = () => (
                 </motion.p>
             </div>
 
+            {/* ── Desktop / tablet: SVG graph ── */}
+            <motion.div className="sp-journey-graph" {...fadeUp(0.25)}>
+                <svg viewBox="0 0 1000 270" className="sp-journey-svg">
+                    {/* edges */}
+                    {JOURNEY_EDGES.map((d, i) => (
+                        <path key={i} d={d} />
+                    ))}
+
+                    {/* nodes */}
+                    {JOURNEY_NODES.map(n => {
+                        const s = SECTIONS.find(sec => sec.slug === n.slug)!;
+                        return (
+                            <g key={n.slug} className="sp-jsvg-node">
+                                <circle cx={n.x} cy={n.y} r={R + 6} fill={s.color} opacity={0.18} />
+                                <circle cx={n.x} cy={n.y} r={R}
+                                    fill={s.color}
+                                    stroke="rgba(255,255,255,0.9)"
+                                    strokeWidth="3"
+                                />
+                                <text x={n.x} y={n.y + 30} textAnchor="middle" className="sp-jsvg-name">
+                                    {s.name}
+                                </text>
+                                <text x={n.x} y={n.y + 46} textAnchor="middle" className="sp-jsvg-age">
+                                    {s.age}
+                                </text>
+                            </g>
+                        );
+                    })}
+                </svg>
+            </motion.div>
+
+            {/* ── Mobile: vertical list ── */}
             <motion.div
-                className="sp-journey"
+                className="sp-journey-mobile"
                 variants={stagger}
                 initial="hidden"
                 whileInView="visible"
                 viewport={{ once: true, amount: 0.1 }}
             >
-                <div className="sp-journey-line" aria-hidden />
-                {SECTIONS.filter(s => s.slug !== 'unite').map(s => (
-                    <motion.div
-                        key={s.slug}
-                        className="sp-journey-step"
-                        variants={staggerItem}
-                        style={{ '--sc': s.color } as React.CSSProperties}
-                    >
-                        <div className="sp-journey-dot" />
-                        <div className="sp-journey-pill">{s.age}</div>
-                        <div className="sp-journey-name">{s.name}</div>
-                    </motion.div>
-                ))}
+                {JOURNEY_ORDER.map(slug => {
+                    const s = SECTIONS.find(sec => sec.slug === slug)!;
+                    return (
+                        <motion.div
+                            key={slug}
+                            className="sp-jm-step"
+                            variants={staggerItem}
+                            style={{ '--sc': s.color } as React.CSSProperties}
+                        >
+                            <div className="sp-jm-dot" />
+                            <div className="sp-jm-info">
+                                <div className="sp-jm-name">{s.name}</div>
+                                <div className="sp-jm-age">{s.age}</div>
+                            </div>
+                        </motion.div>
+                    );
+                })}
             </motion.div>
         </Container>
     </section>
