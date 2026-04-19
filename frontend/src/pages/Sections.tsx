@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import axios from 'axios';
 import { Container } from 'react-bootstrap';
-import { BsArrowRight, BsPeopleFill, BsCompass } from 'react-icons/bs';
+import { BsArrowRight, BsPeopleFill } from 'react-icons/bs';
 
 import CarouselBlock from '../components/CarouselBlock';
 import { SectionImagesData } from '../types/interfaces';
