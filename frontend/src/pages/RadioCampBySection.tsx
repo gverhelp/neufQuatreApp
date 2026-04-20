@@ -223,7 +223,7 @@ const RCBSHero: React.FC<HeroProps> = ({ meta, title, startDate, endDate, postsC
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.18, duration: 0.45 }}
                 >
-                    <span className="rcbs-hero-badge rcbs-hero-badge-accent">{meta.band}</span>
+                    <span className="rcbs-hero-badge rcbs-hero-badge-accent">{meta.name}</span>
                 </motion.div>
 
                 <motion.h1
