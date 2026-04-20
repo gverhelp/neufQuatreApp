@@ -77,7 +77,7 @@ const HeroSection: React.FC<{ buttons: AccueilButton[] }> = ({ buttons }) => {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.35, duration: 0.65, ease: 'easeOut' }}
                 >
-                    94ème Unité<br />Saint-Augustin
+                    94<sup>ème</sup> Unité<br />Saint-Augustin
                 </motion.h1>
 
                 <motion.div
