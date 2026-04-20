@@ -667,9 +667,9 @@
     font-weight: 700;
     letter-spacing: 0.14em;
     text-transform: uppercase;
-    color: var(--rcbs-accent, #022864);
-    background: color-mix(in srgb, var(--rcbs-accent, #022864) 8%, white);
-    border: 1px solid color-mix(in srgb, var(--rcbs-accent, #022864) 20%, transparent);
+    color: rgba(255, 255, 255, 0.72);
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.22);
     border-radius: 999px;
     padding: 0.4rem 0.85rem;
     text-decoration: none;
@@ -678,9 +678,9 @@
 }
 
 .rcbs-gate-back:hover {
-    background: color-mix(in srgb, var(--rcbs-accent, #022864) 14%, white);
-    border-color: color-mix(in srgb, var(--rcbs-accent, #022864) 40%, transparent);
-    color: var(--rcbs-accent, #022864);
+    background: rgba(255, 255, 255, 0.14);
+    border-color: rgba(255, 255, 255, 0.35);
+    color: #ffffff;
     text-decoration: none;
     transform: translateX(-2px);
 }
@@ -691,6 +691,7 @@
     background: rgba(255, 255, 255, 0.98);
     border-radius: 22px;
     padding: 2.2rem 2rem 2rem;
+    margin-bottom: 5rem;
     text-align: center;
     color: #022864;
     box-shadow: 0 24px 60px rgba(0, 0, 0, 0.3);
@@ -878,13 +879,12 @@
     letter-spacing: 0.14em;
     text-transform: uppercase;
     color: rgba(255, 255, 255, 0.72);
-    background: rgba(255, 255, 255, 0.08);
-    border: 1px solid rgba(255, 255, 255, 0.18);
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.22);
     border-radius: 999px;
     padding: 0.42rem 0.9rem;
     text-decoration: none;
     backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
     transition: background 0.22s ease, transform 0.22s ease, color 0.22s ease, border-color 0.22s ease;
 }
 
@@ -963,7 +963,7 @@
     font-family: 'Roboto', sans-serif;
     font-size: 0.88rem;
     color: rgba(255, 255, 255, 0.78);
-    margin: 2rem 0 0;
+    margin: 1rem 0 0;
     letter-spacing: 0.02em;
 }
 

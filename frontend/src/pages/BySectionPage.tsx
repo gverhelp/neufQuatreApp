@@ -250,7 +250,7 @@ const StaffSection: React.FC<StaffProps> = ({ sectionName }) => {
                                         </div>
                                     )}
                                     {m.chefResp && (
-                                        <span className="bsp-staff-resp-badge">Chef responsable</span>
+                                        <span className="bsp-staff-resp-badge">Chef.fe responsable</span>
                                     )}
                                 </div>
                                 <div className="bsp-staff-body">
