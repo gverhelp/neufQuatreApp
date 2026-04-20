@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { Container, Alert } from 'react-bootstrap';
 import { motion } from 'framer-motion';
 import { 
-    BsArrowRight, BsEnvelopeFill, BsCreditCard2Front, BsBroadcast,
+    BsArrowRight, BsArrowLeft, BsEnvelopeFill, BsCreditCard2Front, BsBroadcast,
 } from 'react-icons/bs';
 import { FaTshirt, FaUserCircle } from 'react-icons/fa';
 
@@ -100,6 +101,11 @@ const SectionHero: React.FC<HeroProps> = ({ meta, description, image, loading })
             )}
             <div className="bsp-hero-overlay" aria-hidden />
             <div className="bsp-hero-accent" aria-hidden />
+
+            <Link to="/sections" className="bsp-hero-back">
+                <BsArrowLeft size={14} />
+                <span>Sections</span>
+            </Link>
 
             <Container className="bsp-hero-container">
                 <div className="bsp-hero-inner">

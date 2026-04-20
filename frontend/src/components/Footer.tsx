@@ -3,7 +3,6 @@ import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import {
     BsGeoAltFill, BsEnvelopeFill, BsArrowUpRight, BsArrowRight,
-    BsCompass,
 } from 'react-icons/bs';
 import { FaLinkedin, FaGithub } from 'react-icons/fa';
 

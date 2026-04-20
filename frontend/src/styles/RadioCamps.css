@@ -180,13 +180,13 @@
     color: rgba(255, 255, 255, 0.045);
     pointer-events: none;
     line-height: 1;
-    animation: rcp-compass-sway 14s ease-in-out infinite;
+    /* animation: rcp-compass-sway 14s ease-in-out infinite; */
 }
 
-@keyframes rcp-compass-sway {
+/* @keyframes rcp-compass-sway {
     0%, 100% { transform: rotate(-4deg); }
     50%      { transform: rotate(6deg);  }
-}
+} */
 
 @media (max-width: 991px) {
     .rcp-hero-deco { display: none; }

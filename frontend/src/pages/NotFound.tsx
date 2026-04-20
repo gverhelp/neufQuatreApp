@@ -1,7 +1,7 @@
 import { Container } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { BsArrowLeft, BsCompass, BsPeopleFill, BsCalendarEvent, BsGeoAltFill } from 'react-icons/bs';
+import { BsCompass, BsPeopleFill, BsCalendarEvent, BsGeoAltFill } from 'react-icons/bs';
 
 import '../styles/NotFound.css';
 

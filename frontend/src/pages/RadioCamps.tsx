@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import { Container } from 'react-bootstrap';
 import {
     BsArrowRight, BsGeoAltFill, BsCompass,
-    BsShieldLockFill, BsCameraReelsFill,
+    BsShieldLockFill, BsCameraReelsFill, BsBroadcastPin,
 } from 'react-icons/bs';
 
 import '../styles/RadioCamps.css';
@@ -117,7 +117,7 @@ const PageHero: React.FC = () => (
             </div>
 
             <div className="rcp-hero-deco" aria-hidden>
-                <BsCompass size={220} />
+                <BsBroadcastPin size={220} />
             </div>
         </Container>
     </section>
