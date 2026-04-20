@@ -419,6 +419,15 @@
     text-decoration: none;
 }
 
+
+/* ══════════════════════════════════════════════════════════
+   SPACER — prevent content from hiding under fixed navbar
+══════════════════════════════════════════════════════════ */
+
+body {
+    padding-top: var(--navbar-height, 72px);
+}
+
 @media (max-width: 480px) {
     body {
         padding-top: 64px;

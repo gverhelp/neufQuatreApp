@@ -14,7 +14,7 @@ import '../styles/Footer.css';
 
 const EXTERNAL_LINKS = [
     { name: 'Les Scouts',   path: 'https://lesscouts.be/fr',              description: 'Site officiel' },
-    { name: 'Les Guides',   path: 'https://www.guides.be/',               description: 'Site officiel' },
+    // { name: 'Les Guides',   path: 'https://www.guides.be/',               description: 'Site officiel' },
     { name: 'La Scouterie', path: 'https://www.lascouterie-economats.be/', description: 'Économat' },
 ];
 
@@ -22,8 +22,8 @@ const INTERNAL_LINKS = [
     { name: 'Accueil',            path: '/' },
     { name: 'Nos sections',       path: '/sections' },
     { name: 'Agenda',             path: '/agenda' },
-    { name: 'Documents & infos',  path: '/documents-et-infos' },
     { name: 'Radio camp',         path: '/radio-camps' },
+    { name: 'Documents & infos',  path: '/documents-et-infos' },
 ];
 
 /* ════════════════════════════════════════════════════════
