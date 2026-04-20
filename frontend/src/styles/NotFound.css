@@ -1,13 +1,288 @@
+/* ══════════════════════════════════════════════════════════
+   NOT FOUND PAGE (nf-*)
+══════════════════════════════════════════════════════════ */
+
+.nf-wrap {
+    position: relative;
+    min-height: calc(100vh - 75px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4.5rem 1.5rem 5rem;
+    overflow: hidden;
+    background: linear-gradient(135deg, #022864 0%, #012558 55%, #011840 100%);
+    color: #ffffff;
+    text-align: center;
+}
+
+/* Background paper-map texture */
+.nf-bg {
+    position: absolute;
+    inset: 0;
+    background-image: url('/backgroundMap.webp');
+    background-size: cover;
+    background-position: center;
+    opacity: 0.09;
+    filter: saturate(0.8);
+}
+
+/* Radial accents */
+.nf-tint {
+    position: absolute;
+    inset: 0;
+    background:
+        radial-gradient(circle at 15% 100%, rgba(255, 190, 10, 0.12) 0%, transparent 55%),
+        radial-gradient(circle at 85% 0%, rgba(2, 160, 221, 0.15) 0%, transparent 50%);
+    pointer-events: none;
+}
+
+/* Compass watermark */
+.nf-deco {
+    position: absolute;
+    right: -70px;
+    bottom: -70px;
+    color: rgba(255, 255, 255, 0.04);
+    pointer-events: none;
+    animation: nf-sway 14s ease-in-out infinite;
+}
+
+@keyframes nf-sway {
+    0%, 100% { transform: rotate(-6deg); }
+    50%      { transform: rotate(8deg);  }
+}
+
+@media (max-width: 767px) {
+    .nf-deco { display: none; }
+}
+
+.nf-container {
+    position: relative;
+    z-index: 2;
+    max-width: 720px;
+}
+
+
+/* ══════════════════════════════════════════════════════════
+   EYEBROW
+══════════════════════════════════════════════════════════ */
+
+.nf-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    font-family: 'Roboto', sans-serif;
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: #FFBE0A;
+    background: rgba(255, 190, 10, 0.1);
+    border: 1px solid rgba(255, 190, 10, 0.3);
+    border-radius: 999px;
+    padding: 0.35rem 0.9rem;
+    margin-bottom: 1.6rem;
+}
+
+
+/* ══════════════════════════════════════════════════════════
+   404 CODE
+══════════════════════════════════════════════════════════ */
+
+.nf-code {
+    font-family: 'Titan One', sans-serif;
+    font-size: clamp(6rem, 20vw, 12rem);
+    line-height: 0.92;
+    color: #ffffff;
+    margin: 0;
+    letter-spacing: -0.04em;
+    text-shadow: 0 8px 42px rgba(0, 0, 0, 0.38);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.05em;
+}
+
+.nf-zero {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: #FFBE0A;
+    font-size: 0.7em;
+    filter: drop-shadow(0 6px 24px rgba(255, 190, 10, 0.4));
+    animation: nf-spin 14s linear infinite;
+}
+
+@keyframes nf-spin {
+    0%   { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.nf-rule {
+    width: 64px;
+    height: 3px;
+    background: #FFBE0A;
+    border-radius: 3px;
+    margin: 1.8rem auto 1.4rem;
+    box-shadow: 0 0 18px rgba(255, 190, 10, 0.55);
+    transform-origin: center;
+}
+
+
+/* ══════════════════════════════════════════════════════════
+   TITLE + TEXT
+══════════════════════════════════════════════════════════ */
+
+.nf-title {
+    font-family: 'Titan One', sans-serif;
+    font-size: clamp(1.4rem, 3.4vw, 2.1rem);
+    color: #ffffff;
+    line-height: 1.2;
+    margin: 0 0 1rem;
+    letter-spacing: -0.01em;
+    text-shadow: 0 3px 18px rgba(0, 0, 0, 0.35);
+}
+
+.nf-text {
+    font-family: 'Roboto', sans-serif;
+    font-size: clamp(0.95rem, 1.9vw, 1.06rem);
+    font-weight: 300;
+    color: rgba(255, 255, 255, 0.78);
+    line-height: 1.75;
+    margin: 0 auto 2.3rem;
+    max-width: 560px;
+}
+
+
+/* ══════════════════════════════════════════════════════════
+   ACTIONS
+══════════════════════════════════════════════════════════ */
+
+.nf-actions {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.6rem;
+}
+
+.nf-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.55rem;
+    font-family: 'Titan One', sans-serif;
+    font-size: 0.95rem;
+    letter-spacing: 0.04em;
+    border-radius: 12px;
+    padding: 0.85rem 1.75rem;
+    text-decoration: none;
+    transition: transform 0.22s ease, box-shadow 0.22s ease, filter 0.22s ease;
+    cursor: pointer;
+    min-width: 220px;
+}
+
+.nf-btn-primary {
+    background: #FFBE0A;
+    color: #022864;
+    border: 2px solid #FFBE0A;
+    box-shadow: 0 8px 26px rgba(255, 190, 10, 0.38);
+}
+
+.nf-btn-primary:hover {
+    transform: translateY(-3px);
+    filter: brightness(1.05);
+    color: #022864;
+    text-decoration: none;
+    box-shadow: 0 14px 34px rgba(255, 190, 10, 0.5);
+}
+
+.nf-btn-primary svg {
+    transition: transform 0.22s ease;
+}
+
+.nf-btn-primary:hover svg {
+    transform: translateX(-3px);
+}
+
+
+/* ══════════════════════════════════════════════════════════
+   QUICK LINKS
+══════════════════════════════════════════════════════════ */
+
+.nf-quick {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    width: 100%;
+    max-width: 520px;
+}
+
+.nf-quick-label {
+    font-family: 'Roboto', sans-serif;
+    font-size: 0.64rem;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.45);
+}
+
+.nf-quick-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.55rem;
+    justify-content: center;
+}
+
+.nf-quick-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    font-family: 'Roboto', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.82);
+    background: rgba(255, 255, 255, 0.07);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-radius: 999px;
+    padding: 0.45rem 0.95rem;
+    text-decoration: none;
+    transition: background 0.22s ease, color 0.22s ease, border-color 0.22s ease, transform 0.22s ease;
+}
+
+.nf-quick-link svg {
+    color: #FFBE0A;
+    opacity: 0.8;
+    transition: opacity 0.22s ease;
+}
+
+.nf-quick-link:hover {
+    background: rgba(255, 190, 10, 0.14);
+    border-color: rgba(255, 190, 10, 0.5);
+    color: #ffffff;
+    transform: translateY(-2px);
+    text-decoration: none;
+}
+
+.nf-quick-link:hover svg {
+    opacity: 1;
+}
+
+
+/* ══════════════════════════════════════════════════════════
+   LEGACY — kept for compatibility (if any old import lingers)
+══════════════════════════════════════════════════════════ */
+
 .validate-btn {
     background-color: #022864;
     padding: 0.6rem 1.6rem;
     font-family: 'Titan One', sans-serif;
     font-size: 1.1rem;
-    /* border-radius: 5px; */
     transition: transform 0.2s ease;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
-  
+
 .validate-btn:hover {
     transform: translateY(-2px);
 }

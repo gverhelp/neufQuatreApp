@@ -1,0 +1,117 @@
+/* ══════════════════════════════════════════════════════════
+   BACK TO TOP BUTTON (btt-*)
+══════════════════════════════════════════════════════════ */
+
+.btt-btn {
+    position: fixed;
+    bottom: 1.8rem;
+    left: 1.8rem;
+    z-index: 1500;
+
+    /* Reset button styles */
+    appearance: none;
+    border: none;
+    padding: 0;
+    margin: 0;
+    cursor: pointer;
+
+    /* Layout */
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 52px;
+    height: 52px;
+
+    /* Visual */
+    background: #022864;
+    color: #ffffff;
+    border-radius: 50%;
+    box-shadow:
+        0 10px 26px rgba(2, 40, 100, 0.38),
+        0 0 0 1.5px rgba(255, 190, 10, 0.4);
+    transition: background 0.25s ease, box-shadow 0.25s ease;
+}
+
+.btt-btn:hover {
+    background: #033478;
+    box-shadow:
+        0 16px 36px rgba(2, 40, 100, 0.5),
+        0 0 0 1.5px rgba(255, 190, 10, 0.8),
+        0 0 22px rgba(255, 190, 10, 0.35);
+}
+
+.btt-btn:focus-visible {
+    outline: 2px solid #FFBE0A;
+    outline-offset: 3px;
+}
+
+
+/* ── Progress ring ── */
+.btt-ring {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 52px;
+    height: 52px;
+    overflow: visible;
+    pointer-events: none;
+}
+
+.btt-ring-progress {
+    fill: none;
+    stroke: #FFBE0A;
+    stroke-width: 2.5;
+    stroke-linecap: round;
+    transform: rotate(-90deg);
+    transform-origin: 26px 26px;
+    filter: drop-shadow(0 0 4px rgba(255, 190, 10, 0.5));
+}
+
+
+/* ── Icon ── */
+.btt-icon {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    color: #FFBE0A;
+    flex-shrink: 0;
+    transition: transform 0.35s ease;
+}
+
+.btt-btn:hover .btt-icon svg {
+    animation: btt-bounce 0.9s ease-in-out infinite;
+}
+
+@keyframes btt-bounce {
+    0%, 100% { transform: translateY(0);    }
+    50%      { transform: translateY(-2px); }
+}
+
+
+/* ══════════════════════════════════════════════════════════
+   RESPONSIVE — masquer sur mobile
+══════════════════════════════════════════════════════════ */
+
+@media (max-width: 576px) {
+    .btt-btn { display: none; }
+}
+
+
+/* ══════════════════════════════════════════════════════════
+   REDUCED MOTION
+══════════════════════════════════════════════════════════ */
+
+@media (prefers-reduced-motion: reduce) {
+    .btt-btn:hover .btt-icon svg {
+        animation: none;
+    }
+
+    .btt-ring-progress {
+        transition: none;
+    }
+}

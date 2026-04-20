@@ -1,98 +1,168 @@
-import { Container, Row, Col } from "react-bootstrap";
-import { motion } from "framer-motion";
-import { FaLinkedin, FaGithub } from "react-icons/fa";
-import "../styles/Footer.css";
+import { Container, Row, Col } from 'react-bootstrap';
+import { motion } from 'framer-motion';
+import { Link } from 'react-router-dom';
+import {
+    BsGeoAltFill, BsEnvelopeFill, BsArrowUpRight, BsArrowRight,
+    BsCompass,
+} from 'react-icons/bs';
+import { FaLinkedin, FaGithub } from 'react-icons/fa';
 
-function Footer() {
-    return (
-        <footer className="text-white py-4" style={ { backgroundColor: "#022864" } }>
-            <Container>
-                <Row className="text-center text-lg-start justify-content-center">
+import '../styles/Footer.css';
 
-                    <Col lg={3} className="mb-3 mb-lg-0">
-                        <h5 className="mb-3" style={{ color: "#FFBE0A", fontFamily: "Titan One" }}>À Propos</h5>
-                        <p className="mb-1">LC94 Saint-Augustin | Unité scoute</p>
-                        <p className="mb-1">Avenue Saint-Augustin, 16</p>
-                        <p className="mb-0">(B) - 1190 Bruxelles Forest</p>
-                    </Col>
+/* ════════════════════════════════════════════════════════
+   CONSTANTS
+════════════════════════════════════════════════════════ */
 
-                    <Col lg={3} className="mb-3 mb-lg-0">
-                        <h5 className="mb-3" style={{ color: "#FFBE0A", fontFamily: "Titan One" }}>Liens utiles</h5>
-                        <ul className="list-unstyled mb-0">
-                            {[
-                                { name: "Les Scouts", path: "https://lesscouts.be/fr", description: " - Site officiel" }, 
-                                { name: "Les Guides", path: "https://www.guides.be/", description: " - Site officiel" },
-                                { name: "La Scouterie", path: "https://www.lascouterie-economats.be/", description: " - Economat" },
-                            ].map((link, index) => (
-                                <li key={index} className="d-block">
-                                    <a
-                                        href={link.path}
-                                        className="footer-link fw-bolder"
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                    >
-                                        {link.name} 
-                                        <span className="fw-normal" style={{ color: "#F0F7EE"}}> {link.description} </span>
-                                    </a>
-                                </li>
-                            ))}
-                        </ul>
-                    </Col>
+const EXTERNAL_LINKS = [
+    { name: 'Les Scouts',   path: 'https://lesscouts.be/fr',              description: 'Site officiel' },
+    { name: 'Les Guides',   path: 'https://www.guides.be/',               description: 'Site officiel' },
+    { name: 'La Scouterie', path: 'https://www.lascouterie-economats.be/', description: 'Économat' },
+];
 
-                    <Col lg={3} className="mb-3 mb-lg-0">
-                        <h5 className="mb-3" style={{ color: "#FFBE0A", fontFamily: "Titan One" }}>Contact</h5>
-                        <p className="mb-1">Pour toute question, contactez-nous :</p>
-                        <a
-                            href="mailto:unitesaintaugustin94@gmail.com"
-                            className="footer-link fw-bolder"
-                        >
-                            unitesaintaugustin94@gmail.com
-                        </a>
-                    </Col>
+const INTERNAL_LINKS = [
+    { name: 'Accueil',            path: '/' },
+    { name: 'Nos sections',       path: '/sections' },
+    { name: 'Agenda',             path: '/agenda' },
+    { name: 'Documents & infos',  path: '/documents-et-infos' },
+    { name: 'Radio camp',         path: '/radio-camps' },
+];
 
-                    <Col lg={3}>
+/* ════════════════════════════════════════════════════════
+   FOOTER
+════════════════════════════════════════════════════════ */
+
+const Footer = () => (
+    <footer className="ft-footer">
+        <div className="ft-top-rule" aria-hidden />
+
+        {/* <div className="ft-deco" aria-hidden>
+            <BsCompass size={260} />
+        </div> */}
+
+        <Container className="ft-container">
+            <Row className="gy-4">
+
+                {/* ── À propos ── */}
+                <Col lg={4} md={6}>
+                    <div className="ft-brand">
                         <img
                             src="/les_scouts.png"
-                            alt="Logo LC94"
-                            style={{
-                                width: "100px",
-                                filter: "brightness(0) invert(1)",
-                                display: "block",
-                                margin: "0 auto"
-                            }}
+                            alt="Logo LC94 Saint-Augustin"
+                            className="ft-logo"
                         />
-                    </Col>
-                </Row>
+                        <div>
+                            <div className="ft-brand-eyebrow">Unité scoute</div>
+                            <div className="ft-brand-name">94<sup>ème</sup> Saint-Augustin</div>
+                        </div>
+                    </div>
 
-                <hr className="border-secondary my-3" />
-                <p className="text-center mb-0">
-                    &copy; { new Date().getFullYear() } Tous droits réservés.
-                    <br />
-                    Développé par Garreth Verhelpen (Ocelot)
+                    <p className="ft-brand-tagline">
+                        Une grande famille scoute à Forest, de 6 à 18 ans.
+                        De l'aventure, des valeurs et beaucoup d'amitiés.
+                    </p>
+
+                    <div className="ft-contact-block">
+                        <a
+                            href="https://maps.google.com/?q=Avenue+Saint-Augustin+16,+1190+Forest,+Bruxelles"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="ft-contact-row"
+                        >
+                            <span className="ft-contact-icon"><BsGeoAltFill size={13} /></span>
+                            <div className="ft-contact-text">
+                                <span>Avenue Saint-Augustin, 16</span>
+                                <span className="ft-contact-sub">1190 Bruxelles — Forest</span>
+                            </div>
+                        </a>
+
+                        <a
+                            href="mailto:unitesaintaugustin94@gmail.com"
+                            className="ft-contact-row"
+                        >
+                            <span className="ft-contact-icon"><BsEnvelopeFill size={13} /></span>
+                            <div className="ft-contact-text">
+                                <span>unitesaintaugustin94@gmail.com</span>
+                                <span className="ft-contact-sub">Écrire au staff d'unité</span>
+                            </div>
+                        </a>
+                    </div>
+                </Col>
+
+                {/* ── Navigation interne ── */}
+                <Col lg={3} md={6}>
+                    <h5 className="ft-heading">Naviguer</h5>
+                    <ul className="ft-list">
+                        {INTERNAL_LINKS.map(l => (
+                            <li key={l.path}>
+                                <Link to={l.path} className="ft-link">
+                                    <BsArrowRight size={11} className="ft-link-arrow" />
+                                    <span>{l.name}</span>
+                                </Link>
+                            </li>
+                        ))}
+                    </ul>
+                </Col>
+
+                {/* ── Liens utiles ── */}
+                <Col lg={5} md={12}>
+                    <h5 className="ft-heading">Liens utiles</h5>
+                    <div className="ft-ext-grid">
+                        {EXTERNAL_LINKS.map(l => (
+                            <a
+                                key={l.name}
+                                href={l.path}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="ft-ext-card"
+                            >
+                                <div className="ft-ext-head">
+                                    <span className="ft-ext-name">{l.name}</span>
+                                    <BsArrowUpRight size={12} className="ft-ext-arrow" />
+                                </div>
+                                <span className="ft-ext-desc">{l.description}</span>
+                            </a>
+                        ))}
+                    </div>
+                </Col>
+            </Row>
+
+            {/* ── Bottom bar ── */}
+            <div className="ft-bottom">
+                <div className="ft-bottom-text">
+                    © {new Date().getFullYear()} LC94 Saint-Augustin — Tous droits réservés.
+                    <span className="ft-bottom-sep">·</span>
+                    Développé par Garreth Verhelpen <span className="ft-totem">(Ocelot)</span>
+                </div>
+
+                <div className="ft-socials">
                     <motion.a
                         href="https://www.linkedin.com/in/gverhelp/"
                         target="_blank"
-                        rel="noopener noreferrer" 
-                        whileHover={{ scale: 1.2, rotate: 10 }}
-                        transition={{ duration: 0.3 }}
-                        className="text-light ms-2 fs-5 d-inline-block"
+                        rel="noopener noreferrer"
+                        whileHover={{ scale: 1.1, y: -2 }}
+                        whileTap={{ scale: 0.95 }}
+                        transition={{ duration: 0.22 }}
+                        className="ft-social"
+                        aria-label="LinkedIn de Garreth Verhelpen"
                     >
-                        <FaLinkedin/>
+                        <FaLinkedin />
                     </motion.a>
                     <motion.a
                         href="https://github.com/gverhelp"
                         target="_blank"
-                        rel="noopener noreferrer" 
-                        whileHover={{ scale: 1.2, rotate: 10 }}
-                        transition={{ duration: 0.3 }}
-                        className="text-light ms-2 fs-5 d-inline-block"
+                        rel="noopener noreferrer"
+                        whileHover={{ scale: 1.1, y: -2 }}
+                        whileTap={{ scale: 0.95 }}
+                        transition={{ duration: 0.22 }}
+                        className="ft-social"
+                        aria-label="GitHub de Garreth Verhelpen"
                     >
-                        <FaGithub/>
+                        <FaGithub />
                     </motion.a>
-                </p>
-            </Container>
-        </footer>
-    );
-};
+                </div>
+            </div>
+        </Container>
+    </footer>
+);
 
 export default Footer;
