@@ -108,6 +108,12 @@
     transition: color 0.22s ease;
 }
 
+.nb-brand-title sup {
+    font-size: 0.55em;
+    top: -0.65em;
+    margin-left: 0.1em;
+}
+
 .nb-brand:hover .nb-brand-title {
     color: #FFBE0A;
 }
@@ -119,7 +125,7 @@
     letter-spacing: 0.14em;
     text-transform: uppercase;
     color: rgba(255, 255, 255, 0.5);
-    margin-top: 0.18rem;
+    margin-top: 0.30rem;
 }
 
 @media (max-width: 480px) {
@@ -434,6 +440,12 @@ body {
     }
     .nb-root {
         --navbar-height: 64px;
+    }
+    .nb-backdrop {
+        top: var(--navbar-height, 64px);
+    }
+    .nb-mobile {
+        top: var(--navbar-height, 64px);
     }
 }
 
