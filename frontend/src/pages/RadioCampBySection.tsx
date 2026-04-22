@@ -304,7 +304,7 @@ const PostCard: React.FC<PostCardProps> = ({ index, post, onImageClick }) => (
     >
         <div className="rcbs-post-rail">
             <div className="rcbs-post-dot">
-                <BsBroadcastPin size={12} />
+                <BsJournalText size={12} />
             </div>
             <div className="rcbs-post-line" />
         </div>
