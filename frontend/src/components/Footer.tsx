@@ -20,8 +20,8 @@ const EXTERNAL_LINKS = [
 
 const INTERNAL_LINKS = [
     { name: 'Accueil',            path: '/' },
-    { name: 'Nos sections',       path: '/sections' },
     { name: 'Agenda',             path: '/agenda' },
+    { name: 'Nos sections',       path: '/sections' },
     { name: 'Radio camp',         path: '/radio-camps' },
     { name: 'Documents & infos',  path: '/documents-et-infos' },
 ];
@@ -128,7 +128,7 @@ const Footer = () => (
             {/* ── Bottom bar ── */}
             <div className="ft-bottom">
                 <div className="ft-bottom-text">
-                    © {new Date().getFullYear()} LC94 Saint-Augustin — Tous droits réservés.
+                    © {new Date().getFullYear()} LC94 Saint-Augustin - Tous droits réservés.
                     <span className="ft-bottom-sep">·</span>
                     Développé par Garreth Verhelpen <span className="ft-totem">(Ocelot)</span>
                 </div>

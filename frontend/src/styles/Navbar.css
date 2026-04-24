@@ -11,18 +11,18 @@
     z-index: 1050;
 
     background: linear-gradient(135deg, #022864 0%, #012558 55%, #011840 100%);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    /* border-bottom: 1px solid rgba(255, 255, 255, 0.06); */
     box-shadow: 0 2px 16px rgba(0, 0, 0, 0.22);
     transition: padding 0.28s ease, box-shadow 0.28s ease, background 0.28s ease;
 }
 
 .nb-root--scrolled {
     box-shadow: 0 4px 22px rgba(0, 0, 0, 0.32);
-    border-bottom-color: rgba(255, 190, 10, 0.15);
+    /* border-bottom-color: rgba(255, 190, 10, 0.15); */
 }
 
 /* Gold top accent line */
-.nb-root::before {
+/* .nb-root::before {
     content: '';
     position: absolute;
     top: 0;
@@ -32,11 +32,11 @@
     background: linear-gradient(to right, transparent, #FFBE0A 30%, #FFBE0A 70%, transparent);
     opacity: 0;
     transition: opacity 0.3s ease;
-}
+} */
 
-.nb-root--scrolled::before {
+/* .nb-root--scrolled::before {
     opacity: 0.5;
-}
+} */
 
 .nb-container {
     display: flex;

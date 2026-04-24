@@ -440,7 +440,7 @@
     flex-direction: column;
     gap: 0.1rem;
     text-align: left;
-    border-top: 3px solid var(--pc);
+    /* border-top: 3px solid var(--pc); */
     z-index: 20;
 }
 
