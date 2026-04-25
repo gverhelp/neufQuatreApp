@@ -1076,12 +1076,12 @@
 .cb-carousel,
 .cb-carousel .carousel-inner,
 .cb-carousel .carousel-item {
-    height: 60vh;
+    height: 75vh;
     min-height: 320px;
 }
 
 .cb-image {
-    height: 60vh;
+    height: 75vh;
     min-height: 320px;
     object-fit: cover;
     filter: brightness(0.88);
