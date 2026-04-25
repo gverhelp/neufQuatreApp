@@ -6,9 +6,10 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
     BsCalendar3, BsArrowLeft, BsBroadcastPin,
     BsImages, BsPlayCircleFill, BsChatSquareText, BsJournalText,
+    BsArrowRight,
 } from 'react-icons/bs';
 
-import { RadioCampData } from '../types/interfaces';
+import { RadioCampData, RadioCampSummary } from '../types/interfaces';
 import '../styles/RadioCamps.css';
 
 /* ════════════════════════════════════════════════════════
@@ -47,6 +48,24 @@ const formatDate = (dateStr: string) =>
 const formatDateShort = (dateStr: string) =>
     new Date(dateStr).toLocaleDateString('fr-BE', { day: '2-digit', month: 'short' });
 
+const formatDateRangeShort = (start: string, end: string) => {
+    const s = new Date(start);
+    const e = new Date(end);
+    const sameYear = s.getFullYear() === e.getFullYear();
+    const sameMonth = sameYear && s.getMonth() === e.getMonth();
+    if (sameMonth) {
+        const d1 = s.toLocaleDateString('fr-BE', { day: '2-digit' });
+        const d2 = e.toLocaleDateString('fr-BE', { day: '2-digit', month: 'long', year: 'numeric' });
+        return `${d1} – ${d2}`;
+    }
+    if (sameYear) {
+        const d1 = s.toLocaleDateString('fr-BE', { day: '2-digit', month: 'short' });
+        const d2 = e.toLocaleDateString('fr-BE', { day: '2-digit', month: 'long', year: 'numeric' });
+        return `${d1} – ${d2}`;
+    }
+    return `${formatDate(start)} → ${formatDate(end)}`;
+};
+
 /* ════════════════════════════════════════════════════════
    ANIMATION HELPERS
 ════════════════════════════════════════════════════════ */
@@ -59,16 +78,92 @@ const fadeUp = (delay = 0) => ({
 });
 
 /* ════════════════════════════════════════════════════════
+   CAMP PICKER (when multiple camps exist for a section)
+════════════════════════════════════════════════════════ */
+
+interface PickerProps {
+    meta: SectionMeta;
+    camps: RadioCampSummary[];
+    onSelect: (camp: RadioCampSummary) => void;
+}
+
+const CampPicker: React.FC<PickerProps> = ({ meta, camps, onSelect }) => (
+    <section
+        className="rcbs-picker"
+        style={{ '--rcbs-accent': meta.color } as React.CSSProperties}
+    >
+        <div className="rcbs-picker-bg" aria-hidden />
+        <div className="rcbs-picker-accent" aria-hidden />
+
+        <Container className="rcbs-picker-container">
+            <Link to="/radio-camps" className="rcbs-gate-back">
+                <BsArrowLeft size={14} />
+                <span>Retour à la carte</span>
+            </Link>
+
+            <motion.div
+                className="rcbs-picker-head"
+                initial={{ opacity: 0, y: 18 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, ease: 'easeOut' }}
+            >
+                <div className="rcbs-picker-eyebrow">
+                    <BsBroadcastPin size={12} />
+                    <span>Radio camp · {meta.band}</span>
+                </div>
+                <h1 className="rcbs-picker-title">{meta.name}</h1>
+                <div className="rcbs-picker-rule" />
+                <p className="rcbs-picker-sub">
+                    Choisissez le Radio Camp auquel vous souhaitez vous connecter.
+                </p>
+            </motion.div>
+
+            <div className="rcbs-picker-grid">
+                {camps.map((camp, i) => (
+                    <motion.button
+                        key={camp.id}
+                        type="button"
+                        className="rcbs-picker-card"
+                        onClick={() => onSelect(camp)}
+                        initial={{ opacity: 0, y: 24 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.5, ease: 'easeOut', delay: 0.12 + i * 0.07 }}
+                    >
+                        <div className="rcbs-picker-card-bar" aria-hidden />
+                        {/* <div className="rcbs-picker-card-head">
+                            <BsBroadcastPin size={14} className="rcbs-picker-card-icon" />
+                            <span className="rcbs-picker-card-band">{meta.band}</span>
+                        </div> */}
+                        <h3 className="rcbs-picker-card-name">
+                            {camp.title || `Radio camp ${meta.name}`}
+                        </h3>
+                        <div className="rcbs-picker-card-dates">
+                            <BsCalendar3 size={12} />
+                            <span>{formatDateRangeShort(camp.start_date, camp.end_date)}</span>
+                        </div>
+                        <div className="rcbs-picker-card-cta">
+                            <span>Se connecter</span>
+                            <BsArrowRight size={12} />
+                        </div>
+                    </motion.button>
+                ))}
+            </div>
+        </Container>
+    </section>
+);
+
+/* ════════════════════════════════════════════════════════
    PASSWORD GATE
 ════════════════════════════════════════════════════════ */
 
 interface GateProps {
     meta: SectionMeta;
-    sectionName: string;
+    camp: RadioCampSummary;
     onValidate: () => void;
+    onChangeCamp?: () => void;
 }
 
-const PasswordGate: React.FC<GateProps> = ({ meta, sectionName, onValidate }) => {
+const PasswordGate: React.FC<GateProps> = ({ meta, camp, onValidate, onChangeCamp }) => {
     const baseURL = import.meta.env.VITE_API_URL;
     const [password, setPassword] = useState('');
     const [loading, setLoading] = useState(false);
@@ -81,12 +176,11 @@ const PasswordGate: React.FC<GateProps> = ({ meta, sectionName, onValidate }) =>
         try {
             const csrftoken = getCookie('csrftoken');
             const response = await axios.post(
-                `${baseURL}/radio-camps/${sectionName.toLowerCase()}/verify-password/`,
+                `${baseURL}/radio-camps/${camp.id}/verify-password/`,
                 { password },
                 { headers: { 'X-CSRFToken': csrftoken || '' }, withCredentials: true }
             );
             if (response.data.success) {
-                localStorage.setItem(`radioCampValidated-${sectionName}`, 'true');
                 onValidate();
             } else {
                 setError(response.data.error);
@@ -94,7 +188,7 @@ const PasswordGate: React.FC<GateProps> = ({ meta, sectionName, onValidate }) =>
         } catch (err) {
             const status = (err as any).response?.status;
             if (status === 404) {
-                setError("Aucun Radio Camp n'est disponible pour cette section actuellement.");
+                setError("Ce Radio Camp n'est plus disponible.");
             } else if (status === 429) {
                 setError((err as any).response?.data?.detail ?? 'Trop de tentatives. Réessayez dans quelques secondes.');
             } else {
@@ -115,10 +209,17 @@ const PasswordGate: React.FC<GateProps> = ({ meta, sectionName, onValidate }) =>
 
             <Container className="rcbs-gate-container">
                 <div className="rcbs-gate-wrapper">
-                    <Link to="/radio-camps" className="rcbs-gate-back">
-                        <BsArrowLeft size={14} />
-                        <span>Retour à la carte</span>
-                    </Link>
+                    {onChangeCamp ? (
+                        <button type="button" className="rcbs-gate-back" onClick={onChangeCamp}>
+                            <BsArrowLeft size={14} />
+                            <span>Changer de Radio Camp</span>
+                        </button>
+                    ) : (
+                        <Link to="/radio-camps" className="rcbs-gate-back">
+                            <BsArrowLeft size={14} />
+                            <span>Retour à la carte</span>
+                        </Link>
+                    )}
 
                     <motion.div
                         className="rcbs-gate-card"
@@ -134,8 +235,13 @@ const PasswordGate: React.FC<GateProps> = ({ meta, sectionName, onValidate }) =>
                         </div>
 
                         <h1 className="rcbs-gate-title">
-                            {meta.name}
+                            {camp.title || meta.name}
                         </h1>
+                    </div>
+
+                    <div className="rcbs-gate-dates">
+                        <BsCalendar3 size={12} />
+                        <span>{formatDateRangeShort(camp.start_date, camp.end_date)}</span>
                     </div>
 
                     <div className="rcbs-gate-rule" />
@@ -492,9 +598,12 @@ const RadioCampBySection: React.FC<{ sectionName: string }> = ({ sectionName }) 
         color: '#022864',
     };
 
+    const [camps, setCamps] = useState<RadioCampSummary[] | undefined>();
+    const [selectedCamp, setSelectedCamp] = useState<RadioCampSummary | null>(null);
     const [validated, setValidated] = useState(false);
     const [radioCamp, setRadioCamp] = useState<RadioCampData | undefined>();
     const [loadError, setLoadError] = useState('');
+    const [campsError, setCampsError] = useState('');
 
     const [showModal, setShowModal] = useState(false);
     const [selectedImage, setSelectedImage] = useState<{ src: string; caption?: string } | null>(null);
@@ -509,40 +618,149 @@ const RadioCampBySection: React.FC<{ sectionName: string }> = ({ sectionName }) 
         setSelectedImage(null);
     };
 
+    const fetchCamps = async () => {
+        try {
+            const response = await axios.get<RadioCampSummary[]>(
+                `${baseURL}/radio-camps/by-section/${sectionName.toLowerCase()}/`,
+                { withCredentials: true }
+            );
+            const list = response.data ?? [];
+            setCamps(list);
+        } catch (err) {
+            const status = (err as any).response?.status;
+            if (status === 404) {
+                setCamps([]);
+            } else {
+                setCampsError('Une erreur est survenue lors du chargement des Radio Camps.');
+            }
+        }
+    };
+
+    const fetchRadioCamp = async (campId: number) => {
+        try {
+            const response = await axios.get<RadioCampData>(
+                `${baseURL}/radio-camps/${campId}/`,
+                { withCredentials: true }
+            );
+            setRadioCamp(response.data);
+            setValidated(true);
+        } catch (err) {
+            const status = (err as any).response?.status;
+            if (status === 403) {
+                setValidated(false);
+            } else if (status === 404) {
+                setLoadError("Ce Radio Camp n'est plus disponible.");
+                setValidated(false);
+            } else {
+                setLoadError('Une erreur est survenue lors du chargement des données.');
+            }
+        }
+    };
+
     useEffect(() => {
+        setCamps(undefined);
+        setSelectedCamp(null);
         setValidated(false);
         setRadioCamp(undefined);
         setLoadError('');
-        const isValidated = localStorage.getItem(`radioCampValidated-${sectionName}`);
-        if (isValidated === 'true') setValidated(true);
+        setCampsError('');
+        fetchCamps();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [sectionName]);
 
-    useEffect(() => {
-        if (!validated) return;
-        const fetchPosts = async () => {
-            try {
-                const response = await axios.get(`${baseURL}/radio-camps/${sectionName.toLowerCase()}`);
-                setRadioCamp(response.data);
-            } catch (err) {
-                if ((err as any).response?.status === 404) {
-                    setLoadError("Aucun Radio Camp n'est disponible pour cette section actuellement.");
-                    localStorage.removeItem(`radioCampValidated-${sectionName}`);
-                    setValidated(false);
-                } else {
-                    setLoadError('Une erreur est survenue lors du chargement des données.');
-                }
-            }
-        };
-        fetchPosts();
-    }, [validated, sectionName]);
+    // ── Initial loading of camps list ────────────────────
+    if (!camps && !campsError) {
+        return (
+            <section
+                className="rcbs-gate"
+                style={{ '--rcbs-accent': meta.color } as React.CSSProperties}
+            >
+                <div className="rcbs-gate-bg" aria-hidden />
+                <div className="rcbs-gate-accent" aria-hidden />
+                <Container className="rcbs-gate-container">
+                    <div className="rcbs-picker-loader">
+                        <Spinner animation="border" />
+                    </div>
+                </Container>
+            </section>
+        );
+    }
+
+    // ── Camps list error ─────────────────────────────────
+    if (campsError) {
+        return (
+            <Container fluid className="rcbs-error-wrap">
+                <Alert variant="danger">{campsError}</Alert>
+            </Container>
+        );
+    }
+
+    // ── No camps available ───────────────────────────────
+    if (camps && camps.length === 0) {
+        return (
+            <section
+                className="rcbs-gate"
+                style={{ '--rcbs-accent': meta.color } as React.CSSProperties}
+            >
+                <div className="rcbs-gate-bg" aria-hidden />
+                <div className="rcbs-gate-accent" aria-hidden />
+                <Container className="rcbs-gate-container">
+                    <div className="rcbs-gate-wrapper">
+                        <Link to="/radio-camps" className="rcbs-gate-back">
+                            <BsArrowLeft size={14} />
+                            <span>Retour à la carte</span>
+                        </Link>
+                        <motion.div
+                            className="rcbs-gate-card"
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.5, ease: 'easeOut' }}
+                        >
+                            <div className="rcbs-gate-header">
+                                <div className="rcbs-gate-eyebrow">
+                                    <BsBroadcastPin size={12} />
+                                    <span>Radio camp · {meta.band}</span>
+                                </div>
+                                <h1 className="rcbs-gate-title">{meta.name}</h1>
+                            </div>
+                            <div className="rcbs-gate-rule" />
+                            <p className="rcbs-gate-desc">
+                                Aucun Radio Camp n'est disponible pour cette section actuellement.
+                                Revenez plus tard ou contactez le staff d'unité pour plus d'informations.
+                            </p>
+                        </motion.div>
+                    </div>
+                </Container>
+            </section>
+        );
+    }
+
+    // ── Camp picker (always shown when no camp selected yet) ──
+    if (camps && camps.length > 0 && !selectedCamp) {
+        return (
+            <CampPicker
+                meta={meta}
+                camps={camps}
+                onSelect={(camp) => {
+                    setSelectedCamp(camp);
+                    fetchRadioCamp(camp.id);
+                }}
+            />
+        );
+    }
 
     // ── Password gate ────────────────────────────────────
-    if (!validated) {
+    if (selectedCamp && !validated) {
         return (
             <PasswordGate
                 meta={meta}
-                sectionName={sectionName}
-                onValidate={() => setValidated(true)}
+                camp={selectedCamp}
+                onValidate={() => fetchRadioCamp(selectedCamp.id)}
+                onChangeCamp={() => {
+                    setSelectedCamp(null);
+                    setRadioCamp(undefined);
+                    setLoadError('');
+                }}
             />
         );
     }

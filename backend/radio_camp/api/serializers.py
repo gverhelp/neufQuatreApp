@@ -32,7 +32,15 @@ class RadioCampSerializer(serializers.ModelSerializer):
         queryset=Section.objects.all()
     )
     posts = PostSerializer(many=True, read_only=True)
-    
+
     class Meta:
         model = RadioCamp
         fields = ['id', 'section', 'title', 'start_date', 'end_date', 'posts']
+
+
+class RadioCampSummarySerializer(serializers.ModelSerializer):
+    section = serializers.SlugRelatedField(slug_field='slug', read_only=True)
+
+    class Meta:
+        model = RadioCamp
+        fields = ['id', 'section', 'title', 'start_date', 'end_date']

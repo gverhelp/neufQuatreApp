@@ -77,6 +77,14 @@ export interface RadioCampData {
     posts: PostData[];
 }
 
+export interface RadioCampSummary {
+    id: number;
+    section: string;
+    title: string;
+    start_date: string;
+    end_date: string;
+}
+
 export interface PostData {
     id: number;
     radio_camp: number;

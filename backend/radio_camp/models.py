@@ -18,12 +18,10 @@ class RadioCamp(models.Model):
             except ValueError:
                 self.password = make_password(self.password)
         super().save(*args, **kwargs)
-        
+
     class Meta:
-        constraints = [
-            models.UniqueConstraint(fields=["section"], name="unique_section_radiocamp")
-        ]
-        
+        ordering = ['-start_date']
+
     def __str__(self):
         return f"{self.title} - {self.section.name}"
 

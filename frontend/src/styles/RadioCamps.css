@@ -685,6 +685,10 @@
     transform: translateX(-2px);
 }
 
+button.rcbs-gate-back {
+    cursor: pointer;
+}
+
 .rcbs-gate-card {
     width: 100%;
     max-width: 520px;
@@ -695,7 +699,7 @@
     text-align: center;
     color: #022864;
     box-shadow: 0 24px 60px rgba(0, 0, 0, 0.3);
-    border-top: 4px solid var(--rcbs-accent, #022864);
+    /* border-top: 4px solid var(--rcbs-accent, #022864); */
 }
 
 .rcbs-gate-header {
@@ -801,6 +805,45 @@
     text-align: center;
 }
 
+.rcbs-gate-dates {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    font-family: 'Roboto', sans-serif;
+    font-size: 0.82rem;
+    font-weight: 500;
+    color: var(--rcbs-accent, #022864);
+    background: color-mix(in srgb, var(--rcbs-accent, #022864) 8%, white);
+    border: 1px solid color-mix(in srgb, var(--rcbs-accent, #022864) 18%, transparent);
+    border-radius: 999px;
+    padding: 0.35rem 0.85rem;
+    margin: 0.5rem auto 0.5rem;
+    letter-spacing: 0.01em;
+}
+
+.rcbs-gate-switch {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin: 1.2rem auto 0;
+    background: transparent;
+    border: none;
+    padding: 0;
+    font-family: 'Roboto', sans-serif;
+    font-size: 0.74rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #8494b0;
+    cursor: pointer;
+    transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.rcbs-gate-switch:hover {
+    color: var(--rcbs-accent, #022864);
+    transform: translateX(-2px);
+}
+
 .rcbs-gate-help {
     font-family: 'Roboto', sans-serif;
     font-size: 0.82rem;
@@ -825,6 +868,232 @@
     .rcbs-gate-card { padding: 2rem 1.4rem 1.8rem; }
     .rcbs-gate-form { flex-direction: column; }
     .rcbs-gate-btn { width: 100%; }
+}
+
+
+/* ══════════════════════════════════════════════════════════
+   RADIO CAMP BY SECTION — CAMP PICKER
+══════════════════════════════════════════════════════════ */
+
+.rcbs-picker {
+    position: relative;
+    min-height: calc(100vh - 75px);
+    padding: 3rem 1.25rem 5rem;
+    overflow: hidden;
+    background: linear-gradient(135deg, #022864 0%, #012558 55%, #011840 100%);
+    color: #ffffff;
+}
+
+.rcbs-picker-bg {
+    position: absolute;
+    inset: 0;
+    background-image: url('/backgroundMap.webp');
+    background-size: cover;
+    background-position: center;
+    opacity: 0.08;
+    filter: saturate(0.8);
+}
+
+.rcbs-picker-accent {
+    position: absolute;
+    inset: 0;
+    background:
+        radial-gradient(circle at 15% 110%, color-mix(in srgb, var(--rcbs-accent, #022864) 55%, transparent) 0%, transparent 55%),
+        radial-gradient(circle at 85% -10%, color-mix(in srgb, var(--rcbs-accent, #022864) 30%, transparent) 0%, transparent 50%);
+    mix-blend-mode: screen;
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+.rcbs-picker-container {
+    position: relative;
+    z-index: 2;
+    max-width: 1080px;
+}
+
+.rcbs-picker-head {
+    text-align: center;
+    margin: 1.5rem auto 2.6rem;
+    max-width: 640px;
+}
+
+.rcbs-picker-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    font-family: 'Roboto', sans-serif;
+    font-size: 0.66rem;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: #FFBE0A;
+    background: rgba(255, 190, 10, 0.09);
+    border: 1px solid rgba(255, 190, 10, 0.28);
+    border-radius: 999px;
+    padding: 0.34rem 0.85rem;
+    margin-bottom: 1.1rem;
+}
+
+.rcbs-picker-title {
+    font-family: 'Titan One', sans-serif;
+    font-size: clamp(2.2rem, 5vw, 3.2rem);
+    color: #ffffff;
+    line-height: 1.04;
+    margin: 0;
+    letter-spacing: -0.01em;
+    text-shadow: 0 4px 28px rgba(0, 0, 0, 0.35);
+}
+
+.rcbs-picker-rule {
+    width: 52px;
+    height: 3px;
+    background: var(--rcbs-accent, #FFBE0A);
+    border-radius: 3px;
+    margin: 1rem auto 1.2rem;
+    box-shadow: 0 0 18px color-mix(in srgb, var(--rcbs-accent, #FFBE0A) 60%, transparent);
+}
+
+.rcbs-picker-sub {
+    font-family: 'Roboto', sans-serif;
+    font-size: clamp(0.92rem, 2vw, 1.02rem);
+    font-weight: 300;
+    color: rgba(255, 255, 255, 0.78);
+    line-height: 1.65;
+    margin: 0 auto;
+    max-width: 540px;
+}
+
+.rcbs-picker-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 1.1rem;
+    margin-top: 1.5rem;
+}
+
+.rcbs-picker-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    text-align: left;
+    background: rgba(255, 255, 255, 0.12);
+    border: 1.5px solid rgba(255, 255, 255, 0.22);
+    border-radius: 18px;
+    padding: 1.4rem 1.3rem 1.25rem;
+    color: inherit;
+    cursor: pointer;
+    overflow: hidden;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    transition: transform 0.25s ease, border-color 0.25s ease, background 0.25s ease, box-shadow 0.25s ease;
+}
+
+.rcbs-picker-card:hover,
+.rcbs-picker-card:focus-visible {
+    transform: translateY(-4px);
+    border-color: rgba(255, 255, 255, 0.4);
+    background: rgba(255, 255, 255, 0.18);
+    box-shadow: 0 18px 38px rgba(0, 0, 0, 0.28);
+    outline: none;
+}
+
+.rcbs-picker-card-bar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: var(--rcbs-accent, #022864);
+    transform: scaleX(0.3);
+    transform-origin: left;
+    transition: transform 0.35s ease;
+}
+
+.rcbs-picker-card:hover .rcbs-picker-card-bar,
+.rcbs-picker-card:focus-visible .rcbs-picker-card-bar {
+    transform: scaleX(1);
+}
+
+/* .rcbs-picker-card-head {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    margin-bottom: 0.7rem;
+} */
+
+.rcbs-picker-card-icon {
+    color: #FFBE0A;
+}
+
+.rcbs-picker-card-band {
+    font-family: 'Roboto', sans-serif;
+    font-size: 0.62rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.78);
+}
+
+.rcbs-picker-card-name {
+    font-family: 'Titan One', sans-serif;
+    font-size: 1.25rem;
+    color: #ffffff;
+    line-height: 1.18;
+    letter-spacing: -0.01em;
+    margin: 0 0 0.85rem;
+}
+
+.rcbs-picker-card-dates {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    font-family: 'Roboto', sans-serif;
+    font-size: 0.82rem;
+    color: rgba(255, 255, 255, 0.82);
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    border-radius: 999px;
+    padding: 0.32rem 0.75rem;
+    margin-bottom: 1.1rem;
+    letter-spacing: 0.01em;
+}
+
+.rcbs-picker-card-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-family: 'Roboto', sans-serif;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #FFBE0A;
+    padding-top: 0.7rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.18);
+    width: 100%;
+    transition: gap 0.22s ease;
+}
+
+.rcbs-picker-card:hover .rcbs-picker-card-cta,
+.rcbs-picker-card:focus-visible .rcbs-picker-card-cta {
+    gap: 0.65rem;
+}
+
+.rcbs-picker-loader {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 50vh;
+    color: rgba(255, 255, 255, 0.85);
+}
+
+@media (max-width: 480px) {
+    .rcbs-picker {
+        padding: 2.5rem 1rem 4rem;
+    }
+    .rcbs-picker-grid {
+        grid-template-columns: 1fr;
+    }
 }
 
 
