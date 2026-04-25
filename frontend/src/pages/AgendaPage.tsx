@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo, useRef, useLayoutEffect } from 'react';
 import axios from 'axios';
 import { Container } from 'react-bootstrap';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -8,7 +8,7 @@ import interactionPlugin from '@fullcalendar/interaction';
 import bootstrap5Plugin from '@fullcalendar/bootstrap5';
 import {
     BsCalendar3, BsGeoAltFill, BsClock, BsClockFill,
-    BsFileArrowDownFill,
+    BsFileArrowDownFill, BsFlag, BsFlagFill,
 } from 'react-icons/bs';
 
 import '../styles/AgendaPage.css';
@@ -535,6 +535,145 @@ const TimelineSection: React.FC<{ events: EventData[] }> = ({ events }) => {
         .filter(e => activeSection === null || e.section === activeSection)
         .sort((a, b) => new Date(a.start_time).getTime() - new Date(b.start_time).getTime());
 
+    /* ── Refs & measurements for the SVG trail ── */
+    const wrapRef  = useRef<HTMLDivElement>(null);
+    const itemRefs = useRef<Array<HTMLDivElement | null>>([]);
+    const pathRef  = useRef<SVGPathElement>(null);
+
+    const [points, setPoints] = useState<Array<{ x: number; y: number }>>([]);
+    const [trail,  setTrail]  = useState<{ w: number; h: number; mobile: boolean }>({ w: 0, h: 0, mobile: false });
+    const [pathLen, setPathLen] = useState(0);
+    const [hereXY,  setHereXY]  = useState<{ x: number; y: number } | null>(null);
+
+    /* Months for the side nav */
+    const months = useMemo(() => {
+        const seen = new Set<string>();
+        const out: { key: string; label: string; idx: number }[] = [];
+        filteredEvents.forEach((ev, i) => {
+            const k = getMonthKey(ev.start_time);
+            if (!seen.has(k)) {
+                seen.add(k);
+                out.push({ key: k, label: getMonthLabel(ev.start_time), idx: i });
+            }
+        });
+        return out;
+    }, [filteredEvents]);
+
+    /* Measure stage positions along a sinusoidal trail */
+    useLayoutEffect(() => {
+        const measure = () => {
+            const wrap = wrapRef.current;
+            if (!wrap) return;
+            const wRect  = wrap.getBoundingClientRect();
+            const w      = wRect.width;
+            const h      = wrap.offsetHeight;
+            const mobile = w < 700;
+            const centerX = mobile ? 22 : w / 2;
+            const amp     = mobile ? 0 : Math.min(w * 0.075, 60);
+
+            const pts: Array<{ x: number; y: number }> = [];
+            for (let i = 0; i < filteredEvents.length; i++) {
+                const el = itemRefs.current[i];
+                if (!el) continue;
+                const r = el.getBoundingClientRect();
+                const y = r.top - wRect.top + r.height / 2;
+                const dir = i % 2 === 0 ? -1 : 1;
+                pts.push({ x: centerX + dir * amp, y });
+            }
+            setPoints(pts);
+            setTrail({ w, h, mobile });
+        };
+
+        measure();
+        const ro = new ResizeObserver(measure);
+        if (wrapRef.current) ro.observe(wrapRef.current);
+        const t1 = setTimeout(measure, 250);
+        const t2 = setTimeout(measure, 700);
+        return () => { ro.disconnect(); clearTimeout(t1); clearTimeout(t2); };
+    }, [filteredEvents.length, activeSection]);
+
+    /* Build the SVG path string */
+    const pathD = useMemo(() => {
+        if (points.length === 0) return '';
+        const parts: string[] = [];
+        parts.push(`M ${points[0].x} 0`);
+        parts.push(`L ${points[0].x} ${points[0].y}`);
+        for (let i = 1; i < points.length; i++) {
+            const prev = points[i - 1];
+            const curr = points[i];
+            const my = (prev.y + curr.y) / 2;
+            parts.push(`C ${prev.x} ${my}, ${curr.x} ${my}, ${curr.x} ${curr.y}`);
+        }
+        const last = points[points.length - 1];
+        parts.push(`L ${last.x} ${trail.h}`);
+        return parts.join(' ');
+    }, [points, trail.h]);
+
+    /* Total path length */
+    useLayoutEffect(() => {
+        if (pathRef.current && pathD) {
+            try { setPathLen(pathRef.current.getTotalLength()); } catch {}
+        }
+    }, [pathD]);
+
+    /* Length of the path corresponding to the past portion */
+    const pastLen = useMemo(() => {
+        if (!pathRef.current || pathLen === 0 || points.length === 0) return 0;
+        let pastEnd = -1;
+        for (let i = 0; i < filteredEvents.length; i++) {
+            if (new Date(filteredEvents[i].end_time) < now) pastEnd = i;
+            else break;
+        }
+        if (pastEnd < 0 || !points[pastEnd]) return 0;
+        const targetY = points[pastEnd].y;
+        let lo = 0, hi = pathLen;
+        for (let i = 0; i < 24; i++) {
+            const mid = (lo + hi) / 2;
+            const pt = pathRef.current.getPointAtLength(mid);
+            if (pt.y < targetY) lo = mid; else hi = mid;
+        }
+        return lo;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [pathLen, points, filteredEvents]);
+
+    /* "Vous êtes ici" marker — follows scroll along the path */
+    useEffect(() => {
+        if (pathLen === 0) return;
+        let raf = 0;
+        const onScroll = () => {
+            cancelAnimationFrame(raf);
+            raf = requestAnimationFrame(() => {
+                const wrap = wrapRef.current;
+                const path = pathRef.current;
+                if (!wrap || !path) return;
+                const r = wrap.getBoundingClientRect();
+                const viewMid = window.innerHeight * 0.5;
+                const cur = viewMid - r.top;
+                const p = Math.max(0, Math.min(1, cur / r.height));
+                try {
+                    const pt = path.getPointAtLength(p * pathLen);
+                    setHereXY({ x: pt.x, y: pt.y });
+                } catch {}
+            });
+        };
+        window.addEventListener('scroll', onScroll, { passive: true });
+        onScroll();
+        return () => { window.removeEventListener('scroll', onScroll); cancelAnimationFrame(raf); };
+    }, [pathLen]);
+
+    /* "Aujourd'hui" boundary between past and future events */
+    const todayY = useMemo(() => {
+        if (points.length === 0) return null;
+        let firstFuture = -1;
+        for (let i = 0; i < filteredEvents.length; i++) {
+            if (new Date(filteredEvents[i].end_time) >= now) { firstFuture = i; break; }
+        }
+        if (firstFuture <= 0) return null;
+        if (!points[firstFuture - 1] || !points[firstFuture]) return null;
+        return (points[firstFuture - 1].y + points[firstFuture].y) / 2;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [points, filteredEvents]);
+
     return (
         <section className="ap-tl-section">
             <Container>
@@ -554,144 +693,233 @@ const TimelineSection: React.FC<{ events: EventData[] }> = ({ events }) => {
                             light
                         />
 
-                        <div
-                            className="ap-tl-wrap"
-                            style={{ '--tl-color': activeColor } as React.CSSProperties}
-                        >
-                            <AnimatePresence mode="wait">
-                                {filteredEvents.length === 0 ? (
-                                    <motion.p
-                                        key="empty"
-                                        className="ap-tl-empty"
-                                        initial={{ opacity: 0 }}
-                                        animate={{ opacity: 1 }}
-                                        exit={{ opacity: 0 }}
+                        <div className="ap-tl-layout">
+                            <div
+                                ref={wrapRef}
+                                className={`ap-tl-wrap${trail.mobile ? ' ap-tl-wrap-mobile' : ''}`}
+                                style={{ '--tl-color': activeColor } as React.CSSProperties}
+                            >
+                                {/* SVG trail */}
+                                <svg
+                                    className="ap-tl-svg"
+                                    width={trail.w || 0}
+                                    height={trail.h || 0}
+                                    viewBox={`0 0 ${trail.w || 1} ${trail.h || 1}`}
+                                    aria-hidden
+                                >
+                                    {pathD && (
+                                        <>
+                                            {/* Future = dashed */}
+                                            <path
+                                                d={pathD}
+                                                fill="none"
+                                                stroke={activeColor}
+                                                strokeOpacity="0.32"
+                                                strokeWidth="2.5"
+                                                strokeDasharray="2 9"
+                                                strokeLinecap="round"
+                                            />
+                                            {/* Past = solid overlay */}
+                                            {pastLen > 0 && (
+                                                <path
+                                                    d={pathD}
+                                                    fill="none"
+                                                    stroke={activeColor}
+                                                    strokeOpacity="0.85"
+                                                    strokeWidth="3"
+                                                    strokeLinecap="round"
+                                                    strokeDasharray={`${pastLen} ${Math.max(pathLen - pastLen + 1, 1)}`}
+                                                />
+                                            )}
+                                            {/* Hidden ref path used for getPointAtLength */}
+                                            <path ref={pathRef} d={pathD} fill="none" stroke="none" />
+                                        </>
+                                    )}
+
+                                    {/* "Vous êtes ici" marker */}
+                                    {hereXY && (
+                                        <g transform={`translate(${hereXY.x}, ${hereXY.y})`}>
+                                            <circle r="14" fill={activeColor} fillOpacity="0.16" className="ap-tl-here-pulse" />
+                                            <circle r="7" fill="white" stroke={activeColor} strokeWidth="2.5" />
+                                            <circle r="3" fill={activeColor} />
+                                        </g>
+                                    )}
+                                </svg>
+
+                                {/* "Aujourd'hui" marker */}
+                                {todayY !== null && (
+                                    <div
+                                        className="ap-tl-today"
+                                        style={{ top: todayY, '--tl-color': activeColor } as React.CSSProperties}
                                     >
-                                        Aucun événement pour cette section.
-                                    </motion.p>
-                                ) : (
-                                    <motion.div
-                                        key={activeSection ?? 'all'}
-                                        initial={{ opacity: 0 }}
-                                        animate={{ opacity: 1 }}
-                                        exit={{ opacity: 0 }}
-                                        transition={{ duration: 0.22 }}
-                                    >
-                                        {(() => {
-                                            let lastMonthKey = '';
-                                            let idx = 0;
-                                            return filteredEvents.map(ev => {
-                                                const monthKey = getMonthKey(ev.start_time);
-                                                const showSep = monthKey !== lastMonthKey;
-                                                if (showSep) lastMonthKey = monthKey;
+                                        <span className="ap-tl-today-line" />
+                                        <span className="ap-tl-today-pill">Aujourd'hui</span>
+                                        <span className="ap-tl-today-line" />
+                                    </div>
+                                )}
 
-                                                const isPast  = new Date(ev.end_time) < now;
-                                                const section = getSectionInfo(ev.section);
-                                                const isLeft  = idx % 2 === 0;
-                                                idx++;
+                                <AnimatePresence mode="wait">
+                                    {filteredEvents.length === 0 ? (
+                                        <motion.p
+                                            key="empty"
+                                            className="ap-tl-empty"
+                                            initial={{ opacity: 0 }}
+                                            animate={{ opacity: 1 }}
+                                            exit={{ opacity: 0 }}
+                                        >
+                                            Aucun événement pour cette section.
+                                        </motion.p>
+                                    ) : (
+                                        <motion.div
+                                            key={activeSection ?? 'all'}
+                                            initial={{ opacity: 0 }}
+                                            animate={{ opacity: 1 }}
+                                            exit={{ opacity: 0 }}
+                                            transition={{ duration: 0.22 }}
+                                        >
+                                            {(() => {
+                                                let lastMonthKey = '';
+                                                let idx = 0;
+                                                return filteredEvents.map(ev => {
+                                                    const monthKey = getMonthKey(ev.start_time);
+                                                    const showSep = monthKey !== lastMonthKey;
+                                                    if (showSep) lastMonthKey = monthKey;
 
-                                                const card = (
-                                                    <div
-                                                        className={`ap-tl-card${isLeft ? ' ap-tl-card-left' : ' ap-tl-card-right'}`}
-                                                        style={{ '--cc': section.color } as React.CSSProperties}
-                                                    >
-                                                        {/* Header row */}
-                                                        <div className="ap-tl-card-head">
-                                                            <div className="ap-tl-card-date"
-                                                                style={{ '--cc': section.color } as React.CSSProperties}>
-                                                                <span className="ap-tl-card-dayname">
-                                                                    {fmtDayName(ev.start_time)}
-                                                                </span>
-                                                                <span className="ap-tl-card-day">
-                                                                    {fmtDay(ev.start_time)}
-                                                                </span>
-                                                                <span className="ap-tl-card-mon">
-                                                                    {fmtMonth(ev.start_time)}
-                                                                </span>
-                                                            </div>
+                                                    const isPast  = new Date(ev.end_time) < now;
+                                                    const section = getSectionInfo(ev.section);
+                                                    const isLeft  = idx % 2 === 0;
+                                                    const myIdx   = idx;
+                                                    idx++;
 
-                                                            <div className="ap-tl-card-main">
-                                                                <div className="ap-tl-card-title"
-                                                                    style={{ color: section.color }}>
-                                                                    {ev.title}
+                                                    const card = (
+                                                        <div
+                                                            className={`ap-tl-card${isLeft ? ' ap-tl-card-left' : ' ap-tl-card-right'}`}
+                                                            style={{ '--cc': section.color } as React.CSSProperties}
+                                                        >
+                                                            <div className="ap-tl-card-head">
+                                                                <div className="ap-tl-card-date"
+                                                                    style={{ '--cc': section.color } as React.CSSProperties}>
+                                                                    <span className="ap-tl-card-dayname">{fmtDayName(ev.start_time)}</span>
+                                                                    <span className="ap-tl-card-day">{fmtDay(ev.start_time)}</span>
+                                                                    <span className="ap-tl-card-mon">{fmtMonth(ev.start_time)}</span>
                                                                 </div>
-                                                                <div className="ap-tl-card-meta">
-                                                                    <span className="ap-tl-meta-item">
-                                                                        <BsClock size={11} />
-                                                                        {fmtTimeRange(ev.start_time, ev.end_time)}
-                                                                    </span>
-                                                                    {ev.location && (
+
+                                                                <div className="ap-tl-card-main">
+                                                                    <div className="ap-tl-card-title" style={{ color: section.color }}>
+                                                                        {ev.title}
+                                                                    </div>
+                                                                    <div className="ap-tl-card-meta">
                                                                         <span className="ap-tl-meta-item">
-                                                                            <BsGeoAltFill size={11} />
-                                                                            {ev.location}
+                                                                            <BsClock size={11} />
+                                                                            {fmtTimeRange(ev.start_time, ev.end_time)}
+                                                                        </span>
+                                                                        {ev.location && (
+                                                                            <span className="ap-tl-meta-item">
+                                                                                <BsGeoAltFill size={11} />
+                                                                                {ev.location}
+                                                                            </span>
+                                                                        )}
+                                                                    </div>
+                                                                </div>
+
+                                                                <div className="ap-tl-card-badges">
+                                                                    {activeSection === null && (
+                                                                        <span className="ap-tl-section-badge" style={{ background: section.color }}>
+                                                                            {section.name}
                                                                         </span>
                                                                     )}
+                                                                    {isPast && (<span className="ap-tl-past-badge">Passé</span>)}
                                                                 </div>
                                                             </div>
 
-                                                            <div className="ap-tl-card-badges">
-                                                                {activeSection === null && (
-                                                                    <span className="ap-tl-section-badge"
-                                                                        style={{ background: section.color }}>
-                                                                        {section.name}
-                                                                    </span>
-                                                                )}
-                                                                {isPast && (
-                                                                    <span className="ap-tl-past-badge">Passé</span>
-                                                                )}
-                                                            </div>
+                                                            {ev.description && (
+                                                                <p className="ap-tl-card-desc">{ev.description}</p>
+                                                            )}
                                                         </div>
+                                                    );
 
-                                                        {ev.description && (
-                                                            <p className="ap-tl-card-desc">{ev.description}</p>
-                                                        )}
-                                                    </div>
-                                                );
-
-                                                return (
-                                                    <React.Fragment key={ev.id}>
-                                                        {showSep && (
+                                                    return (
+                                                        <React.Fragment key={ev.id}>
+                                                            {showSep && (
+                                                                <motion.div
+                                                                    className="ap-tl-month-sep"
+                                                                    initial={{ opacity: 0, scale: 0.9 }}
+                                                                    whileInView={{ opacity: 1, scale: 1 }}
+                                                                    viewport={{ once: true, amount: 0.5 }}
+                                                                    transition={{ duration: 0.32, ease: 'easeOut' }}
+                                                                >
+                                                                    <span className="ap-tl-month-pill"
+                                                                        style={{ '--tl-color': activeColor } as React.CSSProperties}>
+                                                                        {getMonthLabel(ev.start_time)}
+                                                                    </span>
+                                                                </motion.div>
+                                                            )}
                                                             <motion.div
-                                                                className="ap-tl-month-sep"
-                                                                initial={{ opacity: 0, scale: 0.9 }}
-                                                                whileInView={{ opacity: 1, scale: 1 }}
-                                                                viewport={{ once: true, amount: 0.5 }}
-                                                                transition={{ duration: 0.32, ease: 'easeOut' }}
+                                                                ref={(el: HTMLDivElement | null) => { itemRefs.current[myIdx] = el; }}
+                                                                className={`ap-tl-item${isPast ? ' ap-tl-item-past' : ''}`}
+                                                                initial={{ x: isLeft ? -22 : 22, opacity: 0 }}
+                                                                whileInView={{ x: 0, opacity: isPast ? 0.55 : 1 }}
+                                                                viewport={{ once: true, amount: 0.12 }}
+                                                                transition={{ duration: 0.42, ease: 'easeOut' }}
                                                             >
-                                                                <span className="ap-tl-month-pill"
-                                                                    style={{ '--tl-color': activeColor } as React.CSSProperties}>
-                                                                    {getMonthLabel(ev.start_time)}
-                                                                </span>
+                                                                <div className="ap-tl-slot ap-tl-slot-left">
+                                                                    {isLeft && card}
+                                                                </div>
+                                                                <div className="ap-tl-slot ap-tl-slot-right">
+                                                                    {!isLeft && card}
+                                                                </div>
                                                             </motion.div>
-                                                        )}
-                                                        <motion.div
-                                                            className={`ap-tl-item${isPast ? ' ap-tl-item-past' : ''}`}
-                                                            initial={{ x: isLeft ? -22 : 22, opacity: 0 }}
-                                                            whileInView={{ x: 0, opacity: isPast ? 0.48 : 1 }}
-                                                            viewport={{ once: true, amount: 0.12 }}
-                                                            transition={{ duration: 0.42, ease: 'easeOut' }}
-                                                        >
-                                                            {/* Left slot */}
-                                                            <div className="ap-tl-slot ap-tl-slot-left">
-                                                                {isLeft && card}
-                                                            </div>
-                                                            {/* Dot */}
-                                                            <div className="ap-tl-center">
-                                                                <div className="ap-tl-dot"
-                                                                    style={{ '--cc': section.color } as React.CSSProperties} />
-                                                            </div>
-                                                            {/* Right slot */}
-                                                            <div className="ap-tl-slot ap-tl-slot-right">
-                                                                {!isLeft && card}
-                                                            </div>
-                                                        </motion.div>
-                                                    </React.Fragment>
-                                                );
-                                            });
-                                        })()}
-                                    </motion.div>
-                                )}
-                            </AnimatePresence>
+                                                        </React.Fragment>
+                                                    );
+                                                });
+                                            })()}
+                                        </motion.div>
+                                    )}
+                                </AnimatePresence>
+
+                                {/* Stage markers — absolutely positioned along the curve */}
+                                {points.map((p, i) => {
+                                    const ev = filteredEvents[i];
+                                    if (!ev) return null;
+                                    const section = getSectionInfo(ev.section);
+                                    const isPast = new Date(ev.end_time) < now;
+                                    return (
+                                        <div
+                                            key={`stage-${ev.id}`}
+                                            className={`ap-tl-stage${isPast ? ' ap-tl-stage-past' : ''}`}
+                                            style={{
+                                                left: p.x,
+                                                top: p.y,
+                                                '--cc': section.color,
+                                            } as React.CSSProperties}
+                                            title={ev.title}
+                                        >
+                                            {isPast ? <BsFlagFill size={11} /> : <BsFlag size={11} />}
+                                        </div>
+                                    );
+                                })}
+                            </div>
+
+                            {/* Sticky side nav by month */}
+                            {months.length > 1 && (
+                                <nav className="ap-tl-nav d-none d-lg-flex">
+                                    <span className="ap-tl-nav-title">Aller à</span>
+                                    {months.map(m => (
+                                        <button
+                                            key={m.key}
+                                            className="ap-tl-nav-btn"
+                                            style={{ '--tl-color': activeColor } as React.CSSProperties}
+                                            onClick={() => {
+                                                const target = itemRefs.current[m.idx];
+                                                if (target) target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                                            }}
+                                        >
+                                            <span className="ap-tl-nav-dot" />
+                                            {m.label}
+                                        </button>
+                                    ))}
+                                </nav>
+                            )}
                         </div>
                     </>
                 )}
