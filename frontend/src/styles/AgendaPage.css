@@ -717,15 +717,13 @@
     opacity: 0.7;
 }
 
-/* "Aujourd'hui" boundary marker */
+/* "Aujourd'hui" boundary marker — sits in normal flow between past and future */
 .ap-tl-today {
-    position: absolute;
-    left: 0;
-    right: 0;
-    transform: translateY(-50%);
     display: flex;
     align-items: center;
     gap: 0.6rem;
+    margin: 1.6rem 0 1.4rem;
+    position: relative;
     z-index: 2;
     pointer-events: none;
 }
@@ -1004,11 +1002,17 @@
 }
 
 /* ── Mobile timeline: single column with left-side trail ── */
-@media (max-width: 700px) {
-    .ap-tl-layout { gap: 0; }
+@media (max-width: 1200px) {
+    .ap-tl-section { padding: 4rem 1rem; }
+    /* Pull the timeline flush to the section padding (cancel container gutters) */
+    .ap-tl-section .ap-tl-layout {
+        margin-left: -12px;
+        margin-right: -12px;
+        gap: 0;
+    }
     .ap-tl-item {
         flex-direction: column;
-        padding-left: 2.6rem;
+        padding-left: 3rem;
         position: relative;
     }
     .ap-tl-slot {
@@ -1019,6 +1023,7 @@
     .ap-tl-slot-right:empty {
         display: none;
     }
+    /* Force every card to render to the right of the trail (line is on the left, no zig-zag) */
     .ap-tl-card-left,
     .ap-tl-card-right {
         border-left: 4px solid var(--cc, #022864);
@@ -1033,8 +1038,15 @@
         height: 26px;
     }
     .ap-tl-today {
-        padding-left: 2.6rem;
+        padding-left: 3rem;
+        margin: 1.4rem 0 1.2rem;
     }
+    .ap-tl-month-sep {
+        padding-left: 3rem;
+    }
+    /* .ap-tl-month-sep::before {
+        max-width: 63px;
+    } */
     .ap-filters {
         justify-content: flex-start;
         flex-wrap: wrap;
@@ -1049,5 +1061,5 @@
     .ap-hero         { padding: 4.5rem 1.25rem 3.5rem; }
     .ap-hl-section   { padding: 4rem 1.25rem; }
     .ap-cal-section  { padding: 4rem 1.25rem; }
-    .ap-tl-section   { padding: 4rem 1.25rem; }
+    /* .ap-tl-section padding handled by the 700px rule above (4rem 1rem) */
 }

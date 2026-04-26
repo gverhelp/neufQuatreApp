@@ -567,8 +567,9 @@ const TimelineSection: React.FC<{ events: EventData[] }> = ({ events }) => {
             const wRect  = wrap.getBoundingClientRect();
             const w      = wRect.width;
             const h      = wrap.offsetHeight;
-            const mobile = w < 700;
-            const centerX = mobile ? 22 : w / 2;
+            // Use viewport width to stay in sync with CSS @media breakpoint
+            const mobile = window.innerWidth <= 1200;
+            const centerX = mobile ? 14 : w / 2;
             const amp     = mobile ? 0 : Math.min(w * 0.075, 60);
 
             const pts: Array<{ x: number; y: number }> = [];
@@ -587,9 +588,14 @@ const TimelineSection: React.FC<{ events: EventData[] }> = ({ events }) => {
         measure();
         const ro = new ResizeObserver(measure);
         if (wrapRef.current) ro.observe(wrapRef.current);
+        window.addEventListener('resize', measure);
         const t1 = setTimeout(measure, 250);
         const t2 = setTimeout(measure, 700);
-        return () => { ro.disconnect(); clearTimeout(t1); clearTimeout(t2); };
+        return () => {
+            ro.disconnect();
+            window.removeEventListener('resize', measure);
+            clearTimeout(t1); clearTimeout(t2);
+        };
     }, [filteredEvents.length, activeSection]);
 
     /* Build the SVG path string */
@@ -661,18 +667,12 @@ const TimelineSection: React.FC<{ events: EventData[] }> = ({ events }) => {
         return () => { window.removeEventListener('scroll', onScroll); cancelAnimationFrame(raf); };
     }, [pathLen]);
 
-    /* "Aujourd'hui" boundary between past and future events */
-    const todayY = useMemo(() => {
-        if (points.length === 0) return null;
-        let firstFuture = -1;
-        for (let i = 0; i < filteredEvents.length; i++) {
-            if (new Date(filteredEvents[i].end_time) >= now) { firstFuture = i; break; }
-        }
-        if (firstFuture <= 0) return null;
-        if (!points[firstFuture - 1] || !points[firstFuture]) return null;
-        return (points[firstFuture - 1].y + points[firstFuture].y) / 2;
+    /* Whether at least one past event exists — used to decide if we render the "Aujourd'hui" row */
+    const hasPastEvent = useMemo(
+        () => filteredEvents.some(e => new Date(e.end_time) < now),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [points, filteredEvents]);
+        [filteredEvents],
+    );
 
     return (
         <section className="ap-tl-section">
@@ -709,23 +709,23 @@ const TimelineSection: React.FC<{ events: EventData[] }> = ({ events }) => {
                                 >
                                     {pathD && (
                                         <>
-                                            {/* Future = dashed */}
+                                            {/* Future = dashed gray */}
                                             <path
                                                 d={pathD}
                                                 fill="none"
-                                                stroke={activeColor}
-                                                strokeOpacity="0.32"
+                                                stroke="#94a3b8"
+                                                strokeOpacity="0.55"
                                                 strokeWidth="2.5"
                                                 strokeDasharray="2 9"
                                                 strokeLinecap="round"
                                             />
-                                            {/* Past = solid overlay */}
+                                            {/* Past = solid gray overlay */}
                                             {pastLen > 0 && (
                                                 <path
                                                     d={pathD}
                                                     fill="none"
-                                                    stroke={activeColor}
-                                                    strokeOpacity="0.85"
+                                                    stroke="#94a3b8"
+                                                    strokeOpacity="0.95"
                                                     strokeWidth="3"
                                                     strokeLinecap="round"
                                                     strokeDasharray={`${pastLen} ${Math.max(pathLen - pastLen + 1, 1)}`}
@@ -745,18 +745,6 @@ const TimelineSection: React.FC<{ events: EventData[] }> = ({ events }) => {
                                         </g>
                                     )}
                                 </svg>
-
-                                {/* "Aujourd'hui" marker */}
-                                {todayY !== null && (
-                                    <div
-                                        className="ap-tl-today"
-                                        style={{ top: todayY, '--tl-color': activeColor } as React.CSSProperties}
-                                    >
-                                        <span className="ap-tl-today-line" />
-                                        <span className="ap-tl-today-pill">Aujourd'hui</span>
-                                        <span className="ap-tl-today-line" />
-                                    </div>
-                                )}
 
                                 <AnimatePresence mode="wait">
                                     {filteredEvents.length === 0 ? (
@@ -780,12 +768,16 @@ const TimelineSection: React.FC<{ events: EventData[] }> = ({ events }) => {
                                             {(() => {
                                                 let lastMonthKey = '';
                                                 let idx = 0;
+                                                let renderedToday = false;
                                                 return filteredEvents.map(ev => {
                                                     const monthKey = getMonthKey(ev.start_time);
                                                     const showSep = monthKey !== lastMonthKey;
                                                     if (showSep) lastMonthKey = monthKey;
 
                                                     const isPast  = new Date(ev.end_time) < now;
+                                                    const showToday = !renderedToday && !isPast && hasPastEvent;
+                                                    if (!isPast) renderedToday = true;
+
                                                     const section = getSectionInfo(ev.section);
                                                     const isLeft  = idx % 2 === 0;
                                                     const myIdx   = idx;
@@ -852,6 +844,20 @@ const TimelineSection: React.FC<{ events: EventData[] }> = ({ events }) => {
                                                                         style={{ '--tl-color': activeColor } as React.CSSProperties}>
                                                                         {getMonthLabel(ev.start_time)}
                                                                     </span>
+                                                                </motion.div>
+                                                            )}
+                                                            {showToday && (
+                                                                <motion.div
+                                                                    className="ap-tl-today"
+                                                                    style={{ '--tl-color': activeColor } as React.CSSProperties}
+                                                                    initial={{ opacity: 0, y: -8 }}
+                                                                    whileInView={{ opacity: 1, y: 0 }}
+                                                                    viewport={{ once: true, amount: 0.5 }}
+                                                                    transition={{ duration: 0.34, ease: 'easeOut' }}
+                                                                >
+                                                                    <span className="ap-tl-today-line" />
+                                                                    <span className="ap-tl-today-pill">Aujourd'hui</span>
+                                                                    <span className="ap-tl-today-line" />
                                                                 </motion.div>
                                                             )}
                                                             <motion.div
