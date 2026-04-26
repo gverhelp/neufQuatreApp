@@ -1499,17 +1499,13 @@
     line-height: 1.4;
     margin-bottom: 2px;
 }
-.ap-cal-tooltip-pill {
-    display: inline-block;
-    padding: 4px 8px;
-    border-radius: 999px;
-    color: white;
+.ap-cal-tooltip-section {
     font-family: 'Roboto', sans-serif;
-    font-size: 0.55rem;
+    font-size: 0.65rem;
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.07em;
-    margin-bottom: 0.5rem;
+    margin-top: 0.35rem;
 }
 .ap-cal-tooltip-arrow {
     position: absolute;

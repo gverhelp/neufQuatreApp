@@ -838,13 +838,6 @@ const CalendarSection: React.FC<{ events: EventData[] }> = ({ events }) => {
                     className="ap-cal-tooltip"
                     style={{ left: calTooltip.x, top: calTooltip.y }}
                 >
-                    <div
-                        className="ap-cal-tooltip-pill"
-                        style={{ background: getSectionInfo(calTooltip.ev.section).color }}
-                    >
-                        {getSectionInfo(calTooltip.ev.section).name}
-                    </div>
-
                     <div className="ap-cal-tooltip-title">
                         {calTooltip.ev.highlight && <span className="ap-cal-tooltip-star">★</span>}
                         {calTooltip.ev.title}
@@ -863,6 +856,13 @@ const CalendarSection: React.FC<{ events: EventData[] }> = ({ events }) => {
                     </div>
 
                     <div className="ap-cal-tooltip-arrow" />
+
+                    <div
+                        className="ap-cal-tooltip-section"
+                        style={{ color: getSectionInfo(calTooltip.ev.section).color }}
+                    >
+                        {getSectionInfo(calTooltip.ev.section).name}
+                    </div>
                 </div>
             )}
         </section>
