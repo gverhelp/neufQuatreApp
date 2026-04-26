@@ -71,7 +71,6 @@ function getMonthLabel(iso: string) {
 
 /* ── Calendar date helpers ── */
 const startOfDay = (d: Date) => { const x = new Date(d); x.setHours(0, 0, 0, 0); return x; };
-const endOfDay   = (d: Date) => { const x = new Date(d); x.setHours(23, 59, 59, 999); return x; };
 const sameDay    = (a: Date, b: Date) =>
     a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate();
 const sameMonth  = (a: Date, b: Date) =>
@@ -88,13 +87,6 @@ function getMonthGrid(cursor: Date): Date[] {
         d.setDate(start.getDate() + i);
         return d;
     });
-}
-
-/** True if event `ev` overlaps the given day */
-function eventOnDay(ev: EventData, day: Date): boolean {
-    const s = new Date(ev.start_time);
-    const e = new Date(ev.end_time);
-    return s <= endOfDay(day) && e >= startOfDay(day);
 }
 
 /** Monday-aligned start of week for `d` */
