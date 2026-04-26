@@ -2,13 +2,10 @@ import React, { useEffect, useState, useMemo, useRef, useLayoutEffect } from 're
 import axios from 'axios';
 import { Container } from 'react-bootstrap';
 import { motion, AnimatePresence } from 'framer-motion';
-import FullCalendar from '@fullcalendar/react';
-import dayGridPlugin from '@fullcalendar/daygrid';
-import interactionPlugin from '@fullcalendar/interaction';
-import bootstrap5Plugin from '@fullcalendar/bootstrap5';
 import {
     BsCalendar3, BsGeoAltFill, BsClock, BsClockFill,
     BsFileArrowDownFill, BsFlag, BsFlagFill,
+    BsChevronLeft, BsChevronRight,
 } from 'react-icons/bs';
 
 import '../styles/AgendaPage.css';
@@ -71,6 +68,52 @@ function getMonthLabel(iso: string) {
         .toLocaleDateString('fr-BE', { month: 'long', year: 'numeric' })
         .replace(/^\w/, c => c.toUpperCase());
 }
+
+/* ── Calendar date helpers ── */
+const startOfDay = (d: Date) => { const x = new Date(d); x.setHours(0, 0, 0, 0); return x; };
+const endOfDay   = (d: Date) => { const x = new Date(d); x.setHours(23, 59, 59, 999); return x; };
+const sameDay    = (a: Date, b: Date) =>
+    a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate();
+const sameMonth  = (a: Date, b: Date) =>
+    a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth();
+
+/** 6×7 grid starting Monday for the month containing `cursor` */
+function getMonthGrid(cursor: Date): Date[] {
+    const first = new Date(cursor.getFullYear(), cursor.getMonth(), 1);
+    const firstDow = (first.getDay() + 6) % 7;        // 0 = Monday
+    const start = new Date(first);
+    start.setDate(1 - firstDow);
+    return Array.from({ length: 35 }, (_, i) => {
+        const d = new Date(start);
+        d.setDate(start.getDate() + i);
+        return d;
+    });
+}
+
+/** True if event `ev` overlaps the given day */
+function eventOnDay(ev: EventData, day: Date): boolean {
+    const s = new Date(ev.start_time);
+    const e = new Date(ev.end_time);
+    return s <= endOfDay(day) && e >= startOfDay(day);
+}
+
+/** Monday-aligned start of week for `d` */
+function startOfWeek(d: Date): Date {
+    const x = startOfDay(d);
+    const dow = (x.getDay() + 6) % 7;
+    x.setDate(x.getDate() - dow);
+    return x;
+}
+
+/** Number of weeks between two Monday-aligned dates (rounded) */
+function weeksBetween(a: Date, b: Date): number {
+    return Math.round((b.getTime() - a.getTime()) / (7 * 24 * 3600 * 1000));
+}
+
+function fmtMonthShort(d: Date) {
+    return d.toLocaleDateString('fr-BE', { month: 'short' }).replace('.', '');
+}
+const dayKey = (d: Date) => `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`;
 
 /* ════════════════════════════════════════════════════════
    ANIMATION HELPERS
@@ -308,6 +351,110 @@ const FilterPills: React.FC<FilterPillsProps> = ({ sections, active, onSelect, l
 );
 
 /* ════════════════════════════════════════════════════════
+   CALENDAR — small subcomponents
+════════════════════════════════════════════════════════ */
+
+const EventListItem: React.FC<{ ev: EventData }> = ({ ev }) => {
+    const s = getSectionInfo(ev.section);
+    const sd = new Date(ev.start_time).toDateString() === new Date(ev.end_time).toDateString();
+    return (
+        <div
+            className="ap-upcoming-item"
+            style={{ '--uc': s.color } as React.CSSProperties}
+        >
+            <div className="ap-upcoming-date">
+                <span className="ap-upcoming-day">
+                    {new Date(ev.start_time).toLocaleDateString('fr-BE', { day: '2-digit' })}
+                </span>
+                <span className="ap-upcoming-month">
+                    {new Date(ev.start_time).toLocaleDateString('fr-BE', { month: 'short' }).replace('.', '')}
+                </span>
+            </div>
+            <div className="ap-upcoming-info">
+                <div className={`ap-upcoming-name${ev.highlight ? ' ap-upcoming-name-highlight' : ''}`}>
+                    {ev.highlight && <span className="ap-upcoming-star">★</span>}
+                    {ev.title}
+                </div>
+                <div className="ap-upcoming-meta-row">
+                    {sd && (
+                        <span className="ap-upcoming-meta">
+                            <BsClockFill size={9} />
+                            {new Date(ev.start_time).toLocaleTimeString('fr-BE', { hour: '2-digit', minute: '2-digit' })}
+                        </span>
+                    )}
+                    {ev.location && (
+                        <span className="ap-upcoming-meta">
+                            <BsGeoAltFill size={9} />
+                            {ev.location}
+                        </span>
+                    )}
+                </div>
+                <span className="ap-upcoming-section">{s.name}</span>
+            </div>
+        </div>
+    );
+};
+
+interface DayCellProps {
+    day: Date;
+    events: EventData[];
+    inMonth: boolean;
+    isToday: boolean;
+    isWeekend: boolean;
+    isSelected: boolean;
+    onClick: () => void;
+    onEventHover: (ev: EventData, rect: DOMRect) => void;
+    onEventLeave: () => void;
+}
+
+const DayCell: React.FC<DayCellProps> = ({
+    day, events, inMonth, isToday, isWeekend, isSelected, onClick, onEventHover, onEventLeave,
+}) => {
+    const visible = events.slice(0, 3);
+    const more = events.length - visible.length;
+    return (
+        <button
+            type="button"
+            tabIndex={inMonth ? 0 : -1}
+            className={[
+                'ap-daycell',
+                !inMonth     ? 'ap-daycell-out'      : '',
+                isWeekend    ? 'ap-daycell-weekend'  : '',
+                isToday      ? 'ap-daycell-today'    : '',
+                isSelected   ? 'ap-daycell-selected' : '',
+                events.length ? 'ap-daycell-has'     : '',
+            ].filter(Boolean).join(' ')}
+            onClick={onClick}
+        >
+            <span className="ap-daycell-num">{day.getDate()}</span>
+            {events.length > 0 && (
+                <div className="ap-daycell-events">
+                    {visible.map(ev => {
+                        const s = getSectionInfo(ev.section);
+                        return (
+                            <span
+                                key={ev.id}
+                                className={`ap-daycell-event${ev.highlight ? ' ap-daycell-event-hl' : ''}`}
+                                style={{ background: s.color }}
+                                onMouseEnter={e => {
+                                    e.stopPropagation();
+                                    onEventHover(ev, (e.currentTarget as HTMLElement).getBoundingClientRect());
+                                }}
+                                onMouseLeave={e => { e.stopPropagation(); onEventLeave(); }}
+                            >
+                                {ev.highlight && <span className="ap-daycell-event-star">★</span>}
+                                {ev.title}
+                            </span>
+                        );
+                    })}
+                    {more > 0 && <span className="ap-daycell-more">+{more}</span>}
+                </div>
+            )}
+        </button>
+    );
+};
+
+/* ════════════════════════════════════════════════════════
    CALENDAR SECTION
 ════════════════════════════════════════════════════════ */
 
@@ -315,6 +462,13 @@ const CalendarSection: React.FC<{ events: EventData[] }> = ({ events }) => {
     const baseURL = import.meta.env.VITE_API_URL;
     const [agendaDoc, setAgendaDoc] = useState<AgendaDocument | null>(null);
     const [activeSection, setActiveSection] = useState<string | null>(null);
+    const [currentMonth, setCurrentMonth] = useState<Date>(() => {
+        const x = new Date(); x.setDate(1); x.setHours(0, 0, 0, 0); return x;
+    });
+    const [selectedDay, setSelectedDay] = useState<Date | null>(null);
+    const [calTooltip, setCalTooltip] = useState<{ ev: EventData; x: number; y: number } | null>(null);
+
+    const now = useMemo(() => new Date(), []);
 
     const activeSlugs = new Set(events.map(e => e.section));
     const availableSections = SECTIONS.filter(s => activeSlugs.has(s.slug));
@@ -322,17 +476,115 @@ const CalendarSection: React.FC<{ events: EventData[] }> = ({ events }) => {
         ? events.filter(e => e.section === activeSection)
         : events;
 
-    const now = new Date();
-    const upcomingEvents = events
-        .filter(e => new Date(e.end_time) >= now)
-        .sort((a, b) => new Date(a.start_time).getTime() - new Date(b.start_time).getTime())
-        .slice(0, 5);
+    /* Map: dayKey → events[] (multi-day events spread across all their days) */
+    const eventsByDay = useMemo(() => {
+        const map = new Map<string, EventData[]>();
+        filteredEvents.forEach(ev => {
+            const start = startOfDay(new Date(ev.start_time));
+            const end   = startOfDay(new Date(ev.end_time));
+            const cur   = new Date(start);
+            while (cur <= end) {
+                const k = dayKey(cur);
+                const arr = map.get(k) ?? [];
+                arr.push(ev);
+                map.set(k, arr);
+                cur.setDate(cur.getDate() + 1);
+            }
+        });
+        return map;
+    }, [filteredEvents]);
+
+    /* Year strip — all 12 months of the currently viewed year */
+    const stripMonths = useMemo(() => {
+        const year = currentMonth.getFullYear();
+        return Array.from({ length: 12 }, (_, i) => new Date(year, i, 1));
+    }, [currentMonth]);
+
+    /* Event count per month for strip intensity */
+    const monthCounts = useMemo(() => {
+        const m = new Map<string, number>();
+        filteredEvents.forEach(ev => {
+            const d = new Date(ev.start_time);
+            m.set(`${d.getFullYear()}-${d.getMonth()}`, (m.get(`${d.getFullYear()}-${d.getMonth()}`) ?? 0) + 1);
+        });
+        return m;
+    }, [filteredEvents]);
+    const maxMonthCount = Math.max(1, ...Array.from(monthCounts.values()));
+
+    /* Mobile agenda — upcoming events grouped by week */
+    const mobileWeeks = useMemo(() => {
+        const upcoming = filteredEvents
+            .filter(e => new Date(e.end_time) >= now)
+            .sort((a, b) => new Date(a.start_time).getTime() - new Date(b.start_time).getTime());
+
+        const todayWk = startOfWeek(now);
+        const groups: { key: string; label: string; events: EventData[] }[] = [];
+        const idxByKey = new Map<string, number>();
+
+        upcoming.forEach(ev => {
+            const wk = startOfWeek(new Date(ev.start_time));
+            const k  = wk.toISOString();
+            let idx = idxByKey.get(k);
+            if (idx === undefined) {
+                const wb = weeksBetween(todayWk, wk);
+                let label: string;
+                if (wb <= 0)        label = 'Cette semaine';
+                else if (wb === 1)  label = 'Semaine prochaine';
+                else {
+                    const wkEnd = new Date(wk);
+                    wkEnd.setDate(wk.getDate() + 6);
+                    const fmt = (d: Date) =>
+                        d.toLocaleDateString('fr-BE', { day: 'numeric', month: 'short' }).replace('.', '');
+                    label = `Semaine du ${fmt(wk)} au ${fmt(wkEnd)}`;
+                }
+                idx = groups.length;
+                groups.push({ key: k, label, events: [] });
+                idxByKey.set(k, idx);
+            }
+            groups[idx].events.push(ev);
+        });
+        return groups;
+    }, [filteredEvents, now]);
+
+    /* Sidebar fallback list (5 next events) */
+    const upcomingEvents = useMemo(() =>
+        filteredEvents
+            .filter(e => new Date(e.end_time) >= now)
+            .sort((a, b) => new Date(a.start_time).getTime() - new Date(b.start_time).getTime())
+            .slice(0, 5)
+    , [filteredEvents, now]);
+
+    /* 6×7 grid for the visible month */
+    const grid = useMemo(() => getMonthGrid(currentMonth), [currentMonth]);
+
+    /* Navigation */
+    const goPrev  = () => {
+        setCurrentMonth(d => { const x = new Date(d); x.setMonth(x.getMonth() - 1); return x; });
+        setSelectedDay(null);
+    };
+    const goNext  = () => {
+        setCurrentMonth(d => { const x = new Date(d); x.setMonth(x.getMonth() + 1); return x; });
+        setSelectedDay(null);
+    };
+    const goToday = () => {
+        setCurrentMonth(new Date(now.getFullYear(), now.getMonth(), 1));
+        setSelectedDay(now);
+    };
+
+    /* Auto-scroll year strip so the active month stays visible */
+    const stripActiveRef = useRef<HTMLButtonElement>(null);
+    useEffect(() => {
+        stripActiveRef.current?.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+    }, [currentMonth]);
 
     useEffect(() => {
         axios.get(`${baseURL}/agenda-document/`).then(r => {
             if (r.data[0]) setAgendaDoc(r.data[0]);
         }).catch(console.error);
     }, []);
+
+    const isViewingCurrentMonth = sameMonth(currentMonth, now);
+    const monthKey = `${currentMonth.getFullYear()}-${currentMonth.getMonth()}`;
 
     return (
         <section className="ap-cal-section">
@@ -343,147 +595,219 @@ const CalendarSection: React.FC<{ events: EventData[] }> = ({ events }) => {
                 </div>
 
                 {availableSections.length > 0 && (
-                    <div className="d-none d-md-block">
-                        <FilterPills
-                            sections={availableSections}
-                            active={activeSection}
-                            onSelect={setActiveSection}
-                        />
-                    </div>
+                    <FilterPills
+                        sections={availableSections}
+                        active={activeSection}
+                        onSelect={setActiveSection}
+                    />
                 )}
 
                 <div className="ap-cal-layout">
-                    {/* FullCalendar — hidden on mobile */}
+                    {/* MAIN ─ desktop calendar + mobile agenda */}
                     <motion.div
-                        className="ap-cal-main d-none d-md-block"
-                        initial={{ x: -30, opacity: 0 }}
-                        whileInView={{ x: 0, opacity: 1 }}
+                        className="ap-cal-main"
+                        initial={{ y: 20, opacity: 0 }}
+                        whileInView={{ y: 0, opacity: 1 }}
                         transition={{ duration: 0.55, delay: 0.1 }}
                         viewport={{ once: true }}
                     >
-                        <div className="ap-cal-card">
+                        {/* Desktop calendar card */}
+                        <div className="ap-cal-card d-none d-lg-block">
+                            {/* Year strip */}
+                            <div className="ap-yearstrip">
+                                {stripMonths.map(m => {
+                                    const k = `${m.getFullYear()}-${m.getMonth()}`;
+                                    const count = monthCounts.get(k) ?? 0;
+                                    const intensity = count / maxMonthCount;
+                                    const active = sameMonth(m, currentMonth);
+                                    return (
+                                        <button
+                                            key={k}
+                                            ref={active ? stripActiveRef : null}
+                                            type="button"
+                                            className={`ap-yearstrip-btn${active ? ' ap-yearstrip-active' : ''}`}
+                                            style={{ '--intensity': intensity } as React.CSSProperties}
+                                            onClick={() => { setCurrentMonth(new Date(m)); setSelectedDay(null); }}
+                                        >
+                                            <span className="ap-yearstrip-mon">{fmtMonthShort(m)}</span>
+                                            <span className="ap-yearstrip-yr">{m.getFullYear()}</span>
+                                            {count > 0 && <span className="ap-yearstrip-count">{count}</span>}
+                                        </button>
+                                    );
+                                })}
+                            </div>
+
+                            {/* Header — month name, prev/next, today pill */}
+                            <div className="ap-calhead">
+                                <button type="button" className="ap-calhead-nav"
+                                    onClick={goPrev} aria-label="Mois précédent">
+                                    <BsChevronLeft size={16} />
+                                </button>
+
+                                <div className="ap-calhead-title">
+                                    <span className="ap-calhead-month">
+                                        {currentMonth.toLocaleDateString('fr-BE', { month: 'long' })
+                                            .replace(/^\w/, c => c.toUpperCase())}
+                                    </span>
+                                    <span className="ap-calhead-year">{currentMonth.getFullYear()}</span>
+                                </div>
+
+                                <button type="button" className="ap-calhead-nav"
+                                    onClick={goNext} aria-label="Mois suivant">
+                                    <BsChevronRight size={16} />
+                                </button>
+
+                                <AnimatePresence>
+                                    {!isViewingCurrentMonth && (
+                                        <motion.button
+                                            type="button"
+                                            className="ap-calhead-today"
+                                            onClick={goToday}
+                                            initial={{ opacity: 0, scale: 0.85 }}
+                                            animate={{ opacity: 1, scale: 1 }}
+                                            exit={{ opacity: 0, scale: 0.85 }}
+                                            transition={{ duration: 0.22 }}
+                                            title="Revenir à aujourd'hui"
+                                        >
+                                            <span className="ap-calhead-today-num">{now.getDate()}</span>
+                                            <span className="ap-calhead-today-label">Aujourd'hui</span>
+                                        </motion.button>
+                                    )}
+                                </AnimatePresence>
+                            </div>
+
+                            {/* Day-of-week header */}
+                            <div className="ap-calgrid-head">
+                                {['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'].map(d => (
+                                    <div key={d} className="ap-calgrid-dayname">{d}</div>
+                                ))}
+                            </div>
+
+                            {/* Animated month grid */}
                             <AnimatePresence mode="wait">
                                 <motion.div
-                                    key={activeSection ?? 'all'}
-                                    initial={{ opacity: 0 }}
-                                    animate={{ opacity: 1 }}
-                                    exit={{ opacity: 0 }}
-                                    transition={{ duration: 0.2 }}
+                                    key={monthKey}
+                                    className="ap-calgrid"
+                                    initial={{ opacity: 0, y: 12 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    exit={{ opacity: 0, y: -12 }}
+                                    transition={{ duration: 0.28, ease: 'easeOut' }}
                                 >
-                                    <FullCalendar
-                                        plugins={[dayGridPlugin, interactionPlugin, bootstrap5Plugin]}
-                                        initialView="dayGridMonth"
-                                        themeSystem="bootstrap5"
-                                        events={filteredEvents.map(ev => ({
-                                            id: ev.id.toString(),
-                                            title: ev.title,
-                                            start: ev.start_time,
-                                            end: ev.end_time,
-                                            color: getSectionInfo(ev.section).color,
-                                        }))}
-                                        locale="fr"
-                                        height="auto"
-                                        dayMaxEventRows
-                                        headerToolbar={{
-                                            left: 'today',
-                                            center: 'title',
-                                            right: 'prevYear,prev,next,nextYear',
-                                        }}
-                                        buttonText={{ today: "Aujourd'hui" }}
-                                        firstDay={1}
-                                        eventClassNames="p-1"
-                                    />
+                                    {grid.map((day, i) => {
+                                        const dayEvts   = eventsByDay.get(dayKey(day)) ?? [];
+                                        const inMonth   = sameMonth(day, currentMonth);
+                                        const isToday   = sameDay(day, now);
+                                        const dow       = day.getDay();
+                                        const isWeekend = dow === 0 || dow === 6;
+                                        const isSel     = !!selectedDay && sameDay(day, selectedDay);
+                                        return (
+                                            <DayCell
+                                                key={i}
+                                                day={day}
+                                                events={dayEvts}
+                                                inMonth={inMonth}
+                                                isToday={isToday}
+                                                isWeekend={isWeekend}
+                                                isSelected={isSel}
+                                                onClick={() => setSelectedDay(new Date(day))}
+                                                onEventHover={(ev, rect) => setCalTooltip({
+                                                    ev,
+                                                    x: rect.left + rect.width / 2,
+                                                    y: rect.top,
+                                                })}
+                                                onEventLeave={() => setCalTooltip(null)}
+                                            />
+                                        );
+                                    })}
                                 </motion.div>
                             </AnimatePresence>
                         </div>
+
+                        {/* Mobile agenda — week-grouped list */}
+                        <div className="ap-mobag d-lg-none">
+                            {mobileWeeks.length === 0 ? (
+                                <div className="ap-mobag-empty">Aucun événement à venir.</div>
+                            ) : (
+                                mobileWeeks.map(g => (
+                                    <div key={g.key} className="ap-mobag-group">
+                                        <div className="ap-mobag-week">
+                                            <BsCalendar3 size={11} />
+                                            {g.label}
+                                        </div>
+                                        <div className="ap-mobag-list">
+                                            {g.events.map(ev => <EventListItem key={ev.id} ev={ev} />)}
+                                        </div>
+                                    </div>
+                                ))
+                            )}
+                        </div>
                     </motion.div>
 
-                    {/* Sidebar */}
+                    {/* SIDEBAR */}
                     <div className="ap-cal-sidebar">
-                        {/* Legend */}
-                        <motion.div
-                            className="ap-side-card d-none d-md-block"
-                            initial={{ x: 30, opacity: 0 }}
-                            whileInView={{ x: 0, opacity: 1 }}
-                            transition={{ duration: 0.55, delay: 0.18 }}
-                            viewport={{ once: true }}
-                        >
-                            <div className="ap-side-title">
-                                <BsCalendar3 size={14} />
-                                Légende
-                            </div>
-                            <div className="ap-legend-wrap">
-                                {SECTIONS.map(s => (
-                                    <span
-                                        key={s.slug}
-                                        className="ap-legend-pill"
-                                        style={{
-                                            background: s.color,
-                                            opacity: activeSlugs.has(s.slug) ? 1 : 0.28,
-                                        }}
-                                    >
-                                        <span className="ap-legend-dot" />
-                                        {s.name}
-                                    </span>
-                                ))}
-                            </div>
-                        </motion.div>
-
-                        {/* Upcoming */}
-                        {upcomingEvents.length > 0 && (
-                            <motion.div
-                                className="ap-side-card"
-                                initial={{ x: 30, opacity: 0 }}
-                                whileInView={{ x: 0, opacity: 1 }}
-                                transition={{ duration: 0.55, delay: 0.28 }}
-                                viewport={{ once: true }}
-                            >
-                                <div className="ap-side-title">
-                                    <BsClockFill size={13} />
-                                    Prochains événements
-                                </div>
-                                <div className="ap-upcoming-list">
-                                    {upcomingEvents.map(ev => {
-                                        const s = getSectionInfo(ev.section);
-                                        const sameDay = new Date(ev.start_time).toDateString() === new Date(ev.end_time).toDateString();
-                                        return (
-                                            <div
-                                                key={ev.id}
-                                                className="ap-upcoming-item"
-                                                style={{ '--uc': s.color } as React.CSSProperties}
-                                            >
-                                                <div className="ap-upcoming-date">
-                                                    <span className="ap-upcoming-day">
-                                                        {new Date(ev.start_time).toLocaleDateString('fr-BE', { day: '2-digit' })}
-                                                    </span>
-                                                    <span className="ap-upcoming-month">
-                                                        {new Date(ev.start_time).toLocaleDateString('fr-BE', { month: 'short' }).replace('.', '')}
-                                                    </span>
-                                                </div>
-                                                <div className="ap-upcoming-info">
-                                                    <div className="ap-upcoming-name">{ev.title}</div>
-                                                    <div className="ap-upcoming-meta-row">
-                                                        {sameDay && (
-                                                            <span className="ap-upcoming-meta">
-                                                                <BsClockFill size={9} />
-                                                                {new Date(ev.start_time).toLocaleTimeString('fr-BE', { hour: '2-digit', minute: '2-digit' })}
-                                                            </span>
-                                                        )}
-                                                        {ev.location && (
-                                                            <span className="ap-upcoming-meta">
-                                                                <BsGeoAltFill size={9} />
-                                                                {ev.location}
-                                                            </span>
-                                                        )}
-                                                    </div>
-                                                    <span className="ap-upcoming-section">{s.name}</span>
-                                                </div>
+                        <AnimatePresence mode="wait">
+                            {selectedDay ? (
+                                <motion.div
+                                    key={`day-${dayKey(selectedDay)}`}
+                                    className="ap-side-card d-none d-lg-block"
+                                    initial={{ opacity: 0, x: 16 }}
+                                    animate={{ opacity: 1, x: 0 }}
+                                    exit={{ opacity: 0, x: -16 }}
+                                    transition={{ duration: 0.28 }}
+                                >
+                                    <div className="ap-side-title ap-side-title-with-clear">
+                                        <span className="ap-side-title-text">
+                                            <BsCalendar3 size={14} />
+                                            {selectedDay.toLocaleDateString('fr-BE', {
+                                                weekday: 'long', day: 'numeric', month: 'long',
+                                            }).replace(/^\w/, c => c.toUpperCase())}
+                                        </span>
+                                        <button
+                                            type="button"
+                                            className="ap-side-clear"
+                                            onClick={() => setSelectedDay(null)}
+                                            aria-label="Fermer"
+                                        >
+                                            ×
+                                        </button>
+                                    </div>
+                                    {(() => {
+                                        const dayEvts = eventsByDay.get(dayKey(selectedDay)) ?? [];
+                                        return dayEvts.length === 0 ? (
+                                            <p className="ap-side-empty">Aucun événement ce jour-là.</p>
+                                        ) : (
+                                            <div className="ap-upcoming-list">
+                                                {dayEvts.map(ev => <EventListItem key={ev.id} ev={ev} />)}
                                             </div>
                                         );
-                                    })}
-                                </div>
-                            </motion.div>
-                        )}
+                                    })()}
+                                </motion.div>
+                            ) : (
+                                <motion.div
+                                    key="upcoming-default"
+                                    className="ap-side-card d-none d-lg-block"
+                                    initial={{ opacity: 0, x: 16 }}
+                                    animate={{ opacity: 1, x: 0 }}
+                                    exit={{ opacity: 0, x: -16 }}
+                                    transition={{ duration: 0.28 }}
+                                >
+                                    <div className="ap-side-title">
+                                        <BsClockFill size={13} />
+                                        Prochains événements
+                                    </div>
+                                    {upcomingEvents.length === 0 ? (
+                                        <p className="ap-side-empty">Aucun événement à venir.</p>
+                                    ) : (
+                                        <div className="ap-upcoming-list">
+                                            {upcomingEvents.map(ev => <EventListItem key={ev.id} ev={ev} />)}
+                                        </div>
+                                    )}
+                                    <p className="ap-side-hint">
+                                        Clique sur un jour du calendrier pour voir ses événements.
+                                    </p>
+                                </motion.div>
+                            )}
+                        </AnimatePresence>
 
                         {/* Download */}
                         {agendaDoc && (
@@ -515,6 +839,40 @@ const CalendarSection: React.FC<{ events: EventData[] }> = ({ events }) => {
                     </div>
                 </div>
             </Container>
+
+            {/* Fixed calendar event tooltip */}
+            {calTooltip && (
+                <div
+                    className="ap-cal-tooltip"
+                    style={{ left: calTooltip.x, top: calTooltip.y }}
+                >
+                    <div
+                        className="ap-cal-tooltip-pill"
+                        style={{ background: getSectionInfo(calTooltip.ev.section).color }}
+                    >
+                        {getSectionInfo(calTooltip.ev.section).name}
+                    </div>
+
+                    <div className="ap-cal-tooltip-title">
+                        {calTooltip.ev.highlight && <span className="ap-cal-tooltip-star">★</span>}
+                        {calTooltip.ev.title}
+                    </div>
+
+                    {calTooltip.ev.location && (
+                        <div className="ap-cal-tooltip-meta">
+                            <BsGeoAltFill size={10} />
+                            {calTooltip.ev.location}
+                        </div>
+                    )}
+
+                    <div className="ap-cal-tooltip-meta">
+                        <BsClock size={10} />
+                        {fmtTimeRange(calTooltip.ev.start_time, calTooltip.ev.end_time)}
+                    </div>
+
+                    <div className="ap-cal-tooltip-arrow" />
+                </div>
+            )}
         </section>
     );
 };

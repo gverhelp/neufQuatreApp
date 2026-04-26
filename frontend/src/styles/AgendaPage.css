@@ -449,12 +449,348 @@
     border-radius: 18px;
     border: 1.5px solid rgba(2,40,100,0.08);
     border-top: 4px solid #022864;
-    padding: 1.4rem 1.25rem;
+    padding: 1.4rem 1.4rem 1.6rem;
     box-shadow: 0 6px 30px rgba(2,40,100,0.07);
     transition: box-shadow 0.25s ease;
 }
 .ap-cal-card:hover {
     box-shadow: 0 10px 40px rgba(2,40,100,0.1);
+}
+
+/* ── Year strip — horizontal mini-overview of months with event density ── */
+.ap-yearstrip {
+    display: flex;
+    justify-content: space-between;
+    /* overflow-x: auto; */
+    padding: 0.6rem 0.3rem 0.8rem;
+    margin: -0.6rem 0px 1rem;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(2,40,100,0.18) red;
+}
+.ap-yearstrip::-webkit-scrollbar { height: 5px; }
+.ap-yearstrip::-webkit-scrollbar-track { background: transparent; }
+.ap-yearstrip::-webkit-scrollbar-thumb {
+    background: rgba(2,40,100,0.18);
+    border-radius: 4px;
+}
+.ap-yearstrip-btn {
+    --intensity: 0;
+    flex: 0 0 auto;
+    scroll-snap-align: center;
+    background: hsl(220 35% calc(96% - var(--intensity) * 14%));
+    border: 1.5px solid transparent;
+    border-radius: 12px;
+    padding: 0.45rem 0.85rem 0.55rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1px;
+    cursor: pointer;
+    transition: transform 0.22s ease, border-color 0.22s ease, background 0.22s ease;
+    position: relative;
+    min-width: 64px;
+}
+.ap-yearstrip-btn:hover {
+    border-color: #022864;
+    transform: translateY(-2px);
+}
+.ap-yearstrip-mon {
+    font-family: 'Titan One', sans-serif;
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: #022864;
+    line-height: 1;
+}
+.ap-yearstrip-yr {
+    font-family: 'Roboto', sans-serif;
+    font-size: 0.6rem;
+    font-weight: 700;
+    color: #8a97b1;
+    letter-spacing: 0.06em;
+    line-height: 1;
+    margin-top: 2px;
+}
+.ap-yearstrip-count {
+    position: absolute;
+    top: -7px;
+    right: -7px;
+    background: #022864;
+    color: white;
+    font-family: 'Roboto', sans-serif;
+    font-size: 0.6rem;
+    font-weight: 700;
+    border-radius: 9px;
+    padding: 1px 6px;
+    box-shadow: 0 2px 6px rgba(2,40,100,0.3);
+    line-height: 1.4;
+}
+.ap-yearstrip-active {
+    background: #022864;
+    border-color: #022864;
+    box-shadow: 0 6px 18px rgba(2,40,100,0.32);
+}
+.ap-yearstrip-active .ap-yearstrip-mon { color: white; }
+.ap-yearstrip-active .ap-yearstrip-yr  { color: rgba(255,255,255,0.7); }
+.ap-yearstrip-active .ap-yearstrip-count {
+    background: white;
+    color: #022864;
+}
+
+/* ── Calendar header (month name, prev/next, today pill) ── */
+.ap-calhead {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin-bottom: 1.2rem;
+    padding: 0 0.2rem;
+}
+.ap-calhead-nav {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    border: 1.5px solid #e4e9f2;
+    background: white;
+    color: #022864;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.22s ease;
+    flex-shrink: 0;
+}
+.ap-calhead-nav:hover {
+    border-color: #022864;
+    background: #022864;
+    color: white;
+    transform: scale(1.06);
+}
+.ap-calhead-title {
+    flex: 1;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1px;
+}
+.ap-calhead-month {
+    font-family: 'Titan One', sans-serif;
+    font-size: 1.55rem;
+    color: #022864;
+    line-height: 1;
+}
+.ap-calhead-year {
+    font-family: 'Roboto', sans-serif;
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: #8a97b1;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    margin-top: 3px;
+}
+.ap-calhead-today {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: linear-gradient(135deg, #022864, #0a3a8c);
+    color: white;
+    border: none;
+    border-radius: 50px;
+    padding: 0.32rem 0.85rem 0.32rem 0.32rem;
+    cursor: pointer;
+    box-shadow: 0 4px 14px rgba(2,40,100,0.32);
+    transition: transform 0.22s ease, box-shadow 0.22s ease;
+}
+.ap-calhead-today:hover {
+    transform: scale(1.04);
+    box-shadow: 0 8px 22px rgba(2,40,100,0.42);
+}
+.ap-calhead-today-num {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: white;
+    color: #022864;
+    font-family: 'Titan One', sans-serif;
+    font-size: 0.85rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+}
+.ap-calhead-today-label {
+    font-family: 'Roboto', sans-serif;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+}
+
+/* ── Day-of-week header + grid ── */
+.ap-calgrid-head {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 4px;
+    margin-bottom: 4px;
+    padding: 0 2px;
+}
+.ap-calgrid-dayname {
+    text-align: center;
+    font-family: 'Roboto', sans-serif;
+    font-size: 0.68rem;
+    font-weight: 700;
+    color: #8a97b1;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    padding: 0.4rem 0;
+}
+.ap-calgrid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 4px;
+    padding: 2px;
+}
+
+/* ── Day cell ── */
+.ap-daycell {
+    aspect-ratio: 1 / 1.05;
+    background: white;
+    border: 1.5px solid #edf0f7;
+    border-radius: 10px;
+    padding: 0.4rem 0.45rem 0.35rem;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    text-align: left;
+    cursor: pointer;
+    transition: transform 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
+    overflow: hidden;
+    position: relative;
+    min-height: 84px;
+    font-family: inherit;
+}
+.ap-daycell:hover {
+    border-color: #022864;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 14px rgba(2,40,100,0.1);
+    z-index: 1;
+}
+.ap-daycell-num {
+    font-family: 'Titan One', sans-serif;
+    font-size: 0.95rem;
+    color: #2b3656;
+    line-height: 1;
+    margin-bottom: 0.3rem;
+}
+.ap-daycell-events {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    overflow: hidden;
+}
+.ap-daycell-event {
+    font-family: 'Roboto', sans-serif;
+    font-size: 0.66rem;
+    font-weight: 600;
+    color: white;
+    border-radius: 5px;
+    padding: 1px 5px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 1.4;
+}
+.ap-daycell-more {
+    font-family: 'Roboto', sans-serif;
+    font-size: 0.65rem;
+    font-weight: 700;
+    color: #6b7589;
+    padding: 0 3px;
+    margin-top: 1px;
+}
+
+/* Out-of-month days */
+.ap-daycell-out {
+    background: #fafbfd;
+    border-color: transparent;
+    cursor: default;
+    pointer-events: none;
+}
+.ap-daycell-out .ap-daycell-num   { color: #c5cad8; }
+.ap-daycell-out .ap-daycell-event { opacity: 0.5; }
+
+/* E3 — weekend tint */
+.ap-daycell-weekend             { background: #f4f7fc; }
+.ap-daycell-weekend.ap-daycell-out { background: #f8fafd; }
+
+/* E4 — today: pulsing border */
+.ap-daycell-today {
+    border-color: #022864;
+    animation: ap-daycell-pulse 2.4s ease-in-out infinite;
+}
+.ap-daycell-today .ap-daycell-num {
+    color: #022864;
+    font-size: 1.05rem;
+}
+@keyframes ap-daycell-pulse {
+    0%, 100% { box-shadow: 0 0 0 0   rgba(2,40,100,0.32); }
+    50%      { box-shadow: 0 0 0 6px rgba(2,40,100,0);    }
+}
+
+/* Selected day */
+.ap-daycell-selected {
+    border-color: #022864;
+    background: #eef2f9;
+    box-shadow: 0 6px 18px rgba(2,40,100,0.16);
+}
+.ap-daycell-selected.ap-daycell-today {
+    animation: none;
+    box-shadow: 0 6px 18px rgba(2,40,100,0.22);
+}
+.ap-daycell-selected.ap-daycell-weekend { background: #e8eef8; }
+
+/* ── Mobile agenda ── */
+.ap-mobag {
+    display: flex;
+    flex-direction: column;
+    gap: 1.4rem;
+}
+.ap-mobag-empty {
+    text-align: center;
+    color: #aab0be;
+    font-style: italic;
+    font-family: 'Roboto', sans-serif;
+    padding: 2rem 1rem;
+    background: white;
+    border-radius: 14px;
+    border: 1.5px solid rgba(2,40,100,0.08);
+}
+.ap-mobag-group {
+    background: white;
+    border-radius: 14px;
+    border: 1.5px solid rgba(2,40,100,0.08);
+    border-top: 3px solid #022864;
+    padding: 1rem 0.95rem 1.1rem;
+    box-shadow: 0 4px 18px rgba(2,40,100,0.06);
+}
+.ap-mobag-week {
+    font-family: 'Titan One', sans-serif;
+    font-size: 0.85rem;
+    color: #022864;
+    letter-spacing: 0.04em;
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+    border-bottom: 1px solid #edf0f7;
+    padding-bottom: 0.6rem;
+    margin-bottom: 0.85rem;
+}
+.ap-mobag-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.55rem;
 }
 
 /* Sidebar */
@@ -491,32 +827,62 @@
     margin-bottom: 0.9rem;
 }
 
-/* Legend */
-.ap-legend-wrap {
+/* Sidebar — selected-day title with close button */
+.ap-side-title-with-clear {
     display: flex;
-    flex-wrap: wrap;
-    gap: 0.45rem;
-}
-.ap-legend-pill {
-    display: inline-flex;
     align-items: center;
-    gap: 5px;
-    font-family: 'Roboto', sans-serif;
-    font-size: 0.71rem;
-    font-weight: 700;
-    color: white;
-    border-radius: 50px;
-    padding: 3px 9px 3px 6px;
-    user-select: none;
-    cursor: default;
-    transition: opacity 0.22s ease;
+    justify-content: space-between;
+    gap: 0.5rem;
 }
-.ap-legend-dot {
-    width: 7px;
-    height: 7px;
+.ap-side-title-text {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.ap-side-clear {
+    width: 26px;
+    height: 26px;
+    border: none;
+    background: #eef2f9;
+    color: #022864;
     border-radius: 50%;
-    background: rgba(255,255,255,0.5);
+    cursor: pointer;
+    font-size: 1rem;
+    line-height: 26px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s ease, color 0.2s ease;
     flex-shrink: 0;
+    padding: 0;
+    padding-bottom: 1px;
+}
+.ap-side-clear:hover {
+    background: #022864;
+    color: white;
+}
+.ap-side-empty {
+    color: #aab0be;
+    font-style: italic;
+    font-family: 'Roboto', sans-serif;
+    font-size: 0.88rem;
+    text-align: center;
+    padding: 1.2rem 0;
+    margin: 0;
+}
+.ap-side-hint {
+    margin: 0.9rem 0 0;
+    font-family: 'Roboto', sans-serif;
+    font-size: 0.74rem;
+    color: #aab0be;
+    line-height: 1.5;
+    font-style: italic;
+    text-align: center;
 }
 
 /* Upcoming events */
@@ -1062,4 +1428,98 @@
     .ap-hl-section   { padding: 4rem 1.25rem; }
     .ap-cal-section  { padding: 4rem 1.25rem; }
     /* .ap-tl-section padding handled by the 700px rule above (4rem 1rem) */
+}
+
+/* ══════════════════════════════════════════════════════════
+   CALENDAR — HIGHLIGHT EVENTS (golden star & border)
+══════════════════════════════════════════════════════════ */
+.ap-daycell-event-hl {
+    border: 1.5px solid #D4AF37 !important;
+    box-shadow: inset 0 0 0 1px rgba(212,175,55,0.35);
+}
+.ap-daycell-event-star {
+    font-size: 0.6rem;
+    line-height: 1;
+    margin-right: 2px;
+    color: #D4AF37;
+    vertical-align: middle;
+}
+
+/* Upcoming list — highlight star */
+.ap-upcoming-name-highlight {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+.ap-upcoming-star {
+    font-size: 0.75rem;
+    color: #D4AF37;
+    line-height: 1;
+    flex-shrink: 0;
+}
+
+/* ══════════════════════════════════════════════════════════
+   CALENDAR — EVENT HOVER TOOLTIP
+══════════════════════════════════════════════════════════ */
+.ap-cal-tooltip {
+    position: fixed;
+    transform: translate(-50%, calc(-100% - 10px));
+    z-index: 1000;
+    background: white;
+    border: 1px solid rgba(2,40,100,0.1);
+    border-radius: 12px;
+    padding: 0.65rem 0.9rem 0.7rem;
+    box-shadow: 0 12px 32px rgba(0,0,0,0.18);
+    min-width: 160px;
+    max-width: 240px;
+    pointer-events: none;
+}
+.ap-cal-tooltip-title {
+    font-family: 'Titan One', sans-serif;
+    font-size: 0.88rem;
+    color: #022864;
+    line-height: 1.25;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    margin-bottom: 0.35rem;
+}
+.ap-cal-tooltip-star {
+    color: #D4AF37;
+    font-size: 0.78rem;
+    flex-shrink: 0;
+}
+.ap-cal-tooltip-meta {
+    font-family: 'Roboto', sans-serif;
+    font-size: 0.72rem;
+    color: #6b7589;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    line-height: 1.4;
+    margin-bottom: 2px;
+}
+.ap-cal-tooltip-pill {
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: 999px;
+    color: white;
+    font-family: 'Roboto', sans-serif;
+    font-size: 0.55rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    margin-bottom: 0.5rem;
+}
+.ap-cal-tooltip-arrow {
+    position: absolute;
+    bottom: -8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    border-top: 8px solid white;
+    filter: drop-shadow(0 2px 2px rgba(0,0,0,0.08));
 }
