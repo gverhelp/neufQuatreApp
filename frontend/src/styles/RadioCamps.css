@@ -1393,6 +1393,7 @@ button.rcbs-gate-back {
     padding: 1rem 1.25rem 0.85rem;
     border-bottom: 1px solid #eef2f9;
     gap: 0.8rem;
+    background-color: var(--rcbs-accent, #022864);
 }
 
 .rcbs-post-date-wrap {
@@ -1405,13 +1406,14 @@ button.rcbs-gate-back {
 .rcbs-post-date-num {
     font-family: 'Titan One', sans-serif;
     font-size: 0.95rem;
-    color: var(--rcbs-accent, #022864);
+    /* color: var(--rcbs-accent, #022864); */
+    color: #ffffff;
     line-height: 1.1;
     letter-spacing: 0.01em;
     text-transform: capitalize;
 }
 
-.rcbs-post-date-full {
+/* .rcbs-post-date-full {
     display: inline-flex;
     align-items: center;
     gap: 5px;
@@ -1421,14 +1423,15 @@ button.rcbs-gate-back {
     font-weight: 500;
     letter-spacing: 0.02em;
     text-transform: capitalize;
-}
+} */
 
 .rcbs-post-idx {
     font-family: 'Titan One', sans-serif;
     font-size: 0.7rem;
     letter-spacing: 0.08em;
-    color: color-mix(in srgb, var(--rcbs-accent, #022864) 90%, white);
-    background: color-mix(in srgb, var(--rcbs-accent, #022864) 10%, white);
+    /* color: color-mix(in srgb, var(--rcbs-accent, #022864) 90%, white); */
+    /* background: color-mix(in srgb, var(--rcbs-accent, #022864) 10%, white); */
+    background-color: white;
     border-radius: 999px;
     padding: 0.25rem 0.7rem;
     flex-shrink: 0;

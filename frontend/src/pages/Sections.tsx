@@ -20,7 +20,7 @@ const SECTIONS = [
     { name: "Guides",     slug: "guides",     color: "#1D325A", age: "12 – 16 ans", genre: "Filles",  band: "Compagnie",  description: "À la compagnie, je construis des projets, je prends des responsabilités et je gagne en autonomie.",                       path: "/sections/guides"     },
     { name: "Éclaireurs", slug: "eclaireurs", color: "#015AA9", age: "12 – 16 ans", genre: "Garçons", band: "Troupe",     description: "À la troupe, je participe à des projets collectifs, je prends des responsabilités et je développe mon esprit d'équipe.", path: "/sections/eclaireurs" },
     { name: "Pionniers",  slug: "pionniers",  color: "#DA1F29", age: "16 – 18 ans", genre: "Mixte",   band: "Poste",      description: "Au poste, je m'engage, je mène des projets et j'agis selon mes convictions.",                                             path: "/sections/pionniers"  },
-    { name: "Animateur",  slug: "animateur",  color: "#8B5CF6", age: "18 ans +",    genre: "Mixte",   band: "Staff",      description: "En tant qu'animateur, je transmets ma passion et j'encadre les plus jeunes.",                                              path: "/sections/animateur"  },
+    { name: "Animateurs",  slug: "animateurs",  color: "#8B5CF6", age: "18 ans +",    genre: "Mixte",   band: "Staff",      description: "En tant qu'animateur, je transmets ma passion et j'encadre les plus jeunes.",                                              path: "/sections/animateur"  },
     { name: "Clan",       slug: "clan",       color: "#FEB800", age: "18 ans +",    genre: "Mixte",   band: "Clan",       description: "Au clan, je transmets, je partage mon expérience et j'accompagne les plus jeunes.",                                      path: "/sections/clan"       },
     { name: "Unité",      slug: "unite",      color: "#022864", age: "—",           genre: "Mixte",   band: "Unité",      description: "À l'unité, je contribue à la vie collective et aux projets de toute l'unité.",                                           path: "/sections/unite"      },
 ];
@@ -130,7 +130,7 @@ const SectionsGrid: React.FC = () => (
                 whileInView="visible"
                 viewport={{ once: true, amount: 0.05 }}
             >
-                {SECTIONS.filter(s => s.slug !== 'animateur').map(s => (
+                {SECTIONS.filter(s => s.slug !== 'animateurs').map(s => (
                     <motion.div key={s.slug} variants={staggerItem} className="sp-grid-item">
                         <Link
                             to={s.path}
@@ -175,7 +175,7 @@ const JOURNEY_NODES: { slug: string; x: number; y: number }[] = [
     { slug: 'guides',     x: 430, y: 50  },
     { slug: 'eclaireurs', x: 430, y: 210 },
     { slug: 'pionniers',  x: 630, y: 130 },
-    { slug: 'animateur',  x: 790, y: 130 },
+    { slug: 'animateurs',  x: 790, y: 130 },
     { slug: 'clan',       x: 940, y: 130 },
 ];
 
@@ -187,11 +187,11 @@ const JOURNEY_EDGES = [
     `M ${230+R},210 L ${430-R},210`,                     // Louveteaux → Éclaireurs
     `M ${430+R},50 C 530,50 560,130 ${630-R},130`,      // Guides → Pionniers
     `M ${430+R},210 C 530,210 560,130 ${630-R},130`,    // Éclaireurs → Pionniers
-    `M ${630+R},130 L ${790-R},130`,                     // Pionniers → Animateur
-    `M ${790+R},130 L ${940-R},130`,                     // Animateur → Clan
+    `M ${630+R},130 L ${790-R},130`,                     // Pionniers → Animateurs
+    `M ${790+R},130 L ${940-R},130`,                     // Animateurs → Clan
 ];
 
-const JOURNEY_ORDER = ['baladins','lutins','louveteaux','guides','eclaireurs','pionniers','animateur','clan'];
+const JOURNEY_ORDER = ['baladins','lutins','louveteaux','guides','eclaireurs','pionniers','animateurs','clan'];
 
 const JourneyBlock: React.FC = () => (
     <section className="sp-journey-wrap">
