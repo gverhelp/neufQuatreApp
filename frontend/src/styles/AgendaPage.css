@@ -1087,6 +1087,7 @@
 .ap-tl-today {
     display: flex;
     align-items: center;
+    justify-content: center;
     gap: 0.6rem;
     margin: 1.6rem 0 1.4rem;
     position: relative;
@@ -1097,6 +1098,7 @@
     flex: 1;
     height: 0;
     border-top: 2px dashed var(--tl-color, #022864);
+    max-width: calc(50% - 110px);
     opacity: 0.4;
 }
 .ap-tl-today-pill {
@@ -1215,7 +1217,7 @@
     letter-spacing: 0.08em;
     text-transform: uppercase;
     color: var(--tl-color, #022864);
-    background: #eef2f9;
+    /* background: #eef2f9; */
     border: 1.5px solid var(--tl-color, #022864);
     border-radius: 50px;
     padding: 4px 18px;

@@ -29,7 +29,7 @@ const DESTINATIONS: Destination[] = [
     { slug: 'lutins',     label: 'Lutins',     band: 'Ronde',      color: '#CC0739', top: '70%', left: '30%', path: '/radio-camps/lutins'     },
     { slug: 'louveteaux', label: 'Louveteaux', band: 'Meute',      color: '#186E54', top: '37%', left: '49%', path: '/radio-camps/louveteaux' },
     { slug: 'guides',     label: 'Guides',     band: 'Compagnie',  color: '#1D325A', top: '65%', left: '54%', path: '/radio-camps/guides'     },
-    { slug: 'eclaireurs', label: 'Éclaireurs', band: 'Troupe',     color: '#015AA9', top: '20%', left: '75%', path: '/radio-camps/eclaireurs' },
+    { slug: 'eclaireurs', label: 'Éclaireurs', band: 'Troupe',     color: '#015AA9', top: '22%', left: '75%', path: '/radio-camps/eclaireurs' },
     { slug: 'pionniers',  label: 'Pionniers',  band: 'Poste',      color: '#DA1F29', top: '80%', left: '85%', path: '/radio-camps/pionniers'  },
 ];
 
