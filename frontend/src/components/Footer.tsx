@@ -21,9 +21,9 @@ const EXTERNAL_LINKS = [
 const INTERNAL_LINKS = [
     { name: 'Accueil',            path: '/' },
     { name: 'Agenda',             path: '/agenda' },
-    { name: 'Nos sections',       path: '/sections' },
+    { name: 'Sections',       path: '/sections' },
     { name: 'Radio camp',         path: '/radio-camps' },
-    { name: 'Documents & infos',  path: '/documents-et-infos' },
+    { name: 'Infos & documents',  path: '/documents-et-infos' },
 ];
 
 /* ════════════════════════════════════════════════════════

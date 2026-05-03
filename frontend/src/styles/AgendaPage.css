@@ -431,13 +431,16 @@
     align-items: start;
 }
 
-@media (max-width: 1199px) {
-    .ap-cal-layout {
-        grid-template-columns: 1fr 300px;
-    }
+/* Allow grid children to shrink below their intrinsic size */
+.ap-cal-main {
+    min-width: 0;
+}
+.ap-cal-sidebar {
+    min-width: 0;
 }
 
-@media (max-width: 991px) {
+/* Stack sidebar below calendar below XL breakpoint to avoid overflow */
+@media (max-width: 1400px) {
     .ap-cal-layout {
         grid-template-columns: 1fr;
     }
@@ -461,12 +464,12 @@
 .ap-yearstrip {
     display: flex;
     justify-content: space-between;
-    /* overflow-x: auto; */
-    padding: 0.6rem 0.3rem 0.8rem;
-    margin: -0.6rem 0px 1rem;
-    scroll-snap-type: x mandatory;
+    overflow-x: auto;
+    padding: 0.6rem 0.3rem 1.8rem;
+    margin: -0.6rem 0px 0rem;
+    /* scroll-snap-type: x mandatory; */
     scrollbar-width: thin;
-    scrollbar-color: rgba(2,40,100,0.18) red;
+    scrollbar-color: rgba(2,40,100,0.18) transparent;
 }
 .ap-yearstrip::-webkit-scrollbar { height: 5px; }
 .ap-yearstrip::-webkit-scrollbar-track { background: transparent; }
