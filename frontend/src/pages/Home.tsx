@@ -10,16 +10,6 @@ import {
 
 import '../styles/Home.css';
 import { AccueilItem, AccueilButton, EventData } from '../types/interfaces';
-import {
-    fadeUp,
-    staggerContainer,
-    staggerItem,
-    heroTitle,
-    heroRule,
-    heroSubtitle,
-    easeOut,
-    DURATION,
-} from '../styles/motion';
 
 /* ════════════════════════════════════════════════════════
    CONSTANTS
@@ -31,6 +21,27 @@ const QUICK_LINKS = [
     { to: '/radio-camps',         icon: <BsBroadcast size={22} />,            title: 'Radio Camps',  desc: "Reviens sur nos camps avec photos, vidéos et souvenirs."            },
     { to: '/documents-et-infos',  icon: <BsFileEarmarkTextFill size={22} />,  title: 'Infos & docs', desc: "Retrouve nos documents importants et toutes les infos pratiques."   },
 ];
+
+/* ════════════════════════════════════════════════════════
+   ANIMATION HELPERS
+════════════════════════════════════════════════════════ */
+
+const fadeUp = (delay = 0) => ({
+    initial:     { opacity: 0, y: 28 },
+    whileInView: { opacity: 1, y: 0 },
+    transition:  { duration: 0.58, ease: 'easeOut' as const, delay },
+    viewport:    { once: true },
+});
+
+const stagger = {
+    hidden:  {},
+    visible: { transition: { staggerChildren: 0.1 } },
+};
+
+const staggerItem = {
+    hidden:  { opacity: 0, y: 24 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: [0.25, 0.1, 0.25, 1] as const } },
+};
 
 /* ════════════════════════════════════════════════════════
    UTILITY
@@ -60,17 +71,37 @@ const HeroSection: React.FC<{ buttons: AccueilButton[] }> = ({ buttons }) => {
 
             <div className="h-content">
 
-                <motion.h1 className="h-title" {...heroTitle(0.35)}>
+                <motion.h1
+                    className="h-title"
+                    initial={{ opacity: 0, y: 36 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.35, duration: 0.65, ease: 'easeOut' }}
+                >
                     94<sup>ème</sup> Unité<br />Saint-Augustin
                 </motion.h1>
 
-                <motion.div className="h-rule" {...heroRule(0.68)} />
+                <motion.div
+                    className="h-rule"
+                    initial={{ scaleX: 0, opacity: 0 }}
+                    animate={{ scaleX: 1, opacity: 1 }}
+                    transition={{ delay: 0.68, duration: 0.48, ease: 'easeOut' }}
+                />
 
-                <motion.p className="h-sub" {...heroSubtitle(0.84)}>
+                <motion.p
+                    className="h-sub"
+                    initial={{ opacity: 0, y: 18 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.84, duration: 0.52, ease: 'easeOut' }}
+                >
                     Probably the best Unité in the world.
                 </motion.p>
 
-                <motion.div className="h-ctas" {...heroSubtitle(1.05)}>
+                <motion.div
+                    className="h-ctas"
+                    initial={{ opacity: 0, y: 16 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 1.05, duration: 0.5, ease: 'easeOut' }}
+                >
                     <a
                         href={buttons[0]?.link || '#'}
                         target={buttons[0]?.link ? '_blank' : undefined}
@@ -100,18 +131,18 @@ const HeroSection: React.FC<{ buttons: AccueilButton[] }> = ({ buttons }) => {
 
             <Modal show={modal} onHide={() => setModal(false)} centered>
                 <Modal.Header closeButton>
-                    <Modal.Title style={{ fontFamily: 'var(--font-display)', color: 'var(--color-primary)' }}>
+                    <Modal.Title style={{ fontFamily: 'Titan One', color: '#022864' }}>
                         Inscriptions indisponibles
                     </Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <p className="mb-0 text-center" style={{ fontFamily: 'var(--font-body)', color: 'var(--color-text-body)', lineHeight: 'var(--line-height-base)' }}>
+                    <p className="mb-0 text-center" style={{ fontFamily: 'Roboto', color: '#4b5563', lineHeight: 1.7 }}>
                         Les inscriptions pour l'année prochaine ne sont pas ouvertes pour le moment.
                         Revenez un peu plus tard ou contactez-nous pour plus d'informations.
                     </p>
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button style={{ background: 'var(--color-primary)', borderColor: 'var(--color-primary)' }} onClick={() => setModal(false)}>
+                    <Button style={{ background: '#022864', borderColor: '#022864' }} onClick={() => setModal(false)}>
                         D'accord
                     </Button>
                 </Modal.Footer>
@@ -150,7 +181,7 @@ const EventsTeaser: React.FC<{ events: EventData[] }> = ({ events }) => {
 
                 <motion.div
                     className="ev-grid"
-                    variants={staggerContainer}
+                    variants={stagger}
                     initial="hidden"
                     whileInView="visible"
                     viewport={{ once: true, amount: 0.15 }}
@@ -197,8 +228,8 @@ const ContentPanel: React.FC<{ item: AccueilItem; reverse: boolean; bg: string }
                     className="cp-img"
                     initial={{ x: reverse ? 48 : -48, opacity: 0 }}
                     whileInView={{ x: 0, opacity: 1 }}
-                    viewport={{ once: true, amount: 0.05 }}
-                    transition={{ duration: DURATION.hero, ease: easeOut }}
+                    transition={{ duration: 0.68, ease: 'easeOut' }}
+                    viewport={{ once: true }}
                 >
                     <img src={item.image} alt={item.titre} />
                 </motion.div>
@@ -207,8 +238,8 @@ const ContentPanel: React.FC<{ item: AccueilItem; reverse: boolean; bg: string }
                     className="cp-text"
                     initial={{ x: reverse ? -48 : 48, opacity: 0 }}
                     whileInView={{ x: 0, opacity: 1 }}
-                    viewport={{ once: true, amount: 0.05 }}
-                    transition={{ duration: DURATION.hero, ease: easeOut, delay: 0.12 }}
+                    transition={{ duration: 0.68, ease: 'easeOut', delay: 0.12 }}
+                    viewport={{ once: true }}
                 >
                     <h2 className="cp-title">{item.titre}</h2>
                     <div className="cp-rule" />
@@ -227,12 +258,12 @@ const ContentSkeleton: React.FC<{ bg: string }> = ({ bg }) => (
     <section className="cp-wrap" style={{ background: bg }}>
         <Container>
             <div className="cp-row">
-                <div className="cp-img skel" style={{ aspectRatio: '4/3' }} />
+                <div className="cp-img skel-box" style={{ aspectRatio: '4/3' }} />
                 <div className="cp-text">
-                    <div className="skel" style={{ height: '2.4rem', width: '65%', marginBottom: '1.2rem', borderRadius: '6px' }} />
-                    <div className="skel" style={{ height: '1rem', width: '100%', marginBottom: '0.5rem', borderRadius: '4px' }} />
-                    <div className="skel" style={{ height: '1rem', width: '100%', marginBottom: '0.5rem', borderRadius: '4px' }} />
-                    <div className="skel" style={{ height: '1rem', width: '75%', borderRadius: '4px' }} />
+                    <div className="skel-box" style={{ height: '2.4rem', width: '65%', marginBottom: '1.2rem', borderRadius: '6px' }} />
+                    <div className="skel-box" style={{ height: '1rem', width: '100%', marginBottom: '0.5rem', borderRadius: '4px' }} />
+                    <div className="skel-box" style={{ height: '1rem', width: '100%', marginBottom: '0.5rem', borderRadius: '4px' }} />
+                    <div className="skel-box" style={{ height: '1rem', width: '75%', borderRadius: '4px' }} />
                 </div>
             </div>
         </Container>
@@ -251,8 +282,8 @@ const ImageBreak: React.FC = () => (
             alt=""
             initial={{ scale: 1.06 }}
             whileInView={{ scale: 1 }}
-            viewport={{ once: true, amount: 0.05 }}
-            transition={{ duration: 1.5, ease: easeOut }}
+            transition={{ duration: 1.5, ease: 'easeOut' }}
+            viewport={{ once: true }}
         />
         <div className="ib-overlay" />
         <div className="ib-content">
@@ -280,7 +311,7 @@ const QuickNav: React.FC = () => (
 
             <motion.div
                 className="qn-grid"
-                variants={staggerContainer}
+                variants={stagger}
                 initial="hidden"
                 whileInView="visible"
                 viewport={{ once: true, amount: 0.15 }}
@@ -338,14 +369,14 @@ const Home: React.FC = () => {
             <HeroSection buttons={buttons} />
             {!loading && <EventsTeaser events={events} />}
             {loading
-                ? <ContentSkeleton bg="var(--color-surface)" />
-                : items[0] && <ContentPanel item={items[0]} reverse={false} bg="var(--color-surface)" />
+                ? <ContentSkeleton bg="#ffffff" />
+                : items[0] && <ContentPanel item={items[0]} reverse={false} bg="#ffffff" />
             }
             <QuickNav />
             <ImageBreak />
             {loading
-                ? <ContentSkeleton bg="var(--color-bg)" />
-                : items[1] && <ContentPanel item={items[1]} reverse={true} bg="var(--color-bg)" />
+                ? <ContentSkeleton bg="#eef2f9" />
+                : items[1] && <ContentPanel item={items[1]} reverse={true} bg="#eef2f9" />
             }
         </>
     );

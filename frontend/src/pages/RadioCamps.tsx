@@ -8,14 +8,6 @@ import {
 } from 'react-icons/bs';
 
 import '../styles/RadioCamps.css';
-import {
-    fadeUp,
-    staggerContainer,
-    staggerItem,
-    heroTitle,
-    heroRule,
-    heroSubtitle,
-} from '../styles/motion';
 
 /* ════════════════════════════════════════════════════════
    CONSTANTS
@@ -42,6 +34,27 @@ const DESTINATIONS: Destination[] = [
 ];
 
 /* ════════════════════════════════════════════════════════
+   ANIMATION HELPERS
+════════════════════════════════════════════════════════ */
+
+const fadeUp = (delay = 0) => ({
+    initial:     { opacity: 0, y: 26 },
+    whileInView: { opacity: 1, y: 0 },
+    transition:  { duration: 0.55, ease: 'easeOut' as const, delay },
+    viewport:    { once: true },
+});
+
+const stagger = {
+    hidden:  {},
+    visible: { transition: { staggerChildren: 0.1 } },
+};
+
+const staggerItem = {
+    hidden:  { opacity: 0, y: 22 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: [0.25, 0.1, 0.25, 1] as const } },
+};
+
+/* ════════════════════════════════════════════════════════
    HERO
 ════════════════════════════════════════════════════════ */
 
@@ -59,18 +72,38 @@ const PageHero: React.FC = () => (
                     <span>Journal de camp · été</span>
                 </motion.div> */}
 
-                <motion.h1 className="rcp-hero-title" {...heroTitle(0.26)}>
+                <motion.h1
+                    className="rcp-hero-title"
+                    initial={{ opacity: 0, y: 28 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.26, duration: 0.6, ease: 'easeOut' }}
+                >
                     Radio Camp
                 </motion.h1>
 
-                <motion.div className="rcp-hero-rule" {...heroRule(0.52)} />
+                <motion.div
+                    className="rcp-hero-rule"
+                    initial={{ scaleX: 0, opacity: 0 }}
+                    animate={{ scaleX: 1, opacity: 1 }}
+                    transition={{ delay: 0.52, duration: 0.44, ease: 'easeOut' }}
+                />
 
-                <motion.p className="rcp-hero-sub" {...heroSubtitle(0.66)}>
+                <motion.p
+                    className="rcp-hero-sub"
+                    initial={{ opacity: 0, y: 16 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.66, duration: 0.5, ease: 'easeOut' }}
+                >
                     Pendant le camp, chaque section publie ses aventures, photos et vidéos.
                     Embarquez avec nous et suivez vos enfants au jour le jour.
                 </motion.p>
 
-                <motion.div className="rcp-hero-stats" {...heroSubtitle(0.86)}>
+                <motion.div
+                    className="rcp-hero-stats"
+                    initial={{ opacity: 0, y: 16 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.86, duration: 0.48, ease: 'easeOut' }}
+                >
                     <div className="rcp-hstat">
                         <span className="rcp-hstat-num">{DESTINATIONS.length}</span>
                         <span className="rcp-hstat-label">Destinations</span>
@@ -127,7 +160,7 @@ const HowItWorks: React.FC = () => (
 
             <motion.div
                 className="rcp-steps"
-                variants={staggerContainer}
+                variants={stagger}
                 initial="hidden"
                 whileInView="visible"
                 viewport={{ once: true, amount: 0.1 }}
@@ -236,7 +269,7 @@ const MapBlock: React.FC = () => {
             <Container className="d-block d-lg-none rcp-mobile-dests">
                 <motion.div
                     className="rcp-mobile-grid"
-                    variants={staggerContainer}
+                    variants={stagger}
                     initial="hidden"
                     whileInView="visible"
                     viewport={{ once: true, amount: 0.05 }}

@@ -8,14 +8,6 @@ import { BsArrowRight, BsPeopleFill } from 'react-icons/bs';
 import CarouselBlock from '../components/CarouselBlock';
 import { SectionImagesData } from '../types/interfaces';
 import '../styles/Sections.css';
-import {
-    fadeUp,
-    staggerContainer,
-    staggerItem,
-    heroTitle,
-    heroRule,
-    heroSubtitle,
-} from '../styles/motion';
 
 /* ════════════════════════════════════════════════════════
    CONSTANTS
@@ -34,6 +26,27 @@ const SECTIONS = [
 ];
 
 /* ════════════════════════════════════════════════════════
+   ANIMATION HELPERS
+════════════════════════════════════════════════════════ */
+
+const fadeUp = (delay = 0) => ({
+    initial:     { opacity: 0, y: 26 },
+    whileInView: { opacity: 1, y: 0 },
+    transition:  { duration: 0.55, ease: 'easeOut' as const, delay },
+    viewport:    { once: true },
+});
+
+const stagger = {
+    hidden:  {},
+    visible: { transition: { staggerChildren: 0.08 } },
+};
+
+const staggerItem = {
+    hidden:  { opacity: 0, y: 26 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: [0.25, 0.1, 0.25, 1] as const } },
+};
+
+/* ════════════════════════════════════════════════════════
    HERO
 ════════════════════════════════════════════════════════ */
 
@@ -41,17 +54,37 @@ const PageHero: React.FC = () => (
     <section className="sp-hero">
         <Container className="sp-hero-container">
             <div className="sp-hero-inner">
-                <motion.h1 className="sp-hero-title" {...heroTitle(0.26)}>
+                <motion.h1
+                    className="sp-hero-title"
+                    initial={{ opacity: 0, y: 28 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.26, duration: 0.6, ease: 'easeOut' }}
+                >
                     Nos sections
                 </motion.h1>
 
-                <motion.div className="sp-hero-rule" {...heroRule(0.52)} />
+                <motion.div
+                    className="sp-hero-rule"
+                    initial={{ scaleX: 0, opacity: 0 }}
+                    animate={{ scaleX: 1, opacity: 1 }}
+                    transition={{ delay: 0.52, duration: 0.44, ease: 'easeOut' }}
+                />
 
-                <motion.p className="sp-hero-sub" {...heroSubtitle(0.66)}>
+                <motion.p
+                    className="sp-hero-sub"
+                    initial={{ opacity: 0, y: 16 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.66, duration: 0.5, ease: 'easeOut' }}
+                >
                     Du premier foulard aux plus grandes aventures, trouve ta place dans l'unité.
                 </motion.p>
 
-                <motion.div className="sp-hero-stats" {...heroSubtitle(0.86)}>
+                <motion.div
+                    className="sp-hero-stats"
+                    initial={{ opacity: 0, y: 16 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.86, duration: 0.48, ease: 'easeOut' }}
+                >
                     <div className="sp-hstat">
                         <span className="sp-hstat-num">8</span>
                         <span className="sp-hstat-label">Sections</span>
@@ -92,7 +125,7 @@ const SectionsGrid: React.FC = () => (
 
             <motion.div
                 className="sp-grid"
-                variants={staggerContainer}
+                variants={stagger}
                 initial="hidden"
                 whileInView="visible"
                 viewport={{ once: true, amount: 0.05 }}
@@ -207,7 +240,7 @@ const JourneyBlock: React.FC = () => (
             {/* ── Mobile: vertical list ── */}
             <motion.div
                 className="sp-journey-mobile"
-                variants={staggerContainer}
+                variants={stagger}
                 initial="hidden"
                 whileInView="visible"
                 viewport={{ once: true, amount: 0.1 }}

@@ -4,8 +4,8 @@
 
 .ft-footer {
     position: relative;
-    background: var(--gradient-primary);
-    color: var(--color-text-on-dark);
+    background: linear-gradient(135deg, #022864 0%, #012558 55%, #011840 100%);
+    color: #ffffff;
     padding: 4.5rem 0 1.5rem;
     overflow: hidden;
     margin-top: auto;
@@ -21,8 +21,8 @@
     background: linear-gradient(
         to right,
         transparent 0%,
-        var(--color-gold) 30%,
-        var(--color-gold) 70%,
+        #FFBE0A 30%,
+        #FFBE0A 70%,
         transparent 100%
     );
     opacity: 0.55;
@@ -75,19 +75,19 @@
 }
 
 .ft-brand-eyebrow {
-    font-family: var(--font-body);
+    font-family: 'Roboto', sans-serif;
     font-size: 0.62rem;
     font-weight: 700;
     letter-spacing: 0.16em;
     text-transform: uppercase;
-    color: var(--color-gold);
+    color: #FFBE0A;
     margin-bottom: 0.18rem;
 }
 
 .ft-brand-name {
-    font-family: var(--font-display);
+    font-family: 'Titan One', sans-serif;
     font-size: 1.2rem;
-    color: var(--color-text-on-dark);
+    color: #ffffff;
     line-height: 1.05;
     letter-spacing: -0.01em;
 }
@@ -98,7 +98,7 @@
 }
 
 .ft-brand-tagline {
-    font-family: var(--font-body);
+    font-family: 'Roboto', sans-serif;
     font-size: 0.92rem;
     color: rgba(255, 255, 255, 0.72);
     line-height: 1.7;
@@ -128,7 +128,7 @@
     text-decoration: none;
     color: inherit;
     transition: background 0.22s ease, border-color 0.22s ease, transform 0.22s ease;
-    font-family: var(--font-body);
+    font-family: 'Roboto', sans-serif;
 }
 
 .ft-contact-row:hover {
@@ -147,7 +147,7 @@
     height: 28px;
     border-radius: 8px;
     background: rgba(255, 190, 10, 0.14);
-    color: var(--color-gold);
+    color: #FFBE0A;
     flex-shrink: 0;
     margin-top: 1px;
 }
@@ -180,10 +180,10 @@
 ══════════════════════════════════════════════════════════ */
 
 .ft-heading {
-    font-family: var(--font-display);
+    font-family: 'Titan One', sans-serif;
     font-size: 0.92rem;
     letter-spacing: 0.06em;
-    color: var(--color-gold);
+    color: #FFBE0A;
     margin: 0 0 1.3rem;
     position: relative;
     padding-bottom: 0.7rem;
@@ -196,7 +196,7 @@
     bottom: 0;
     width: 28px;
     height: 2px;
-    background: var(--color-gold);
+    background: #FFBE0A;
     border-radius: 2px;
     opacity: 0.55;
 }
@@ -219,7 +219,7 @@
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
-    font-family: var(--font-body);
+    font-family: 'Roboto', sans-serif;
     font-size: 0.9rem;
     font-weight: 500;
     color: rgba(255, 255, 255, 0.75);
@@ -229,14 +229,14 @@
 }
 
 .ft-link-arrow {
-    color: var(--color-gold);
+    color: #FFBE0A;
     opacity: 0.55;
     transition: opacity 0.22s ease, transform 0.22s ease;
     flex-shrink: 0;
 }
 
 .ft-link:hover {
-    color: var(--color-text-on-dark);
+    color: #ffffff;
     gap: 0.7rem;
     text-decoration: none;
 }
@@ -271,7 +271,7 @@
     border-radius: 12px;
     text-decoration: none;
     color: inherit;
-    font-family: var(--font-body);
+    font-family: 'Roboto', sans-serif;
     transition: background 0.22s ease, border-color 0.22s ease, transform 0.22s ease;
 }
 
@@ -293,12 +293,12 @@
 .ft-ext-name {
     font-size: 0.9rem;
     font-weight: 700;
-    color: var(--color-text-on-dark);
+    color: #ffffff;
     letter-spacing: 0.005em;
 }
 
 .ft-ext-arrow {
-    color: var(--color-gold);
+    color: #FFBE0A;
     opacity: 0.6;
     transition: opacity 0.22s ease, transform 0.22s ease;
     flex-shrink: 0;
@@ -333,7 +333,7 @@
 }
 
 .ft-bottom-text {
-    font-family: var(--font-body);
+    font-family: 'Roboto', sans-serif;
     font-size: 0.78rem;
     color: rgba(255, 255, 255, 0.5);
     line-height: 1.6;
@@ -346,7 +346,7 @@
 }
 
 .ft-totem {
-    color: var(--color-gold);
+    color: #FFBE0A;
     font-weight: 600;
     letter-spacing: 0.02em;
 }
@@ -374,7 +374,7 @@
 .ft-social:hover {
     background: rgba(255, 190, 10, 0.15);
     border-color: rgba(255, 190, 10, 0.55);
-    color: var(--color-gold);
+    color: #FFBE0A;
 }
 
 

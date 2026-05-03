@@ -10,22 +10,33 @@ import {
 
 import '../styles/InformationsPage.css';
 import { DocumentData, InformationData } from '../types/interfaces';
-import {
-    fadeUp,
-    staggerContainer,
-    staggerItem,
-    heroTitle,
-    heroRule,
-    heroSubtitle,
-    easeOut,
-} from '../styles/motion';
 
-/* Local helper: a fade-up that animates on mount (not whileInView) — used by document cards */
+/* ════════════════════════════════════════════════════════
+   ANIMATION HELPERS
+════════════════════════════════════════════════════════ */
+
+const fadeUp = (delay = 0) => ({
+    initial:     { opacity: 0, y: 26 },
+    whileInView: { opacity: 1, y: 0 },
+    transition:  { duration: 0.55, ease: 'easeOut' as const, delay },
+    viewport:    { once: true },
+});
+
 const fadeIn = (delay = 0) => ({
     initial:    { opacity: 0, y: 20 },
     animate:    { opacity: 1, y: 0 },
-    transition: { duration: 0.48, ease: easeOut, delay },
+    transition: { duration: 0.48, ease: 'easeOut' as const, delay },
 });
+
+const stagger = {
+    hidden:  {},
+    visible: { transition: { staggerChildren: 0.09 } },
+};
+
+const staggerItem = {
+    hidden:  { opacity: 0, y: 22 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.46, ease: [0.25, 0.1, 0.25, 1] as const } },
+};
 
 /* ════════════════════════════════════════════════════════
    UTILITY — detect info card media type
@@ -73,18 +84,38 @@ const PageHero: React.FC<HeroProps> = ({ docsCount, infosCount, loading }) => (
                     94ème Saint-Augustin
                 </motion.span> */}
 
-                <motion.h1 className="ip-hero-title" {...heroTitle(0.26)}>
-                    Informations<br />&amp; Documents
+                <motion.h1
+                    className="ip-hero-title"
+                    initial={{ opacity: 0, y: 28 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.26, duration: 0.6, ease: 'easeOut' }}
+                >
+                    Documents<br />&amp; Informations
                 </motion.h1>
 
-                <motion.div className="ip-hero-rule" {...heroRule(0.52)} />
+                <motion.div
+                    className="ip-hero-rule"
+                    initial={{ scaleX: 0, opacity: 0 }}
+                    animate={{ scaleX: 1, opacity: 1 }}
+                    transition={{ delay: 0.52, duration: 0.44, ease: 'easeOut' }}
+                />
 
-                <motion.p className="ip-hero-sub" {...heroSubtitle(0.66)}>
-                    Retrouve ici toutes les informations pratiques et les documents téléchargeables de l'unité.
+                <motion.p
+                    className="ip-hero-sub"
+                    initial={{ opacity: 0, y: 16 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.66, duration: 0.5, ease: 'easeOut' }}
+                >
+                    Retrouve ici tous les documents téléchargeables et les informations pratiques de l'unité.
                 </motion.p>
 
                 {!loading && (docsCount > 0 || infosCount > 0) && (
-                    <motion.div className="ip-hero-stats" {...heroSubtitle(0.86)}>
+                    <motion.div
+                        className="ip-hero-stats"
+                        initial={{ opacity: 0, y: 16 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.86, duration: 0.48, ease: 'easeOut' }}
+                    >
                         <div className="ip-hstat">
                             <span className="ip-hstat-num">{docsCount}</span>
                             <span className="ip-hstat-label">Document{docsCount !== 1 ? 's' : ''}</span>
@@ -270,34 +301,6 @@ const InformationsPage: React.FC = () => {
                 </section>
             ) : (
                 <>
-                    <section className="ip-infos-section">
-                        <Container>
-                            <div className="ip-sec-header">
-                                <motion.h2 className="ip-sec-heading" {...fadeUp(0.08)}>Informations</motion.h2>
-                                <motion.div className="ip-sec-rule" {...fadeUp(0.14)} />
-                                <motion.p className="ip-sec-sub" {...fadeUp(0.2)}>
-                                    Toutes les informations pratiques et ressources utiles de l'unité.
-                                </motion.p>
-                            </div>
-
-                            {loading ? <InfoSkeleton /> : (
-                                informations.length === 0 ? (
-                                    <p className="ip-empty">Aucune information disponible pour le moment.</p>
-                                ) : (
-                                    <Masonry
-                                        breakpointCols={{ default: 3, 1199: 2, 767: 1 }}
-                                        className="ip-masonry"
-                                        columnClassName="ip-masonry-col"
-                                    >
-                                        {informations.map((info, i) => (
-                                            <InfoCard key={info.id} info={info} index={i} />
-                                        ))}
-                                    </Masonry>
-                                )
-                            )}
-                        </Container>
-                    </section>
-
                     <section className="ip-docs-section">
                         <Container>
                             <div className="ip-sec-header">
@@ -315,7 +318,7 @@ const InformationsPage: React.FC = () => {
                                 ) : (
                                     <motion.div
                                         className="ip-docs-grid"
-                                        variants={staggerContainer}
+                                        variants={stagger}
                                         initial="hidden"
                                         whileInView="visible"
                                         viewport={{ once: true, amount: 0.1 }}
@@ -343,6 +346,34 @@ const InformationsPage: React.FC = () => {
                                             </motion.div>
                                         ))}
                                     </motion.div>
+                                )
+                            )}
+                        </Container>
+                    </section>
+
+                    <section className="ip-infos-section">
+                        <Container>
+                            <div className="ip-sec-header">
+                                <motion.h2 className="ip-sec-heading" {...fadeUp(0.08)}>Informations</motion.h2>
+                                <motion.div className="ip-sec-rule" {...fadeUp(0.14)} />
+                                <motion.p className="ip-sec-sub" {...fadeUp(0.2)}>
+                                    Toutes les informations pratiques et ressources utiles de l'unité.
+                                </motion.p>
+                            </div>
+
+                            {loading ? <InfoSkeleton /> : (
+                                informations.length === 0 ? (
+                                    <p className="ip-empty">Aucune information disponible pour le moment.</p>
+                                ) : (
+                                    <Masonry
+                                        breakpointCols={{ default: 3, 1199: 2, 767: 1 }}
+                                        className="ip-masonry"
+                                        columnClassName="ip-masonry-col"
+                                    >
+                                        {informations.map((info, i) => (
+                                            <InfoCard key={info.id} info={info} index={i} />
+                                        ))}
+                                    </Masonry>
                                 )
                             )}
                         </Container>

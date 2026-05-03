@@ -10,22 +10,22 @@
 
 .rcp-sec-header,
 .rcbs-sec-header {
-    margin-bottom: var(--space-7);
+    margin-bottom: 2.8rem;
     max-width: 700px;
 }
 
 .rcp-sec-heading,
 .rcbs-sec-heading {
-    font-family: var(--font-display);
-    font-size: var(--font-size-h1);
-    color: var(--color-primary);
-    line-height: var(--line-height-tight);
+    font-family: 'Titan One', sans-serif;
+    font-size: clamp(2rem, 4vw, 3rem);
+    color: #022864;
+    line-height: 1.06;
     margin: 0;
-    letter-spacing: var(--letter-tight);
+    letter-spacing: -0.01em;
 }
 
 .rcp-sec-heading-light {
-    color: var(--color-text-on-dark);
+    color: #ffffff;
     text-shadow: 0 4px 22px rgba(0, 0, 0, 0.3);
 }
 
@@ -33,26 +33,27 @@
 .rcbs-sec-rule {
     width: 44px;
     height: 3px;
-    background: var(--color-gold);
+    background: #FFBE0A;
     border-radius: 3px;
-    margin: var(--space-3) 0 var(--space-4);
-    box-shadow: var(--shadow-glow);
+    margin-top: 0.9rem;
+    margin-bottom: 1rem;
+    box-shadow: 0 0 12px rgba(255, 190, 10, 0.35);
     transform-origin: left;
 }
 
 .rcp-sec-sub,
 .rcbs-sec-sub {
-    font-family: var(--font-body);
-    font-size: var(--font-size-body);
+    font-family: 'Roboto', sans-serif;
+    font-size: clamp(0.95rem, 2vw, 1.08rem);
     font-weight: 300;
-    color: var(--color-text-body);
-    line-height: var(--line-height-base);
+    color: #566a8a;
+    line-height: 1.7;
     margin: 0;
     max-width: 560px;
 }
 
 .rcp-sec-sub-light {
-    color: var(--color-text-on-dark-soft);
+    color: rgba(255, 255, 255, 0.78);
 }
 
 
@@ -62,8 +63,8 @@
 
 .rcp-hero {
     position: relative;
-    background: var(--gradient-primary);
-    padding: var(--section-padding-y) var(--section-padding-x);
+    background: linear-gradient(135deg, #022864 0%, #012558 55%, #011840 100%);
+    padding: 5.5rem 2rem 5.5rem;
     min-height: 420px;
     overflow: hidden;
     color: white;
@@ -88,12 +89,12 @@
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    font-family: var(--font-body);
+    font-family: 'Roboto', sans-serif;
     font-size: 0.68rem;
     font-weight: 700;
     letter-spacing: 0.18em;
     text-transform: uppercase;
-    color: var(--color-gold);
+    color: #FFBE0A;
     background: rgba(255, 190, 10, 0.09);
     border: 1px solid rgba(255, 190, 10, 0.28);
     border-radius: 999px;
@@ -102,10 +103,10 @@
 }
 
 .rcp-hero-title {
-    font-family: var(--font-display);
+    font-family: 'Titan One', sans-serif;
     font-size: clamp(3rem, 8vw, 5.5rem);
     line-height: 0.98;
-    color: var(--color-text-on-dark);
+    color: #ffffff;
     margin: 0;
     letter-spacing: -0.02em;
     text-shadow: 0 4px 32px rgba(0, 0, 0, 0.3);
@@ -114,7 +115,7 @@
 .rcp-hero-rule {
     width: 58px;
     height: 3px;
-    background: var(--color-gold);
+    background: #FFBE0A;
     border-radius: 3px;
     margin: 1.4rem 0;
     transform-origin: left;
@@ -122,7 +123,7 @@
 }
 
 .rcp-hero-sub {
-    font-family: var(--font-body);
+    font-family: 'Roboto', sans-serif;
     font-size: clamp(0.95rem, 2vw, 1.1rem);
     font-weight: 300;
     color: rgba(255, 255, 255, 0.75);
@@ -151,15 +152,15 @@
 }
 
 .rcp-hstat-num {
-    font-family: var(--font-display);
+    font-family: 'Titan One', sans-serif;
     font-size: clamp(1.5rem, 3vw, 2.1rem);
     line-height: 1;
-    color: var(--color-gold);
+    color: #FFBE0A;
     white-space: nowrap;
 }
 
 .rcp-hstat-label {
-    font-family: var(--font-body);
+    font-family: 'Roboto', sans-serif;
     font-size: 0.62rem;
     font-weight: 600;
     letter-spacing: 0.14em;
@@ -205,8 +206,8 @@
 ══════════════════════════════════════════════════════════ */
 
 .rcp-steps-wrap {
-    padding: var(--section-padding-y) var(--section-padding-x);
-    background: var(--color-surface);
+    padding: 5.5rem 2rem 5rem;
+    background: #ffffff;
 }
 
 .rcp-steps {
@@ -219,8 +220,8 @@
 
 .rcp-step {
     position: relative;
-    background: var(--color-surface);
-    border: var(--border-width-strong) solid var(--color-border);
+    background: #ffffff;
+    border: 1.5px solid #e4e9f2;
     border-radius: 18px;
     padding: 1.7rem 1.6rem 1.5rem;
     overflow: hidden;
@@ -230,14 +231,14 @@
 
 .rcp-step:hover {
     transform: translateY(-6px);
-    border-color: var(--color-border-strong);
+    border-color: #c2d0e8;
     box-shadow: 0 18px 40px rgba(2, 40, 100, 0.12);
 }
 
 .rcp-step-num {
-    font-family: var(--font-display);
+    font-family: 'Titan One', sans-serif;
     font-size: 2.8rem;
-    color: var(--color-bg);
+    color: #eef2f9;
     line-height: 1;
     position: absolute;
     top: 0.8rem;
@@ -257,16 +258,16 @@
     width: 44px;
     height: 44px;
     border-radius: 12px;
-    background: var(--color-primary);
-    color: var(--color-gold);
+    background: #022864;
+    color: #FFBE0A;
     margin-bottom: 1rem;
     box-shadow: 0 6px 16px rgba(2, 40, 100, 0.28);
 }
 
 .rcp-step-title {
-    font-family: var(--font-display);
+    font-family: 'Titan One', sans-serif;
     font-size: 1.25rem;
-    color: var(--color-primary);
+    color: #022864;
     line-height: 1.15;
     margin: 0 0 0.5rem;
     letter-spacing: -0.01em;
@@ -275,9 +276,9 @@
 }
 
 .rcp-step-text {
-    font-family: var(--font-body);
+    font-family: 'Roboto', sans-serif;
     font-size: 0.9rem;
-    color: var(--color-text-body);
+    color: #566a8a;
     line-height: 1.7;
     margin: 0;
     position: relative;
@@ -290,8 +291,8 @@
 ══════════════════════════════════════════════════════════ */
 
 .rcp-map-wrap {
-    background: var(--gradient-primary);
-    padding: var(--section-padding-y) var(--section-padding-x);
+    background: linear-gradient(135deg, #022864 0%, #012558 55%, #011840 100%);
+    padding: 5rem 2rem 5.5rem;
     position: relative;
     overflow: hidden;
 }
@@ -307,7 +308,7 @@
     box-shadow:
         0 18px 48px rgba(0, 0, 0, 0.38),
         0 0 0 1px rgba(255, 255, 255, 0.06);
-    background: var(--color-text);
+    background: #1a1f2e;
 }
 
 .rcp-map-img {
@@ -344,11 +345,11 @@
 }
 
 .rcp-compass-n {
-    font-family: var(--font-body);
+    font-family: 'Roboto', sans-serif;
     font-size: 0.6rem;
     font-weight: 700;
     letter-spacing: 0.14em;
-    color: var(--color-gold);
+    color: #FFBE0A;
 }
 
 /* Pin positioning */
@@ -370,7 +371,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    --pc: var(--color-primary);
+    --pc: #022864;
 }
 
 .rcp-pin-pulse {
@@ -396,7 +397,7 @@
     height: 26px;
     border-radius: 50%;
     background: var(--pc);
-    color: var(--color-text-on-dark);
+    color: #ffffff;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -429,7 +430,7 @@
     pointer-events: none;
     min-width: 170px;
     padding: 0.8rem 1rem 0.85rem;
-    background: var(--color-surface);
+    background: #ffffff;
     border: 1px solid rgba(2, 40, 100, 0.1);
     border-radius: 14px;
     box-shadow: 0 14px 36px rgba(0, 0, 0, 0.3);
@@ -449,7 +450,7 @@
     left: 50%;
     transform: translateX(-50%);
     border: 8px solid transparent;
-    border-top-color: var(--color-text-on-dark);
+    border-top-color: #ffffff;
 }
 
 .rcp-pin:hover .rcp-pin-card,
@@ -460,7 +461,7 @@
 }
 
 .rcp-pin-card-band {
-    font-family: var(--font-body);
+    font-family: 'Roboto', sans-serif;
     font-size: 0.6rem;
     font-weight: 700;
     letter-spacing: 0.12em;
@@ -469,9 +470,9 @@
 }
 
 .rcp-pin-card-name {
-    font-family: var(--font-display);
+    font-family: 'Titan One', sans-serif;
     font-size: 1.1rem;
-    color: var(--color-primary);
+    color: #022864;
     line-height: 1.15;
     letter-spacing: -0.01em;
 }
@@ -482,8 +483,8 @@
     gap: 6px;
     margin-top: 0.55rem;
     padding-top: 0.5rem;
-    border-top: var(--border-width) solid var(--color-divider);
-    font-family: var(--font-body);
+    border-top: 1px solid #eef2f9;
+    font-family: 'Roboto', sans-serif;
     font-size: 0.7rem;
     font-weight: 700;
     letter-spacing: 0.1em;
@@ -508,7 +509,7 @@
 }
 
 .rcp-dest-card {
-    --pc: var(--color-primary);
+    --pc: #022864;
     position: relative;
     display: flex;
     flex-direction: column;
@@ -558,19 +559,19 @@
 }
 
 .rcp-dest-pin-icon {
-    color: var(--color-gold);
+    color: #FFBE0A;
 }
 
 .rcp-dest-name {
-    font-family: var(--font-display);
+    font-family: 'Titan One', sans-serif;
     font-size: 1.2rem;
-    color: var(--color-text-on-dark);
+    color: #ffffff;
     line-height: 1.1;
     letter-spacing: -0.01em;
 }
 
 .rcp-dest-band {
-    font-family: var(--font-body);
+    font-family: 'Roboto', sans-serif;
     font-size: 0.64rem;
     font-weight: 700;
     letter-spacing: 0.14em;
@@ -583,12 +584,12 @@
     display: inline-flex;
     align-items: center;
     gap: 0.4rem;
-    font-family: var(--font-body);
+    font-family: 'Roboto', sans-serif;
     font-size: 0.72rem;
     font-weight: 700;
     letter-spacing: 0.1em;
     text-transform: uppercase;
-    color: var(--color-gold);
+    color: #FFBE0A;
     padding-top: 0.6rem;
     border-top: 1px solid rgba(255, 255, 255, 0.18);
     width: 100%;
@@ -598,7 +599,7 @@
 .rcp-dest-card:hover .rcp-dest-cta,
 .rcp-dest-card:focus-visible .rcp-dest-cta {
     gap: 0.6rem;
-    color: var(--color-gold);
+    color: #FFBE0A;
 }
 
 
@@ -614,8 +615,8 @@
     justify-content: center;
     padding: 2.5rem 1.25rem;
     overflow: hidden;
-    background: var(--gradient-primary);
-    color: var(--color-text-on-dark);
+    background: linear-gradient(135deg, #022864 0%, #012558 55%, #011840 100%);
+    color: #ffffff;
 }
 
 .rcbs-gate-bg {
@@ -632,8 +633,8 @@
     position: absolute;
     inset: 0;
     background:
-        radial-gradient(circle at 15% 110%, color-mix(in srgb, var(--rcbs-accent, var(--color-primary)) 55%, transparent) 0%, transparent 55%),
-        radial-gradient(circle at 85% -10%, color-mix(in srgb, var(--rcbs-accent, var(--color-primary)) 30%, transparent) 0%, transparent 50%);
+        radial-gradient(circle at 15% 110%, color-mix(in srgb, var(--rcbs-accent, #022864) 55%, transparent) 0%, transparent 55%),
+        radial-gradient(circle at 85% -10%, color-mix(in srgb, var(--rcbs-accent, #022864) 30%, transparent) 0%, transparent 50%);
     mix-blend-mode: screen;
     opacity: 0.6;
     pointer-events: none;
@@ -659,7 +660,7 @@
     align-items: center;
     align-self: flex-start;
     gap: 0.4rem;
-    font-family: var(--font-body);
+    font-family: 'Roboto', sans-serif;
     font-size: 0.68rem;
     font-weight: 700;
     letter-spacing: 0.14em;
@@ -678,7 +679,7 @@
 .rcbs-gate-back:hover {
     background: rgba(255, 255, 255, 0.14);
     border-color: rgba(255, 255, 255, 0.35);
-    color: var(--color-text-on-dark);
+    color: #ffffff;
     text-decoration: none;
     transform: translateX(-2px);
 }
@@ -695,9 +696,9 @@ button.rcbs-gate-back {
     padding: 2.2rem 2rem 2rem;
     margin-bottom: 5rem;
     text-align: center;
-    color: var(--color-primary);
+    color: #022864;
     box-shadow: 0 24px 60px rgba(0, 0, 0, 0.3);
-    /* border-top: 4px solid var(--rcbs-accent, var(--color-primary)); */
+    /* border-top: 4px solid var(--rcbs-accent, #022864); */
 }
 
 .rcbs-gate-header {
@@ -712,18 +713,18 @@ button.rcbs-gate-back {
     display: inline-flex;
     align-items: center;
     gap: 7px;
-    font-family: var(--font-body);
+    font-family: 'Roboto', sans-serif;
     font-size: 0.64rem;
     font-weight: 700;
     letter-spacing: 0.18em;
     text-transform: uppercase;
-    color: var(--rcbs-accent, var(--color-primary));
+    color: var(--rcbs-accent, #022864);
 }
 
 .rcbs-gate-title {
-    font-family: var(--font-display);
+    font-family: 'Titan One', sans-serif;
     font-size: clamp(1.8rem, 5vw, 2.6rem);
-    color: var(--color-primary);
+    color: #022864;
     line-height: 1.05;
     margin: 0.15rem 0 0;
     letter-spacing: -0.01em;
@@ -732,16 +733,16 @@ button.rcbs-gate-back {
 .rcbs-gate-rule {
     width: 44px;
     height: 3px;
-    background: var(--rcbs-accent, var(--color-gold));
+    background: var(--rcbs-accent, #FFBE0A);
     border-radius: 3px;
     margin: 0.9rem auto 1rem;
-    box-shadow: 0 0 12px color-mix(in srgb, var(--rcbs-accent, var(--color-primary)) 40%, transparent);
+    box-shadow: 0 0 12px color-mix(in srgb, var(--rcbs-accent, #022864) 40%, transparent);
 }
 
 .rcbs-gate-desc {
-    font-family: var(--font-body);
+    font-family: 'Roboto', sans-serif;
     font-size: 0.92rem;
-    color: var(--color-text-body);
+    color: #566a8a;
     line-height: 1.7;
     margin: 0 auto 1.5rem;
     max-width: 440px;
@@ -759,35 +760,35 @@ button.rcbs-gate-back {
     border-radius: 10px !important;
     border: 1.5px solid #d0d7e8 !important;
     padding: 0.7rem 1rem !important;
-    font-family: var(--font-body);
+    font-family: 'Roboto', sans-serif;
     font-size: 0.95rem;
-    background: var(--color-bg-subtle);
+    background: #f6f9fc;
     transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
 }
 
 .rcbs-gate-input:focus {
-    border-color: var(--rcbs-accent, var(--color-primary)) !important;
-    background: var(--color-surface);
-    box-shadow: 0 0 0 3px color-mix(in srgb, var(--rcbs-accent, var(--color-primary)) 15%, transparent) !important;
+    border-color: var(--rcbs-accent, #022864) !important;
+    background: #ffffff;
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--rcbs-accent, #022864) 15%, transparent) !important;
 }
 
 .rcbs-gate-btn {
-    font-family: var(--font-display);
+    font-family: 'Titan One', sans-serif;
     font-size: 0.92rem;
     letter-spacing: 0.04em;
-    background: var(--rcbs-accent, var(--color-primary)) !important;
-    border-color: var(--rcbs-accent, var(--color-primary)) !important;
+    background: var(--rcbs-accent, #022864) !important;
+    border-color: var(--rcbs-accent, #022864) !important;
     border-radius: 10px !important;
     padding: 0.7rem 1.4rem !important;
     white-space: nowrap;
-    box-shadow: 0 6px 18px color-mix(in srgb, var(--rcbs-accent, var(--color-primary)) 32%, transparent);
+    box-shadow: 0 6px 18px color-mix(in srgb, var(--rcbs-accent, #022864) 32%, transparent);
     transition: transform 0.22s ease, box-shadow 0.22s ease, filter 0.22s ease;
 }
 
 .rcbs-gate-btn:hover:not(:disabled) {
     transform: translateY(-2px);
     filter: brightness(1.08);
-    box-shadow: 0 12px 28px color-mix(in srgb, var(--rcbs-accent, var(--color-primary)) 45%, transparent);
+    box-shadow: 0 12px 28px color-mix(in srgb, var(--rcbs-accent, #022864) 45%, transparent);
 }
 
 .rcbs-gate-btn:disabled {
@@ -807,12 +808,12 @@ button.rcbs-gate-back {
     display: inline-flex;
     align-items: center;
     gap: 7px;
-    font-family: var(--font-body);
+    font-family: 'Roboto', sans-serif;
     font-size: 0.82rem;
     font-weight: 500;
-    color: var(--rcbs-accent, var(--color-primary));
-    background: color-mix(in srgb, var(--rcbs-accent, var(--color-primary)) 8%, white);
-    border: 1px solid color-mix(in srgb, var(--rcbs-accent, var(--color-primary)) 18%, transparent);
+    color: var(--rcbs-accent, #022864);
+    background: color-mix(in srgb, var(--rcbs-accent, #022864) 8%, white);
+    border: 1px solid color-mix(in srgb, var(--rcbs-accent, #022864) 18%, transparent);
     border-radius: 999px;
     padding: 0.35rem 0.85rem;
     margin: 0.5rem auto 0.5rem;
@@ -827,31 +828,31 @@ button.rcbs-gate-back {
     background: transparent;
     border: none;
     padding: 0;
-    font-family: var(--font-body);
+    font-family: 'Roboto', sans-serif;
     font-size: 0.74rem;
     font-weight: 700;
     letter-spacing: 0.12em;
     text-transform: uppercase;
-    color: var(--color-text-muted);
+    color: #8494b0;
     cursor: pointer;
     transition: color 0.2s ease, transform 0.2s ease;
 }
 
 .rcbs-gate-switch:hover {
-    color: var(--rcbs-accent, var(--color-primary));
+    color: var(--rcbs-accent, #022864);
     transform: translateX(-2px);
 }
 
 .rcbs-gate-help {
-    font-family: var(--font-body);
+    font-family: 'Roboto', sans-serif;
     font-size: 0.82rem;
-    color: var(--color-text-muted);
+    color: #8494b0;
     margin: 1.4rem 0 0;
     line-height: 1.6;
 }
 
 .rcbs-gate-link {
-    color: var(--rcbs-accent, var(--color-primary));
+    color: var(--rcbs-accent, #022864);
     font-weight: 600;
     text-decoration: none;
     transition: text-decoration 0.2s ease;
@@ -859,7 +860,7 @@ button.rcbs-gate-back {
 
 .rcbs-gate-link:hover {
     text-decoration: underline;
-    color: var(--rcbs-accent, var(--color-primary));
+    color: var(--rcbs-accent, #022864);
 }
 
 @media (max-width: 480px) {
@@ -878,8 +879,8 @@ button.rcbs-gate-back {
     min-height: calc(100vh - 75px);
     padding: 3rem 1.25rem 5rem;
     overflow: hidden;
-    background: var(--gradient-primary);
-    color: var(--color-text-on-dark);
+    background: linear-gradient(135deg, #022864 0%, #012558 55%, #011840 100%);
+    color: #ffffff;
 }
 
 .rcbs-picker-bg {
@@ -896,8 +897,8 @@ button.rcbs-gate-back {
     position: absolute;
     inset: 0;
     background:
-        radial-gradient(circle at 15% 110%, color-mix(in srgb, var(--rcbs-accent, var(--color-primary)) 55%, transparent) 0%, transparent 55%),
-        radial-gradient(circle at 85% -10%, color-mix(in srgb, var(--rcbs-accent, var(--color-primary)) 30%, transparent) 0%, transparent 50%);
+        radial-gradient(circle at 15% 110%, color-mix(in srgb, var(--rcbs-accent, #022864) 55%, transparent) 0%, transparent 55%),
+        radial-gradient(circle at 85% -10%, color-mix(in srgb, var(--rcbs-accent, #022864) 30%, transparent) 0%, transparent 50%);
     mix-blend-mode: screen;
     opacity: 0.6;
     pointer-events: none;
@@ -919,12 +920,12 @@ button.rcbs-gate-back {
     display: inline-flex;
     align-items: center;
     gap: 7px;
-    font-family: var(--font-body);
+    font-family: 'Roboto', sans-serif;
     font-size: 0.66rem;
     font-weight: 700;
     letter-spacing: 0.18em;
     text-transform: uppercase;
-    color: var(--color-gold);
+    color: #FFBE0A;
     background: rgba(255, 190, 10, 0.09);
     border: 1px solid rgba(255, 190, 10, 0.28);
     border-radius: 999px;
@@ -933,9 +934,9 @@ button.rcbs-gate-back {
 }
 
 .rcbs-picker-title {
-    font-family: var(--font-display);
+    font-family: 'Titan One', sans-serif;
     font-size: clamp(2.2rem, 5vw, 3.2rem);
-    color: var(--color-text-on-dark);
+    color: #ffffff;
     line-height: 1.04;
     margin: 0;
     letter-spacing: -0.01em;
@@ -945,14 +946,14 @@ button.rcbs-gate-back {
 .rcbs-picker-rule {
     width: 52px;
     height: 3px;
-    background: var(--rcbs-accent, var(--color-gold));
+    background: var(--rcbs-accent, #FFBE0A);
     border-radius: 3px;
     margin: 1rem auto 1.2rem;
-    box-shadow: 0 0 18px color-mix(in srgb, var(--rcbs-accent, var(--color-gold)) 60%, transparent);
+    box-shadow: 0 0 18px color-mix(in srgb, var(--rcbs-accent, #FFBE0A) 60%, transparent);
 }
 
 .rcbs-picker-sub {
-    font-family: var(--font-body);
+    font-family: 'Roboto', sans-serif;
     font-size: clamp(0.92rem, 2vw, 1.02rem);
     font-weight: 300;
     color: rgba(255, 255, 255, 0.78);
@@ -1000,7 +1001,7 @@ button.rcbs-gate-back {
     left: 0;
     right: 0;
     height: 3px;
-    background: var(--rcbs-accent, var(--color-primary));
+    background: var(--rcbs-accent, #022864);
     transform: scaleX(0.3);
     transform-origin: left;
     transition: transform 0.35s ease;
@@ -1019,11 +1020,11 @@ button.rcbs-gate-back {
 } */
 
 .rcbs-picker-card-icon {
-    color: var(--color-gold);
+    color: #FFBE0A;
 }
 
 .rcbs-picker-card-band {
-    font-family: var(--font-body);
+    font-family: 'Roboto', sans-serif;
     font-size: 0.62rem;
     font-weight: 700;
     letter-spacing: 0.14em;
@@ -1032,9 +1033,9 @@ button.rcbs-gate-back {
 }
 
 .rcbs-picker-card-name {
-    font-family: var(--font-display);
+    font-family: 'Titan One', sans-serif;
     font-size: 1.25rem;
-    color: var(--color-text-on-dark);
+    color: #ffffff;
     line-height: 1.18;
     letter-spacing: -0.01em;
     margin: 0 0 0.85rem;
@@ -1044,7 +1045,7 @@ button.rcbs-gate-back {
     display: inline-flex;
     align-items: center;
     gap: 7px;
-    font-family: var(--font-body);
+    font-family: 'Roboto', sans-serif;
     font-size: 0.82rem;
     color: rgba(255, 255, 255, 0.82);
     background: rgba(255, 255, 255, 0.08);
@@ -1059,12 +1060,12 @@ button.rcbs-gate-back {
     display: inline-flex;
     align-items: center;
     gap: 0.4rem;
-    font-family: var(--font-body);
+    font-family: 'Roboto', sans-serif;
     font-size: 0.72rem;
     font-weight: 700;
     letter-spacing: 0.1em;
     text-transform: uppercase;
-    color: var(--color-gold);
+    color: #FFBE0A;
     padding-top: 0.7rem;
     border-top: 1px solid rgba(255, 255, 255, 0.18);
     width: 100%;
@@ -1100,7 +1101,7 @@ button.rcbs-gate-back {
 
 .rcbs-hero {
     position: relative;
-    background: var(--gradient-primary);
+    background: linear-gradient(135deg, #022864 0%, #012558 55%, #011840 100%);
     padding: 5.5rem 2rem 4.5rem;
     min-height: 400px;
     overflow: hidden;
@@ -1123,8 +1124,8 @@ button.rcbs-gate-back {
     position: absolute;
     inset: 0;
     background:
-        radial-gradient(circle at 15% 100%, color-mix(in srgb, var(--rcbs-accent, var(--color-primary)) 55%, transparent) 0%, transparent 55%),
-        radial-gradient(circle at 85% 0%, color-mix(in srgb, var(--rcbs-accent, var(--color-primary)) 25%, transparent) 0%, transparent 50%);
+        radial-gradient(circle at 15% 100%, color-mix(in srgb, var(--rcbs-accent, #022864) 55%, transparent) 0%, transparent 55%),
+        radial-gradient(circle at 85% 0%, color-mix(in srgb, var(--rcbs-accent, #022864) 25%, transparent) 0%, transparent 50%);
     mix-blend-mode: screen;
     opacity: 0.85;
     pointer-events: none;
@@ -1138,7 +1139,7 @@ button.rcbs-gate-back {
     display: inline-flex;
     align-items: center;
     gap: 0.4rem;
-    font-family: var(--font-body);
+    font-family: 'Roboto', sans-serif;
     font-size: 0.7rem;
     font-weight: 700;
     letter-spacing: 0.14em;
@@ -1156,7 +1157,7 @@ button.rcbs-gate-back {
 .rcbs-hero-back:hover {
     background: rgba(255, 255, 255, 0.14);
     border-color: rgba(255, 255, 255, 0.35);
-    color: var(--color-text-on-dark);
+    color: #ffffff;
     text-decoration: none;
     transform: translateX(-2px);
 }
@@ -1181,7 +1182,7 @@ button.rcbs-gate-back {
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    font-family: var(--font-body);
+    font-family: 'Roboto', sans-serif;
     font-size: 0.66rem;
     font-weight: 700;
     letter-spacing: 0.14em;
@@ -1195,17 +1196,17 @@ button.rcbs-gate-back {
 }
 
 .rcbs-hero-badge-accent {
-    background: var(--rcbs-accent, var(--color-primary));
+    background: var(--rcbs-accent, #022864);
     border-color: transparent;
-    color: var(--color-text-on-dark);
-    box-shadow: 0 4px 16px color-mix(in srgb, var(--rcbs-accent, var(--color-primary)) 55%, transparent);
+    color: #ffffff;
+    box-shadow: 0 4px 16px color-mix(in srgb, var(--rcbs-accent, #022864) 55%, transparent);
 }
 
 .rcbs-hero-title {
-    font-family: var(--font-display);
+    font-family: 'Titan One', sans-serif;
     font-size: clamp(2.3rem, 6vw, 4rem);
     line-height: 1;
-    color: var(--color-text-on-dark);
+    color: #ffffff;
     margin: 0;
     letter-spacing: -0.02em;
     text-shadow: 0 4px 28px rgba(0, 0, 0, 0.4);
@@ -1214,18 +1215,18 @@ button.rcbs-gate-back {
 .rcbs-hero-rule {
     width: 64px;
     height: 3px;
-    background: var(--rcbs-accent, var(--color-gold));
+    background: var(--rcbs-accent, #FFBE0A);
     border-radius: 3px;
     margin: 1.4rem 0 1.6rem;
     transform-origin: left;
-    box-shadow: 0 0 20px color-mix(in srgb, var(--rcbs-accent, var(--color-gold)) 75%, transparent);
+    box-shadow: 0 0 20px color-mix(in srgb, var(--rcbs-accent, #FFBE0A) 75%, transparent);
 }
 
 .rcbs-hero-dates {
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    font-family: var(--font-body);
+    font-family: 'Roboto', sans-serif;
     font-size: 0.88rem;
     color: rgba(255, 255, 255, 0.78);
     margin: 1rem 0 0;
@@ -1252,14 +1253,14 @@ button.rcbs-gate-back {
 }
 
 .rcbs-hstat-num {
-    font-family: var(--font-display);
+    font-family: 'Titan One', sans-serif;
     font-size: clamp(1.4rem, 3vw, 1.9rem);
     line-height: 1;
-    color: var(--color-gold);
+    color: #FFBE0A;
 }
 
 .rcbs-hstat-label {
-    font-family: var(--font-body);
+    font-family: 'Roboto', sans-serif;
     font-size: 0.6rem;
     font-weight: 600;
     letter-spacing: 0.14em;
@@ -1291,8 +1292,8 @@ button.rcbs-gate-back {
 ══════════════════════════════════════════════════════════ */
 
 .rcbs-feed-wrap {
-    padding: var(--section-padding-y) var(--section-padding-x);
-    background: var(--color-bg);
+    padding: 5rem 2rem 5.5rem;
+    background: #eef2f9;
 }
 
 @media (max-width: 576px) {
@@ -1337,15 +1338,15 @@ button.rcbs-gate-back {
     width: 30px;
     height: 30px;
     border-radius: 50%;
-    background: var(--rcbs-accent, var(--color-primary));
-    color: var(--color-text-on-dark);
+    background: var(--rcbs-accent, #022864);
+    color: #ffffff;
     display: flex;
     align-items: center;
     justify-content: center;
     box-shadow:
         0 0 0 4px #eef2f9,
-        0 0 0 5.5px color-mix(in srgb, var(--rcbs-accent, var(--color-primary)) 35%, transparent),
-        0 4px 14px color-mix(in srgb, var(--rcbs-accent, var(--color-primary)) 35%, transparent);
+        0 0 0 5.5px color-mix(in srgb, var(--rcbs-accent, #022864) 35%, transparent),
+        0 4px 14px color-mix(in srgb, var(--rcbs-accent, #022864) 35%, transparent);
     transition: transform 0.22s ease;
 }
 
@@ -1359,7 +1360,7 @@ button.rcbs-gate-back {
     bottom: -3.3rem;
     left: 50%;
     width: 2px;
-    background: linear-gradient(to bottom, color-mix(in srgb, var(--rcbs-accent, var(--color-primary)) 45%, transparent), #d4dbe8 85%);
+    background: linear-gradient(to bottom, color-mix(in srgb, var(--rcbs-accent, #022864) 45%, transparent), #d4dbe8 85%);
     transform: translateX(-50%);
     z-index: 1;
 }
@@ -1370,8 +1371,8 @@ button.rcbs-gate-back {
 
 .rcbs-post-card {
     flex: 1;
-    background: var(--color-surface);
-    border: var(--border-width) solid var(--color-border);
+    background: #ffffff;
+    border: 1px solid #e4e9f2;
     border-radius: 18px;
     overflow: hidden;
     box-shadow: 0 4px 20px rgba(2, 40, 100, 0.07);
@@ -1382,7 +1383,7 @@ button.rcbs-gate-back {
 .rcbs-post:hover .rcbs-post-card {
     transform: translateY(-3px);
     box-shadow: 0 16px 38px rgba(2, 40, 100, 0.13);
-    border-color: color-mix(in srgb, var(--rcbs-accent, var(--color-primary)) 30%, transparent);
+    border-color: color-mix(in srgb, var(--rcbs-accent, #022864) 30%, transparent);
 }
 
 .rcbs-post-head {
@@ -1390,9 +1391,9 @@ button.rcbs-gate-back {
     align-items: center;
     justify-content: space-between;
     padding: 1rem 1.25rem 0.85rem;
-    border-bottom: var(--border-width) solid var(--color-divider);
+    border-bottom: 1px solid #eef2f9;
     gap: 0.8rem;
-    background-color: var(--rcbs-accent, var(--color-primary));
+    background-color: var(--rcbs-accent, #022864);
 }
 
 .rcbs-post-date-wrap {
@@ -1403,10 +1404,10 @@ button.rcbs-gate-back {
 }
 
 .rcbs-post-date-num {
-    font-family: var(--font-display);
+    font-family: 'Titan One', sans-serif;
     font-size: 0.95rem;
-    /* color: var(--rcbs-accent, var(--color-primary)); */
-    color: var(--color-text-on-dark);
+    /* color: var(--rcbs-accent, #022864); */
+    color: #ffffff;
     line-height: 1.1;
     letter-spacing: 0.01em;
     text-transform: capitalize;
@@ -1416,21 +1417,21 @@ button.rcbs-gate-back {
     display: inline-flex;
     align-items: center;
     gap: 5px;
-    font-family: var(--font-body);
+    font-family: 'Roboto', sans-serif;
     font-size: 0.7rem;
-    color: var(--color-text-muted);
+    color: #8494b0;
     font-weight: 500;
     letter-spacing: 0.02em;
     text-transform: capitalize;
 } */
 
 .rcbs-post-idx {
-    font-family: var(--font-display);
+    font-family: 'Titan One', sans-serif;
     font-size: 0.7rem;
     letter-spacing: 0.08em;
-    /* color: color-mix(in srgb, var(--rcbs-accent, var(--color-primary)) 90%, white); */
-    /* background: color-mix(in srgb, var(--rcbs-accent, var(--color-primary)) 10%, white); */;
-    color: var(--color-primary);
+    /* color: color-mix(in srgb, var(--rcbs-accent, #022864) 90%, white); */
+    /* background: color-mix(in srgb, var(--rcbs-accent, #022864) 10%, white); */;
+    color: #022864;
     background-color: white;
     border-radius: 999px;
     padding: 0.25rem 0.7rem;
@@ -1442,18 +1443,18 @@ button.rcbs-gate-back {
 }
 
 .rcbs-post-title {
-    font-family: var(--font-display);
+    font-family: 'Titan One', sans-serif;
     font-size: 1.3rem;
-    color: var(--color-primary);
+    color: #022864;
     line-height: 1.2;
     margin: 0 0 0.6rem;
     letter-spacing: -0.01em;
 }
 
 .rcbs-post-content {
-    font-family: var(--font-body);
+    font-family: 'Roboto', sans-serif;
     font-size: 0.93rem;
-    color: var(--color-text-body);
+    color: #566a8a;
     line-height: 1.75;
     margin: 0;
     white-space: pre-line;
@@ -1462,19 +1463,19 @@ button.rcbs-gate-back {
 .rcbs-post-media {
     margin-top: 1.1rem;
     padding-top: 1rem;
-    border-top: var(--border-width) dashed var(--color-border);
+    border-top: 1px dashed #e4e9f2;
 }
 
 .rcbs-post-media-head {
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    font-family: var(--font-body);
+    font-family: 'Roboto', sans-serif;
     font-size: 0.68rem;
     font-weight: 700;
     letter-spacing: 0.12em;
     text-transform: uppercase;
-    color: var(--rcbs-accent, var(--color-primary));
+    color: var(--rcbs-accent, #022864);
     margin-bottom: 0.7rem;
 }
 
@@ -1483,7 +1484,7 @@ button.rcbs-gate-back {
     cursor: pointer;
     border-radius: 10px;
     overflow: hidden;
-    background: var(--color-bg-subtle);
+    background: #f6f9fc;
     transition: transform 0.25s ease, box-shadow 0.25s ease;
 }
 
@@ -1515,9 +1516,9 @@ button.rcbs-gate-back {
 
 .rcbs-photo-caption {
     display: block;
-    font-family: var(--font-body);
+    font-family: 'Roboto', sans-serif;
     font-size: 0.72rem;
-    color: var(--color-text-muted);
+    color: #8494b0;
     margin-top: 0.35rem;
     text-align: center;
     line-height: 1.4;
@@ -1545,18 +1546,18 @@ button.rcbs-gate-back {
     align-self: center;
     margin-top: 1.5rem;
     padding: 0.65rem 1.2rem;
-    background: var(--color-surface);
-    border: 1px dashed var(--color-border-strong);
+    background: #ffffff;
+    border: 1px dashed #c2d0e8;
     border-radius: 999px;
-    font-family: var(--font-body);
+    font-family: 'Roboto', sans-serif;
     font-size: 0.78rem;
     font-weight: 600;
     letter-spacing: 0.05em;
-    color: var(--color-text-muted);
+    color: #8494b0;
 }
 
 .rcbs-feed-end svg {
-    color: var(--rcbs-accent, var(--color-primary));
+    color: var(--rcbs-accent, #022864);
 }
 
 
@@ -1566,7 +1567,7 @@ button.rcbs-gate-back {
 
 .rcbs-empty-wrap {
     padding: 5rem 1.5rem 6rem;
-    background: var(--color-bg);
+    background: #eef2f9;
     min-height: 50vh;
     display: flex;
     align-items: center;
@@ -1576,8 +1577,8 @@ button.rcbs-gate-back {
     max-width: 520px;
     margin: 0 auto;
     text-align: center;
-    background: var(--color-surface);
-    border: var(--border-width) solid var(--color-border);
+    background: #ffffff;
+    border: 1px solid #e4e9f2;
     border-radius: 20px;
     padding: 2.5rem 2rem;
     box-shadow: 0 8px 30px rgba(2, 40, 100, 0.08);
@@ -1590,23 +1591,23 @@ button.rcbs-gate-back {
     width: 64px;
     height: 64px;
     border-radius: 18px;
-    background: color-mix(in srgb, var(--rcbs-accent, var(--color-primary)) 10%, white);
-    color: var(--rcbs-accent, var(--color-primary));
+    background: color-mix(in srgb, var(--rcbs-accent, #022864) 10%, white);
+    color: var(--rcbs-accent, #022864);
     margin-bottom: 1.2rem;
 }
 
 .rcbs-empty-title {
-    font-family: var(--font-display);
+    font-family: 'Titan One', sans-serif;
     font-size: 1.4rem;
-    color: var(--color-primary);
+    color: #022864;
     margin: 0 0 0.5rem;
     letter-spacing: -0.01em;
 }
 
 .rcbs-empty-text {
-    font-family: var(--font-body);
+    font-family: 'Roboto', sans-serif;
     font-size: 0.92rem;
-    color: var(--color-text-body);
+    color: #566a8a;
     line-height: 1.7;
     margin: 0;
 }
@@ -1622,7 +1623,7 @@ button.rcbs-gate-back {
     justify-content: center;
     align-items: center;
     padding: 2rem;
-    background: var(--color-bg);
+    background: #eef2f9;
 }
 
 
@@ -1662,7 +1663,7 @@ button.rcbs-gate-back {
 .rcbs-lightbox-caption {
     background: #000;
     color: rgba(255, 255, 255, 0.85);
-    font-family: var(--font-body);
+    font-family: 'Roboto', sans-serif;
     font-size: 0.82rem;
     padding: 0.75rem 1rem;
     text-align: center;

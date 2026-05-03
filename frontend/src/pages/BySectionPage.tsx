@@ -11,17 +11,6 @@ import { FaTshirt, FaUserCircle } from 'react-icons/fa';
 import '../styles/Sections.css';
 import { SectionData, ChefData } from '../types/interfaces';
 import CarouselBlock from '../components/CarouselBlock';
-import {
-    fadeUp,
-    staggerContainer,
-    staggerItem,
-    heroImage,
-    heroTitle,
-    heroBadges,
-    heroRule,
-    heroSubtitle,
-    inViewFadeUp,
-} from '../styles/motion';
 
 /* ════════════════════════════════════════════════════════
    CONSTANTS
@@ -44,6 +33,27 @@ const SECTIONS_META: Record<string, SectionMeta> = {
     pionniers:  { name: "Pionniers",  age: "16 – 18 ans", genre: "Mixte",   band: "Poste",      color: "#DA1F29" },
     clan:       { name: "Clan",       age: "18 ans +",    genre: "Mixte",   band: "Clan",       color: "#FEB800" },
     unite:      { name: "Unité",      age: "Toutes",      genre: "Mixte",   band: "Unité",      color: "#022864" },
+};
+
+/* ════════════════════════════════════════════════════════
+   ANIMATION HELPERS
+════════════════════════════════════════════════════════ */
+
+const fadeUp = (delay = 0) => ({
+    initial:     { opacity: 0, y: 26 },
+    whileInView: { opacity: 1, y: 0 },
+    transition:  { duration: 0.55, ease: 'easeOut' as const, delay },
+    viewport:    { once: true },
+});
+
+const stagger = {
+    hidden:  {},
+    visible: { transition: { staggerChildren: 0.08 } },
+};
+
+const staggerItem = {
+    hidden:  { opacity: 0, y: 22 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.48, ease: [0.25, 0.1, 0.25, 1] as const } },
 };
 
 /* ════════════════════════════════════════════════════════
@@ -84,7 +94,9 @@ const SectionHero: React.FC<HeroProps> = ({ meta, description, image, loading })
                     src={image}
                     alt=""
                     className="bsp-hero-img"
-                    {...heroImage}
+                    initial={{ scale: 1.08, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    transition={{ duration: 1.2, ease: 'easeOut' }}
                 />
             )}
             <div className="bsp-hero-overlay" aria-hidden />
@@ -98,26 +110,46 @@ const SectionHero: React.FC<HeroProps> = ({ meta, description, image, loading })
             <Container className="bsp-hero-container">
                 <div className="bsp-hero-inner">
 
-                    <motion.div className="bsp-hero-badges" {...heroBadges()}>
+                    <motion.div
+                        className="bsp-hero-badges"
+                        initial={{ opacity: 0, y: -10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.2, duration: 0.4 }}
+                    >
                         <span className="bsp-hero-badge">{meta.age}</span>
                         <span className="bsp-hero-badge">{meta.genre}</span>
                         <span className="bsp-hero-badge bsp-hero-badge-band">{meta.band}</span>
                     </motion.div>
 
-                    <motion.h1 className="bsp-hero-title" {...heroTitle()}>
+                    <motion.h1
+                        className="bsp-hero-title"
+                        initial={{ opacity: 0, y: 28 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.3, duration: 0.6, ease: 'easeOut' }}
+                    >
                         {prettyName}
                     </motion.h1>
 
-                    <motion.div className="bsp-hero-rule" {...heroRule()} />
+                    <motion.div
+                        className="bsp-hero-rule"
+                        initial={{ scaleX: 0, opacity: 0 }}
+                        animate={{ scaleX: 1, opacity: 1 }}
+                        transition={{ delay: 0.56, duration: 0.44, ease: 'easeOut' }}
+                    />
 
                     {loading ? (
                         <>
-                            <div className="skel" style={{ height: '14px', width: '90%', marginTop: '1.2rem', borderRadius: '4px' }} />
-                            <div className="skel" style={{ height: '14px', width: '75%', marginTop: '0.4rem', borderRadius: '4px' }} />
+                            <div className="bsp-skel" style={{ height: '14px', width: '90%', marginTop: '1.2rem', borderRadius: '4px' }} />
+                            <div className="bsp-skel" style={{ height: '14px', width: '75%', marginTop: '0.4rem', borderRadius: '4px' }} />
                         </>
                     ) : (
                         description && (
-                            <motion.p className="bsp-hero-sub" {...heroSubtitle()}>
+                            <motion.p
+                                className="bsp-hero-sub"
+                                initial={{ opacity: 0, y: 16 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ delay: 0.72, duration: 0.55, ease: 'easeOut' }}
+                            >
                                 {description}
                             </motion.p>
                         )
@@ -181,12 +213,12 @@ const StaffSection: React.FC<StaffProps> = ({ sectionName }) => {
                     <div className="bsp-staff-grid">
                         {[1, 2, 3].map(i => (
                             <div key={i} className="bsp-staff-card bsp-staff-ghost">
-                                <div className="bsp-staff-img skel-block" />
+                                <div className="bsp-staff-img bsp-skel-block" />
                                 <div className="bsp-staff-body">
-                                    <div className="skel" style={{ height: '22px', width: '60%', marginBottom: '10px', borderRadius: '6px' }} />
-                                    <div className="skel" style={{ height: '14px', width: '40%', marginBottom: '14px', borderRadius: '4px' }} />
-                                    <div className="skel" style={{ height: '12px', width: '100%', marginBottom: '6px', borderRadius: '4px' }} />
-                                    <div className="skel" style={{ height: '12px', width: '85%', borderRadius: '4px' }} />
+                                    <div className="bsp-skel" style={{ height: '22px', width: '60%', marginBottom: '10px', borderRadius: '6px' }} />
+                                    <div className="bsp-skel" style={{ height: '14px', width: '40%', marginBottom: '14px', borderRadius: '4px' }} />
+                                    <div className="bsp-skel" style={{ height: '12px', width: '100%', marginBottom: '6px', borderRadius: '4px' }} />
+                                    <div className="bsp-skel" style={{ height: '12px', width: '85%', borderRadius: '4px' }} />
                                 </div>
                             </div>
                         ))}
@@ -198,7 +230,7 @@ const StaffSection: React.FC<StaffProps> = ({ sectionName }) => {
                 ) : (
                     <motion.div
                         className="bsp-staff-grid"
-                        variants={staggerContainer}
+                        variants={stagger}
                         initial="hidden"
                         whileInView="visible"
                         viewport={{ once: true, amount: 0.05 }}
@@ -245,7 +277,12 @@ const GallerySection: React.FC<{ images: string[]; captions: string[] }> = ({ im
     if (!images || images.length === 0) return null;
     return (
         <section className="bsp-gallery-wrap">
-            <motion.div {...inViewFadeUp(20)}>
+            <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, amount: 0.05 }}
+                transition={{ duration: 0.6, ease: 'easeOut' }}
+            >
                 <CarouselBlock images={images} captions={captions} />
             </motion.div>
         </section>
@@ -266,7 +303,7 @@ const InfoSection: React.FC<{ data: SectionData }> = ({ data }) => (
 
             <motion.div
                 className="bsp-info-grid"
-                variants={staggerContainer}
+                variants={stagger}
                 initial="hidden"
                 whileInView="visible"
                 viewport={{ once: true, amount: 0.05 }}

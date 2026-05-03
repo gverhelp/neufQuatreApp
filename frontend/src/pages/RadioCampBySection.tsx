@@ -11,7 +11,6 @@ import {
 
 import { RadioCampData, RadioCampSummary } from '../types/interfaces';
 import '../styles/RadioCamps.css';
-import { fadeUp } from '../styles/motion';
 
 /* ════════════════════════════════════════════════════════
    CONSTANTS
@@ -66,6 +65,17 @@ const formatDateRangeShort = (start: string, end: string) => {
     }
     return `${formatDate(start)} → ${formatDate(end)}`;
 };
+
+/* ════════════════════════════════════════════════════════
+   ANIMATION HELPERS
+════════════════════════════════════════════════════════ */
+
+const fadeUp = (delay = 0) => ({
+    initial:     { opacity: 0, y: 26 },
+    whileInView: { opacity: 1, y: 0 },
+    transition:  { duration: 0.55, ease: 'easeOut' as const, delay },
+    viewport:    { once: true },
+});
 
 /* ════════════════════════════════════════════════════════
    CAMP PICKER (when multiple camps exist for a section)
