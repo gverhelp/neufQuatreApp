@@ -18,7 +18,7 @@ const PAGES = [
     { name: 'Agenda',             path: '/agenda',             icon: <BsCalendarEventFill  size={13} /> },
     { name: 'Sections',           path: '/sections',           icon: <BsPeopleFill         size={13} /> },
     { name: 'Radio camp',         path: '/radio-camps',        icon: <BsBroadcastPin       size={13} /> },
-    { name: 'Documents & infos',  path: '/documents-et-infos', icon: <BsFileEarmarkTextFill size={13} /> },
+    { name: 'Infos & Documents',  path: '/documents-et-infos', icon: <BsFileEarmarkTextFill size={13} /> },
 ];
 
 const isActive = (currentPath: string, targetPath: string): boolean => {

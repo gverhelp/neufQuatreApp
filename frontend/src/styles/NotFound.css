@@ -10,8 +10,8 @@
     justify-content: center;
     padding: 4.5rem 1.5rem 5rem;
     overflow: hidden;
-    background: linear-gradient(135deg, #022864 0%, #012558 55%, #011840 100%);
-    color: #ffffff;
+    background: var(--gradient-primary);
+    color: var(--color-text-on-dark);
     text-align: center;
 }
 
@@ -70,12 +70,12 @@
     display: inline-flex;
     align-items: center;
     gap: 7px;
-    font-family: 'Roboto', sans-serif;
+    font-family: var(--font-body);
     font-size: 0.68rem;
     font-weight: 700;
     letter-spacing: 0.18em;
     text-transform: uppercase;
-    color: #FFBE0A;
+    color: var(--color-gold);
     background: rgba(255, 190, 10, 0.1);
     border: 1px solid rgba(255, 190, 10, 0.3);
     border-radius: 999px;
@@ -89,10 +89,10 @@
 ══════════════════════════════════════════════════════════ */
 
 .nf-code {
-    font-family: 'Titan One', sans-serif;
+    font-family: var(--font-display);
     font-size: clamp(6rem, 20vw, 12rem);
     line-height: 0.92;
-    color: #ffffff;
+    color: var(--color-text-on-dark);
     margin: 0;
     letter-spacing: -0.04em;
     text-shadow: 0 8px 42px rgba(0, 0, 0, 0.38);
@@ -106,7 +106,7 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    color: #FFBE0A;
+    color: var(--color-gold);
     font-size: 0.7em;
     filter: drop-shadow(0 6px 24px rgba(255, 190, 10, 0.4));
     animation: nf-spin 14s linear infinite;
@@ -120,7 +120,7 @@
 .nf-rule {
     width: 64px;
     height: 3px;
-    background: #FFBE0A;
+    background: var(--color-gold);
     border-radius: 3px;
     margin: 1.8rem auto 1.4rem;
     box-shadow: 0 0 18px rgba(255, 190, 10, 0.55);
@@ -133,9 +133,9 @@
 ══════════════════════════════════════════════════════════ */
 
 .nf-title {
-    font-family: 'Titan One', sans-serif;
+    font-family: var(--font-display);
     font-size: clamp(1.4rem, 3.4vw, 2.1rem);
-    color: #ffffff;
+    color: var(--color-text-on-dark);
     line-height: 1.2;
     margin: 0 0 1rem;
     letter-spacing: -0.01em;
@@ -143,7 +143,7 @@
 }
 
 .nf-text {
-    font-family: 'Roboto', sans-serif;
+    font-family: var(--font-body);
     font-size: clamp(0.95rem, 1.9vw, 1.06rem);
     font-weight: 300;
     color: rgba(255, 255, 255, 0.78);
@@ -169,7 +169,7 @@
     align-items: center;
     justify-content: center;
     gap: 0.55rem;
-    font-family: 'Titan One', sans-serif;
+    font-family: var(--font-display);
     font-size: 0.95rem;
     letter-spacing: 0.04em;
     border-radius: 12px;
@@ -181,16 +181,16 @@
 }
 
 .nf-btn-primary {
-    background: #FFBE0A;
-    color: #022864;
-    border: 2px solid #FFBE0A;
+    background: var(--color-gold);
+    color: var(--color-primary);
+    border: 2px solid var(--color-gold);
     box-shadow: 0 8px 26px rgba(255, 190, 10, 0.38);
 }
 
 .nf-btn-primary:hover {
     transform: translateY(-3px);
     filter: brightness(1.05);
-    color: #022864;
+    color: var(--color-primary);
     text-decoration: none;
     box-shadow: 0 14px 34px rgba(255, 190, 10, 0.5);
 }
@@ -220,7 +220,7 @@
 }
 
 .nf-quick-label {
-    font-family: 'Roboto', sans-serif;
+    font-family: var(--font-body);
     font-size: 0.64rem;
     font-weight: 700;
     letter-spacing: 0.18em;
@@ -239,7 +239,7 @@
     display: inline-flex;
     align-items: center;
     gap: 0.45rem;
-    font-family: 'Roboto', sans-serif;
+    font-family: var(--font-body);
     font-size: 0.8rem;
     font-weight: 600;
     color: rgba(255, 255, 255, 0.82);
@@ -252,7 +252,7 @@
 }
 
 .nf-quick-link svg {
-    color: #FFBE0A;
+    color: var(--color-gold);
     opacity: 0.8;
     transition: opacity 0.22s ease;
 }
@@ -260,7 +260,7 @@
 .nf-quick-link:hover {
     background: rgba(255, 190, 10, 0.14);
     border-color: rgba(255, 190, 10, 0.5);
-    color: #ffffff;
+    color: var(--color-text-on-dark);
     transform: translateY(-2px);
     text-decoration: none;
 }
@@ -275,9 +275,9 @@
 ══════════════════════════════════════════════════════════ */
 
 .validate-btn {
-    background-color: #022864;
+    background-color: var(--color-primary);
     padding: 0.6rem 1.6rem;
-    font-family: 'Titan One', sans-serif;
+    font-family: var(--font-display);
     font-size: 1.1rem;
     transition: transform 0.2s ease;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);

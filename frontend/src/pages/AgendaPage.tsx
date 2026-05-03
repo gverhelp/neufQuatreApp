@@ -10,6 +10,14 @@ import {
 
 import '../styles/AgendaPage.css';
 import { EventData, AgendaDocument } from '../types/interfaces';
+import {
+    fadeUp,
+    staggerContainer,
+    staggerItem,
+    heroTitle,
+    heroRule,
+    heroSubtitle,
+} from '../styles/motion';
 
 /* ════════════════════════════════════════════════════════
    CONSTANTS
@@ -108,27 +116,6 @@ function fmtMonthShort(d: Date) {
 const dayKey = (d: Date) => `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`;
 
 /* ════════════════════════════════════════════════════════
-   ANIMATION HELPERS
-════════════════════════════════════════════════════════ */
-
-const fadeUp = (delay = 0) => ({
-    initial:     { opacity: 0, y: 26 },
-    whileInView: { opacity: 1, y: 0 },
-    transition:  { duration: 0.56, ease: 'easeOut' as const, delay },
-    viewport:    { once: true },
-});
-
-const stagger = {
-    hidden:  {},
-    visible: { transition: { staggerChildren: 0.1 } },
-};
-
-const staggerItem = {
-    hidden:  { opacity: 0, y: 22 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.48, ease: [0.25, 0.1, 0.25, 1] as const } },
-};
-
-/* ════════════════════════════════════════════════════════
    PAGE HERO
 ════════════════════════════════════════════════════════ */
 
@@ -147,38 +134,18 @@ const PageHero: React.FC<HeroProps> = ({ events, loading }) => {
             <Container className="ap-hero-container">
                 <div className="ap-hero-inner">
 
-                    <motion.h1
-                        className="ap-hero-title"
-                        initial={{ opacity: 0, y: 28 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.28, duration: 0.6, ease: 'easeOut' }}
-                    >
+                    <motion.h1 className="ap-hero-title" {...heroTitle(0.28)}>
                         Agenda
                     </motion.h1>
 
-                    <motion.div
-                        className="ap-hero-rule"
-                        initial={{ scaleX: 0, opacity: 0 }}
-                        animate={{ scaleX: 1, opacity: 1 }}
-                        transition={{ delay: 0.55, duration: 0.45, ease: 'easeOut' }}
-                    />
+                    <motion.div className="ap-hero-rule" {...heroRule(0.55)} />
 
-                    <motion.p
-                        className="ap-hero-sub"
-                        initial={{ opacity: 0, y: 16 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.7, duration: 0.5, ease: 'easeOut' }}
-                    >
+                    <motion.p className="ap-hero-sub" {...heroSubtitle(0.7)}>
                         Retrouve ici tous les événements à venir pour chaque section de l'unité.
                     </motion.p>
 
                     {!loading && events.length > 0 && (
-                        <motion.div
-                            className="ap-hero-stats"
-                            initial={{ opacity: 0, y: 16 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ delay: 0.9, duration: 0.5, ease: 'easeOut' }}
-                        >
+                        <motion.div className="ap-hero-stats" {...heroSubtitle(0.9)}>
                             <div className="ap-hstat">
                                 <span className="ap-hstat-num">{upcoming.length}</span>
                                 <span className="ap-hstat-label">Événements à venir</span>
@@ -226,7 +193,7 @@ const HighlightsSection: React.FC<{ events: EventData[] }> = ({ events }) => {
 
                 <motion.div
                     className="ap-hl-grid"
-                    variants={stagger}
+                    variants={staggerContainer}
                     initial="hidden"
                     whileInView="visible"
                     viewport={{ once: true, amount: 0.1 }}

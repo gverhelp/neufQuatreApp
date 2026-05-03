@@ -8,9 +8,9 @@
     top: 0;
     left: 0;
     right: 0;
-    z-index: 1050;
+    z-index: var(--z-navbar);
 
-    background: linear-gradient(135deg, #022864 0%, #012558 55%, #011840 100%);
+    background: var(--gradient-primary);
     /* border-bottom: 1px solid rgba(255, 255, 255, 0.06); */
     box-shadow: 0 2px 16px rgba(0, 0, 0, 0.22);
     transition: padding 0.28s ease, box-shadow 0.28s ease, background 0.28s ease;
@@ -29,7 +29,7 @@
     left: 0;
     right: 0;
     height: 2px;
-    background: linear-gradient(to right, transparent, #FFBE0A 30%, #FFBE0A 70%, transparent);
+    background: linear-gradient(to right, transparent, var(--color-gold) 30%, var(--color-gold) 70%, transparent);
     opacity: 0;
     transition: opacity 0.3s ease;
 } */
@@ -100,9 +100,9 @@
 }
 
 .nb-brand-title {
-    font-family: 'Titan One', sans-serif;
+    font-family: var(--font-display);
     font-size: 1.05rem;
-    color: #ffffff;
+    color: var(--color-text-on-dark);
     letter-spacing: 0.01em;
     line-height: 1.05;
     transition: color 0.22s ease;
@@ -115,11 +115,11 @@
 }
 
 .nb-brand:hover .nb-brand-title {
-    color: #FFBE0A;
+    color: var(--color-gold);
 }
 
 .nb-brand-sub {
-    font-family: 'Roboto', sans-serif;
+    font-family: var(--font-body);
     font-size: 0.62rem;
     font-weight: 600;
     letter-spacing: 0.14em;
@@ -155,7 +155,7 @@
     align-items: center;
     gap: 0.4rem;
 
-    font-family: 'Roboto', sans-serif;
+    font-family: var(--font-body);
     font-size: 0.78rem;
     font-weight: 600;
     letter-spacing: 0.04em;
@@ -177,30 +177,30 @@
 }
 
 .nb-link:hover {
-    color: #ffffff;
+    color: var(--color-text-on-dark);
     text-decoration: none;
 }
 
 .nb-link:hover .nb-link-icon {
-    color: #FFBE0A;
+    color: var(--color-gold);
     transform: scale(1.08);
 }
 
 .nb-link--active {
-    color: #022864;
+    color: var(--color-primary);
     text-decoration: none;
 }
 
 .nb-link--active .nb-link-icon {
-    color: #022864;
+    color: var(--color-primary);
 }
 
 .nb-link--active:hover {
-    color: #022864;
+    color: var(--color-primary);
 }
 
 .nb-link--active:hover .nb-link-icon {
-    color: #022864;
+    color: var(--color-primary);
     transform: none;
 }
 
@@ -210,7 +210,7 @@
     position: absolute;
     top: 0.3rem;
     bottom: 0.3rem;
-    background: #FFBE0A;
+    background: var(--color-gold);
     border-radius: 999px;
     pointer-events: none;
     box-shadow: 0 4px 14px rgba(255, 190, 10, 0.4);
@@ -257,7 +257,7 @@
     display: block;
     width: 20px;
     height: 2px;
-    background: #ffffff;
+    background: var(--color-surface);
     border-radius: 2px;
     transform-origin: center;
     transition: transform 0.3s ease, opacity 0.2s ease, width 0.3s ease, background 0.2s ease;
@@ -269,7 +269,7 @@
 }
 
 .nb-toggle--open .nb-burger-line {
-    background: #FFBE0A;
+    background: var(--color-gold);
 }
 
 .nb-toggle--open .nb-burger-line:nth-child(1) {
@@ -298,7 +298,7 @@
     bottom: 0;
     background: rgba(2, 24, 64, 0.55);
     backdrop-filter: blur(4px);
-    z-index: 1040;
+    z-index: var(--z-overlay);
 }
 
 .nb-mobile {
@@ -306,9 +306,9 @@
     top: var(--navbar-height, 72px);
     left: 0;
     right: 0;
-    z-index: 1045;
+    z-index: var(--z-modal);
 
-    background: linear-gradient(180deg, #022864 0%, #011840 100%);
+    background: linear-gradient(180deg, var(--color-primary) 0%, #011840 100%);
     border-bottom: 1px solid rgba(255, 190, 10, 0.15);
     box-shadow: 0 16px 38px rgba(0, 0, 0, 0.35);
 
@@ -331,7 +331,7 @@
     align-items: center;
     gap: 0.75rem;
 
-    font-family: 'Roboto', sans-serif;
+    font-family: var(--font-body);
     font-size: 0.92rem;
     font-weight: 600;
     letter-spacing: 0.02em;
@@ -354,14 +354,14 @@
     height: 30px;
     border-radius: 8px;
     background: rgba(255, 255, 255, 0.07);
-    color: #FFBE0A;
+    color: var(--color-gold);
     flex-shrink: 0;
     transition: background 0.22s ease, color 0.22s ease;
 }
 
 .nb-mobile-link:hover,
 .nb-mobile-link:focus-visible {
-    color: #ffffff;
+    color: var(--color-text-on-dark);
     background: rgba(255, 255, 255, 0.07);
     border-color: rgba(255, 190, 10, 0.2);
     text-decoration: none;
@@ -369,21 +369,21 @@
 }
 
 .nb-mobile-link--active {
-    color: #022864;
-    background: #FFBE0A;
-    border-color: #FFBE0A;
+    color: var(--color-primary);
+    background: var(--color-gold);
+    border-color: var(--color-gold);
     box-shadow: 0 6px 16px rgba(255, 190, 10, 0.3);
 }
 
 .nb-mobile-link--active .nb-mobile-link-icon {
     background: rgba(2, 40, 100, 0.15);
-    color: #022864;
+    color: var(--color-primary);
 }
 
 .nb-mobile-link--active:hover {
-    color: #022864;
-    background: #FFBE0A;
-    border-color: #FFBE0A;
+    color: var(--color-primary);
+    background: var(--color-gold);
+    border-color: var(--color-gold);
 }
 
 
@@ -403,7 +403,7 @@
     align-items: center;
     justify-content: center;
     gap: 0.5rem;
-    font-family: 'Roboto', sans-serif;
+    font-family: var(--font-body);
     font-size: 0.78rem;
     font-weight: 600;
     color: rgba(255, 255, 255, 0.72);
@@ -420,7 +420,7 @@
 .nb-mobile-contact:hover {
     background: rgba(255, 190, 10, 0.14);
     border-color: rgba(255, 190, 10, 0.45);
-    color: #FFBE0A;
+    color: var(--color-gold);
     text-decoration: none;
 }
 

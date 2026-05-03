@@ -1,0 +1,117 @@
+/* ════════════════════════════════════════════════════════════
+   DESIGN TOKENS — single source of truth
+   Brand: 94ème Saint-Augustin
+════════════════════════════════════════════════════════════ */
+
+:root {
+    /* ── Brand colors ── */
+    --color-primary:        #022864;
+    --color-primary-hover:  #033a8c;
+    --color-primary-deep:   #011840;
+    --color-gold:           #FFBE0A;
+
+    /* ── Brand gradient (hero, dark sections) ── */
+    --gradient-primary: linear-gradient(135deg, #022864 0%, #012558 55%, #011840 100%);
+
+    /* ── Text ── */
+    --color-text:           #2b3656;
+    --color-text-body:      #4b5563;
+    --color-text-muted:     #8a97b1;
+    --color-text-hint:      #aab0be;
+    --color-text-on-dark:   #ffffff;
+    --color-text-on-dark-soft: rgba(255, 255, 255, 0.78);
+
+    /* ── Surfaces ── */
+    --color-surface:        #ffffff;
+    --color-bg:             #eef2f9;
+    --color-bg-subtle:      #f6f9fc;
+    --color-border:         #e4e9f2;
+    --color-border-strong:  #d4dde8;
+    --color-divider:        #edf0f7;
+
+    /* ── States ── */
+    --color-error:          #c0392b;
+
+    /* ── Spacing (4px-based scale) ── */
+    --space-1:  0.25rem;   /*  4px */
+    --space-2:  0.5rem;    /*  8px */
+    --space-3:  0.75rem;   /* 12px */
+    --space-4:  1rem;      /* 16px */
+    --space-5:  1.5rem;    /* 24px */
+    --space-6:  2rem;      /* 32px */
+    --space-7:  3rem;      /* 48px */
+    --space-8:  5rem;      /* 80px */
+
+    /* ── Border-radius ── */
+    --radius-sm:    8px;
+    --radius-md:    12px;
+    --radius-lg:    16px;
+    --radius-xl:    20px;
+    --radius-pill:  999px;
+
+    /* ── Border widths ── */
+    --border-width:         1px;
+    --border-width-strong:  1.5px;
+
+    /* ── Shadows ── */
+    --shadow-sm:    0 2px 12px rgba(2, 40, 100, 0.06);
+    --shadow-md:    0 6px 24px rgba(2, 40, 100, 0.10);
+    --shadow-lg:    0 14px 36px rgba(2, 40, 100, 0.14);
+    --shadow-cta:   0 14px 38px rgba(2, 40, 100, 0.45);
+    --shadow-glow:  0 0 18px rgba(255, 190, 10, 0.45);
+
+    /* ── Typography ── */
+    --font-display:  'Titan One', sans-serif;
+    --font-body:     'Roboto', system-ui, -apple-system, sans-serif;
+    --font-mono:     'Roboto Mono', 'Courier New', monospace;
+
+    --font-size-hero:    clamp(3rem, 8vw, 5.5rem);
+    --font-size-h1:      clamp(1.75rem, 4vw, 2.75rem);
+    --font-size-h2:      clamp(1.5rem, 3vw, 2rem);
+    --font-size-h3:      1.2rem;
+    --font-size-h4:      1.05rem;
+    --font-size-body:    1rem;
+    --font-size-sm:      0.875rem;
+    --font-size-xs:      0.75rem;
+    --font-size-eyebrow: 0.7rem;
+
+    --line-height-tight:  1.1;
+    --line-height-snug:   1.35;
+    --line-height-base:   1.7;
+
+    --letter-eyebrow:    0.14em;
+    --letter-pill:       0.2em;
+    --letter-tight:      -0.01em;
+    --letter-tighter:    -0.02em;
+
+    /* ── Pill padding (small uppercase badges; intentionally off the 4px scale) ── */
+    --pill-padding-y:    0.3rem;
+    --pill-padding-x:    1rem;
+
+    /* ── Motion ── */
+    --ease-out:         cubic-bezier(0.25, 0.1, 0.25, 1);
+    --ease-inout:       cubic-bezier(0.4, 0, 0.2, 1);
+    --duration-fast:    0.2s;
+    --duration-base:    0.3s;
+    --duration-slow:    0.55s;
+
+    /* ── Z-index ── */
+    --z-base:     1;
+    --z-sticky:   30;
+    --z-overlay:  40;
+    --z-navbar:   50;
+    --z-modal:    70;
+    --z-toast:    90;
+
+    /* ── Section padding (responsive via media query below) ── */
+    --section-padding-y: var(--space-8);
+    --section-padding-x: var(--space-6);
+}
+
+/* ── Mobile section padding override ── */
+@media (max-width: 576px) {
+    :root {
+        --section-padding-y: var(--space-7);
+        --section-padding-x: var(--space-5);
+    }
+}
