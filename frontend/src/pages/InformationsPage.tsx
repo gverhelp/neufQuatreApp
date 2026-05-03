@@ -90,7 +90,7 @@ const PageHero: React.FC<HeroProps> = ({ docsCount, infosCount, loading }) => (
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.26, duration: 0.6, ease: 'easeOut' }}
                 >
-                    Documents<br />&amp; Informations
+                    Informations<br />&amp; Documents
                 </motion.h1>
 
                 <motion.div
@@ -106,7 +106,7 @@ const PageHero: React.FC<HeroProps> = ({ docsCount, infosCount, loading }) => (
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.66, duration: 0.5, ease: 'easeOut' }}
                 >
-                    Retrouve ici tous les documents téléchargeables et les informations pratiques de l'unité.
+                    Retrouve ici toutes les informations pratiques et les documents téléchargeables de l'unité.
                 </motion.p>
 
                 {!loading && (docsCount > 0 || infosCount > 0) && (
@@ -301,6 +301,34 @@ const InformationsPage: React.FC = () => {
                 </section>
             ) : (
                 <>
+                    <section className="ip-infos-section">
+                        <Container>
+                            <div className="ip-sec-header">
+                                <motion.h2 className="ip-sec-heading" {...fadeUp(0.08)}>Informations</motion.h2>
+                                <motion.div className="ip-sec-rule" {...fadeUp(0.14)} />
+                                <motion.p className="ip-sec-sub" {...fadeUp(0.2)}>
+                                    Toutes les informations pratiques et ressources utiles de l'unité.
+                                </motion.p>
+                            </div>
+
+                            {loading ? <InfoSkeleton /> : (
+                                informations.length === 0 ? (
+                                    <p className="ip-empty">Aucune information disponible pour le moment.</p>
+                                ) : (
+                                    <Masonry
+                                        breakpointCols={{ default: 3, 1199: 2, 767: 1 }}
+                                        className="ip-masonry"
+                                        columnClassName="ip-masonry-col"
+                                    >
+                                        {informations.map((info, i) => (
+                                            <InfoCard key={info.id} info={info} index={i} />
+                                        ))}
+                                    </Masonry>
+                                )
+                            )}
+                        </Container>
+                    </section>
+                    
                     <section className="ip-docs-section">
                         <Container>
                             <div className="ip-sec-header">
@@ -346,34 +374,6 @@ const InformationsPage: React.FC = () => {
                                             </motion.div>
                                         ))}
                                     </motion.div>
-                                )
-                            )}
-                        </Container>
-                    </section>
-
-                    <section className="ip-infos-section">
-                        <Container>
-                            <div className="ip-sec-header">
-                                <motion.h2 className="ip-sec-heading" {...fadeUp(0.08)}>Informations</motion.h2>
-                                <motion.div className="ip-sec-rule" {...fadeUp(0.14)} />
-                                <motion.p className="ip-sec-sub" {...fadeUp(0.2)}>
-                                    Toutes les informations pratiques et ressources utiles de l'unité.
-                                </motion.p>
-                            </div>
-
-                            {loading ? <InfoSkeleton /> : (
-                                informations.length === 0 ? (
-                                    <p className="ip-empty">Aucune information disponible pour le moment.</p>
-                                ) : (
-                                    <Masonry
-                                        breakpointCols={{ default: 3, 1199: 2, 767: 1 }}
-                                        className="ip-masonry"
-                                        columnClassName="ip-masonry-col"
-                                    >
-                                        {informations.map((info, i) => (
-                                            <InfoCard key={info.id} info={info} index={i} />
-                                        ))}
-                                    </Masonry>
                                 )
                             )}
                         </Container>
