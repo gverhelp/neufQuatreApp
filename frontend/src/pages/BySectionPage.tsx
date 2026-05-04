@@ -174,10 +174,10 @@ const StaffSection: React.FC<StaffProps> = ({ sectionName }) => {
     const [error,   setError]   = useState<string | null>(null);
 
     const title = (() => {
-        if (sectionName === 'Unite')      return "Les chefs d'Unité";
-        if (sectionName === 'Eclaireurs') return "Les chefs Éclaireurs";
-        if (sectionName === 'Clan')       return "Les animateurs du Clan";
-        return `Les chefs ${sectionName}`;
+        if (sectionName === 'Unite')      return "Les chef·fe·s d'Unité";
+        if (sectionName === 'Eclaireurs') return "Les chef·fe·s Éclaireurs";
+        if (sectionName === 'Clan')       return "Les animateur·rice·s du Clan";
+        return `Les chef·fe·s ${sectionName}`;
     })();
 
     useEffect(() => {
@@ -226,7 +226,7 @@ const StaffSection: React.FC<StaffProps> = ({ sectionName }) => {
                 )}
 
                 {!loading && !error && (chefs.length === 0 ? (
-                    <p className="bsp-empty">Aucun chef pour cette section pour le moment.</p>
+                    <p className="bsp-empty">Aucun·e chef·fe pour cette section pour le moment.</p>
                 ) : (
                     <motion.div
                         className="bsp-staff-grid"
@@ -250,7 +250,7 @@ const StaffSection: React.FC<StaffProps> = ({ sectionName }) => {
                                         </div>
                                     )}
                                     {m.chefResp && (
-                                        <span className="bsp-staff-resp-badge">Chef.fe responsable</span>
+                                        <span className="bsp-staff-resp-badge">Chef·fe responsable</span>
                                     )}
                                 </div>
                                 <div className="bsp-staff-body">
