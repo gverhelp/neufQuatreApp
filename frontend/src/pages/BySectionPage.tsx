@@ -174,10 +174,9 @@ const StaffSection: React.FC<StaffProps> = ({ sectionName }) => {
     const [error,   setError]   = useState<string | null>(null);
 
     const title = (() => {
-        if (sectionName === 'Unite')      return "Les chef·fe·s d'Unité";
-        if (sectionName === 'Eclaireurs') return "Les chef·fe·s Éclaireurs";
-        if (sectionName === 'Clan')       return "Les animateur·rice·s du Clan";
-        return `Les chef·fe·s ${sectionName}`;
+        if (sectionName === 'Unite')      return "Les chefs d'Unité";
+        if (sectionName === 'Eclaireurs') return "Les chefs Éclaireurs";
+        return `Les chefs ${sectionName}`;
     })();
 
     useEffect(() => {
