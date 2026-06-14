@@ -775,6 +775,7 @@
     padding-right: 4px;
     scrollbar-width: thin;
     scrollbar-color: var(--bs-accent, #022864) transparent;
+    white-space: pre-line;
 }
 
 .bsp-staff-bio::-webkit-scrollbar { width: 4px; }
