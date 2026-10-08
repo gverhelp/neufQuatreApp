@@ -1,0 +1,7 @@
+# Fichiers générés / uploadés : servis via les volumes Docker, pas besoin dans l'image
+mediafiles
+media
+staticfiles
+**/__pycache__
+**/*.pyc
+.DS_Store

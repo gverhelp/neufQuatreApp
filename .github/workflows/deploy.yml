@@ -4,15 +4,19 @@ on:
   push:
     branches:
       - prod
+  workflow_dispatch:
+
+# Un seul déploiement à la fois ; un push pendant un déploiement attend son tour
+concurrency:
+  group: deploy-prod
+  cancel-in-progress: false
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
       - name: Setup SSH
         uses: webfactory/ssh-agent@v0.9.0
         with:
@@ -20,21 +24,29 @@ jobs:
 
       - name: Deploy to EC2
         run: |
-          ssh -o StrictHostKeyChecking=no ${{ secrets.EC2_HOST }} << 'EOF'
+          ssh -o StrictHostKeyChecking=no ${{ secrets.EC2_HOST }} 'bash -s' << 'EOF'
+            # Stoppe au premier échec : le job passe en rouge au lieu d'afficher « successful »
+            set -euo pipefail
             cd ${{ secrets.EC2_PATH }}
+            COMPOSE="docker-compose -f docker-compose.prod.yml"
 
-            echo "Pulling latest code from prod branch"
-            git reset --hard
-            git pull origin prod
+            echo "==> Syncing code with origin/prod"
+            git fetch --prune origin prod
+            git reset --hard origin/prod
 
-            echo "Rebuilding, pruning, and launching containers"
-            docker-compose -f docker-compose.prod.yml build --no-cache web nginx
-            docker-compose -f docker-compose.prod.yml down
-            docker-compose -f docker-compose.prod.yml up -d
+            # Les anciens containers tournent toujours pendant le build.
+            # Cache des layers conservé : seules les étapes dont les fichiers ont changé sont rejouées.
+            # --pull : récupère les mises à jour de sécurité des images de base.
+            echo "==> Building images"
+            $COMPOSE build --pull web nginx
 
-            echo "Pruning old images"
-            docker image prune -f
+            # Recrée uniquement les containers dont l'image a changé ; la DB n'est pas touchée
+            echo "==> Recreating updated containers"
+            $COMPOSE up -d --remove-orphans
 
-            echo "Deployment successful"
+            echo "==> Cleaning up"
+            docker image prune -f || true
+            docker builder prune -f --filter until=168h || true
+
+            echo "==> Deployment successful"
           EOF
-
