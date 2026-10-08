@@ -28,7 +28,8 @@ jobs:
             # Stoppe au premier échec : le job passe en rouge au lieu d'afficher « successful »
             set -euo pipefail
             cd ${{ secrets.EC2_PATH }}
-            COMPOSE="docker-compose -f docker-compose.prod.yml"
+            # -p figé : garantit les mêmes noms de volumes (neufquatreapp_postgres_data, ...)
+            COMPOSE="docker compose -p neufquatreapp -f docker-compose.prod.yml"
 
             echo "==> Syncing code with origin/prod"
             git fetch --prune origin prod
@@ -40,11 +41,8 @@ jobs:
             echo "==> Building images"
             $COMPOSE build --pull web nginx
 
-            # docker-compose v1 (1.29.2) plante quand il *recrée* un container avec un Docker Engine
-            # récent (KeyError: 'ContainerConfig'). On supprime donc web et nginx avant de les relancer.
-            # La DB n'est pas touchée ; la coupure se limite au redémarrage de web/nginx.
-            echo "==> Restarting web and nginx"
-            $COMPOSE rm -sf web nginx
+            # Recrée uniquement les containers dont l'image ou la config a changé ; la DB n'est pas touchée
+            echo "==> Recreating updated containers"
             $COMPOSE up -d --remove-orphans
 
             echo "==> Cleaning up"
