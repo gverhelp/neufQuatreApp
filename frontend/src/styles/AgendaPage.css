@@ -1001,6 +1001,163 @@
 }
 
 /* ══════════════════════════════════════════════════════════
+   CALENDAR SYNC — sidebar card + modal
+══════════════════════════════════════════════════════════ */
+
+/* Modal (rendue dans un portal → styles globaux) */
+.ap-sync-dialog {
+    max-width: 480px;
+}
+.ap-sync-content {
+    border: none;
+    border-top: 5px solid #022864;
+    border-radius: 18px;
+    box-shadow: 0 24px 60px rgba(2,40,100,0.25);
+    overflow: hidden;
+}
+.ap-sync-header {
+    border-bottom: 1px solid #edf0f7;
+    padding: 1.15rem 1.5rem 0.9rem;
+}
+.ap-sync-title {
+    font-family: 'Titan One', sans-serif;
+    font-size: 1.3rem;
+    color: #022864;
+    letter-spacing: 0.02em;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+}
+.ap-sync-body {
+    padding: 1.15rem 1.5rem 1.4rem;
+}
+.ap-sync-intro {
+    font-family: 'Roboto', sans-serif;
+    font-size: 0.88rem;
+    color: #6b7589;
+    line-height: 1.55;
+    margin: 0 0 1.2rem;
+}
+
+.ap-sync-label-row {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+}
+.ap-sync-label {
+    font-family: 'Roboto', sans-serif;
+    font-weight: 700;
+    font-size: 0.7rem;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: #8a97b1;
+}
+.ap-sync-toggle-all {
+    border: none;
+    background: none;
+    padding: 0;
+    font-family: 'Roboto', sans-serif;
+    font-weight: 500;
+    font-size: 0.78rem;
+    color: #022864;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    cursor: pointer;
+}
+.ap-sync-toggle-all:hover {
+    color: #033a8c;
+}
+
+.ap-sync-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+    margin-bottom: 1.4rem;
+}
+.ap-sync-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    font-size: 0.72rem;
+    padding: 0.34rem 0.85rem;
+}
+
+.ap-sync-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.6rem;
+    transition: opacity 0.2s ease;
+}
+.ap-sync-actions-empty {
+    opacity: 0.4;
+}
+.ap-sync-actions-empty .ap-sync-btn {
+    pointer-events: none;
+    box-shadow: none;
+}
+.ap-sync-btn {
+    font-size: 0.84rem;
+    padding: 0.7rem 0.8rem;
+}
+.ap-sync-btn-outline {
+    background: white;
+    color: #022864;
+    box-shadow: inset 0 0 0 2px #022864;
+}
+.ap-sync-btn-outline:hover {
+    background: #eef2f9;
+    color: #022864;
+    box-shadow: inset 0 0 0 2px #022864, 0 8px 22px rgba(2,40,100,0.16);
+}
+
+.ap-sync-copy,
+.ap-sync-hint {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.35rem;
+    width: 100%;
+    margin: 0.85rem 0 0;
+    font-family: 'Roboto', sans-serif;
+    font-size: 0.78rem;
+    color: #8a97b1;
+}
+.ap-sync-copy {
+    border: none;
+    background: none;
+    padding: 0.2rem 0;
+    cursor: pointer;
+    transition: color 0.2s ease;
+}
+.ap-sync-copy:hover {
+    color: #022864;
+}
+.ap-sync-hint {
+    font-style: italic;
+}
+
+.ap-sync-note {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.35rem;
+    margin: 1.1rem 0 0;
+    padding-top: 0.85rem;
+    border-top: 1px solid #edf0f7;
+    font-family: 'Roboto', sans-serif;
+    font-size: 0.7rem;
+    color: #aab0be;
+    text-align: center;
+}
+
+@media (max-width: 576px) {
+    .ap-sync-actions {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ══════════════════════════════════════════════════════════
    TIMELINE SECTION
 ══════════════════════════════════════════════════════════ */
 
