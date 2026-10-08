@@ -1,0 +1,11 @@
+# Contexte de build de nginx/Dockerfile.prod (racine du repo) :
+# seuls frontend/ et nginx/ sont utilisés.
+# ⚠️ frontend/.env n'est PAS exclu : il fournit VITE_API_URL au build.
+.git
+.github
+backend
+**/node_modules
+frontend/dist
+.env
+.env.prod
+**/.DS_Store

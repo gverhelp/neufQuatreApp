@@ -1,11 +1,12 @@
 import React, { useEffect, useState, useMemo, useRef, useLayoutEffect } from 'react';
 import axios from 'axios';
-import { Container } from 'react-bootstrap';
+import { Container, Modal } from 'react-bootstrap';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
     BsCalendar3, BsGeoAltFill, BsClock, BsClockFill,
     BsFileArrowDownFill, BsFlag, BsFlagFill,
     BsChevronLeft, BsChevronRight,
+    BsCalendarPlusFill, BsGoogle, BsApple, BsLink45Deg, BsCheck2, BsArrowRepeat,
 } from 'react-icons/bs';
 
 import '../styles/AgendaPage.css';
@@ -801,6 +802,9 @@ const CalendarSection: React.FC<{ events: EventData[] }> = ({ events }) => {
                             )}
                         </AnimatePresence>
 
+                        {/* Calendar sync */}
+                        <CalendarSyncCard activeSection={activeSection} />
+
                         {/* Download */}
                         {agendaDoc && (
                             <motion.div
@@ -1281,6 +1285,175 @@ const TimelineSection: React.FC<{ events: EventData[] }> = ({ events }) => {
                 )}
             </Container>
         </section>
+    );
+};
+
+/* ════════════════════════════════════════════════════════
+   CALENDAR SYNC (abonnement iCal Google / Apple)
+════════════════════════════════════════════════════════ */
+
+/* URL https du flux iCal ; toutes les sections → pas de filtre (inclut les futures sections) */
+const buildFeedUrl = (slugs: string[]) => {
+    const url = new URL(`${import.meta.env.VITE_API_URL}/events/calendar.ics`, window.location.origin);
+    if (slugs.length < SECTIONS.length) url.search = `?sections=${slugs.join(',')}`;
+    return url.toString();
+};
+
+interface CalendarSyncModalProps {
+    show: boolean;
+    onHide: () => void;
+    initialSection: string | null;
+}
+
+const CalendarSyncModal: React.FC<CalendarSyncModalProps> = ({ show, onHide, initialSection }) => {
+    const [selected, setSelected] = useState<string[]>([]);
+    const [copied, setCopied] = useState(false);
+
+    /* À chaque ouverture : présélectionne la section filtrée dans le calendrier */
+    const handleShow = () => {
+        setSelected(initialSection ? [initialSection] : []);
+        setCopied(false);
+    };
+
+    const allSelected = selected.length === SECTIONS.length;
+    const isEmpty     = selected.length === 0;
+
+    const toggle = (slug: string) =>
+        setSelected(cur => cur.includes(slug) ? cur.filter(s => s !== slug) : [...cur, slug]);
+
+    /* Garde l'ordre de SECTIONS dans l'URL, peu importe l'ordre des clics */
+    const feedUrl   = buildFeedUrl(SECTIONS.filter(s => selected.includes(s.slug)).map(s => s.slug));
+    const webcalUrl = feedUrl.replace(/^https?:/, 'webcal:');
+    const googleUrl = `https://calendar.google.com/calendar/render?cid=${encodeURIComponent(webcalUrl)}`;
+
+    const copyLink = async () => {
+        try {
+            await navigator.clipboard.writeText(feedUrl);
+            setCopied(true);
+            setTimeout(() => setCopied(false), 2200);
+        } catch {
+            window.prompt('Copie ce lien :', feedUrl);
+        }
+    };
+
+    return (
+        <Modal show={show} onShow={handleShow} onHide={onHide} centered dialogClassName="ap-sync-dialog" contentClassName="ap-sync-content">
+            <Modal.Header closeButton className="ap-sync-header">
+                <Modal.Title className="ap-sync-title">
+                    <BsCalendarPlusFill size={18} />
+                    Ajouter à mon agenda
+                </Modal.Title>
+            </Modal.Header>
+
+            <Modal.Body className="ap-sync-body">
+                <p className="ap-sync-intro">
+                    Choisis les sections à suivre. Les événements apparaîtront dans ton agenda
+                    et se mettront à jour automatiquement.
+                </p>
+
+                <div className="ap-sync-label-row">
+                    <span className="ap-sync-label">Sections</span>
+                    <button
+                        type="button"
+                        className="ap-sync-toggle-all"
+                        onClick={() => setSelected(allSelected ? [] : SECTIONS.map(s => s.slug))}
+                    >
+                        {allSelected ? 'Tout désélectionner' : 'Tout sélectionner'}
+                    </button>
+                </div>
+
+                <div className="ap-sync-pills" role="group" aria-label="Sections à ajouter">
+                    {SECTIONS.map(s => {
+                        const on = selected.includes(s.slug);
+                        return (
+                            <button
+                                key={s.slug}
+                                type="button"
+                                className={`ap-filter-btn ap-sync-pill${on ? ' ap-filter-active' : ''}`}
+                                style={{ '--fc': s.color } as React.CSSProperties}
+                                onClick={() => toggle(s.slug)}
+                                aria-pressed={on}
+                            >
+                                {on && <BsCheck2 size={13} />}
+                                {s.name}
+                            </button>
+                        );
+                    })}
+                </div>
+
+                <div className={`ap-sync-actions${isEmpty ? ' ap-sync-actions-empty' : ''}`}>
+                    <a
+                        href={googleUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="ap-download-btn ap-sync-btn"
+                        aria-disabled={isEmpty}
+                        tabIndex={isEmpty ? -1 : undefined}
+                    >
+                        <BsGoogle size={14} />
+                        Google Agenda
+                    </a>
+                    <a
+                        href={webcalUrl}
+                        className="ap-download-btn ap-sync-btn ap-sync-btn-outline"
+                        aria-disabled={isEmpty}
+                        tabIndex={isEmpty ? -1 : undefined}
+                    >
+                        <BsApple size={15} />
+                        Apple Calendrier
+                    </a>
+                </div>
+
+                {isEmpty ? (
+                    <p className="ap-sync-hint">Sélectionne au moins une section.</p>
+                ) : (
+                    <button type="button" className="ap-sync-copy" onClick={copyLink}>
+                        {copied ? <BsCheck2 size={14} /> : <BsLink45Deg size={15} />}
+                        {copied ? 'Lien copié' : 'Copier le lien (Outlook, autres agendas)'}
+                    </button>
+                )}
+
+                <p className="ap-sync-note">
+                    <BsArrowRepeat size={12} />
+                    Google peut mettre jusqu'à 24 h pour afficher les modifications.
+                </p>
+            </Modal.Body>
+        </Modal>
+    );
+};
+
+const CalendarSyncCard: React.FC<{ activeSection: string | null }> = ({ activeSection }) => {
+    const [show, setShow] = useState(false);
+
+    return (
+        <>
+            <motion.div
+                className="ap-side-card"
+                initial={{ y: 20, opacity: 0 }}
+                whileInView={{ y: 0, opacity: 1 }}
+                transition={{ duration: 0.5, delay: 0.3 }}
+                viewport={{ once: true }}
+            >
+                <div className="ap-side-title">
+                    <BsCalendarPlusFill size={14} />
+                    Synchroniser l'agenda
+                </div>
+                <p className="ap-download-desc">
+                    Retrouve les événements de tes sections directement dans Google Agenda
+                    ou le calendrier de ton iPhone.
+                </p>
+                <button type="button" className="ap-download-btn" onClick={() => setShow(true)}>
+                    <BsCalendarPlusFill size={14} />
+                    Ajouter à mon agenda
+                </button>
+            </motion.div>
+
+            <CalendarSyncModal
+                show={show}
+                onHide={() => setShow(false)}
+                initialSection={activeSection}
+            />
+        </>
     );
 };
 

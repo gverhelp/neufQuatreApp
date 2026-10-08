@@ -1,13 +1,14 @@
 ### NODE
-FROM node:23-slim AS builder
+FROM node:24-slim AS builder
 
 WORKDIR /app
+
+# Dépendances d'abord : ce layer reste en cache tant que package*.json ne change pas
+COPY frontend/package.json frontend/package-lock.json ./
+RUN npm ci
+
 COPY frontend/ .
-
-RUN rm -rf node_modules package-lock.json && \
-    npm cache clean --force
-
-RUN npm install && npm run build
+RUN npm run build
 
 
 ### NGINX
