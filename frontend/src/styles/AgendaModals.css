@@ -1,0 +1,384 @@
+/* ══════════════════════════════════════════════════════════
+   MODALES AGENDA — partagées (page Agenda + pages de section)
+   Rendues dans un portal → styles globaux
+══════════════════════════════════════════════════════════ */
+
+/* ── Abonnement (CalendarSyncModal) ── */
+.ap-sync-dialog {
+    max-width: 480px;
+}
+.ap-sync-content {
+    border: none;
+    border-top: 5px solid #022864;
+    border-radius: 18px;
+    box-shadow: 0 24px 60px rgba(2,40,100,0.25);
+    overflow: hidden;
+}
+.ap-sync-header {
+    border-bottom: 1px solid #edf0f7;
+    padding: 1.15rem 1.5rem 0.9rem;
+}
+.ap-sync-title {
+    font-family: 'Titan One', sans-serif;
+    font-size: 1.3rem;
+    color: #022864;
+    letter-spacing: 0.02em;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+}
+.ap-sync-body {
+    padding: 1.15rem 1.5rem 1.4rem;
+}
+.ap-sync-intro {
+    font-family: 'Roboto', sans-serif;
+    font-size: 0.88rem;
+    color: #6b7589;
+    line-height: 1.55;
+    margin: 0 0 1.2rem;
+}
+
+.ap-sync-label-row {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+}
+.ap-sync-label {
+    font-family: 'Roboto', sans-serif;
+    font-weight: 700;
+    font-size: 0.7rem;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: #8a97b1;
+}
+.ap-sync-toggle-all {
+    border: none;
+    background: none;
+    padding: 0;
+    font-family: 'Roboto', sans-serif;
+    font-weight: 500;
+    font-size: 0.78rem;
+    color: #022864;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    cursor: pointer;
+}
+.ap-sync-toggle-all:hover {
+    color: #033a8c;
+}
+
+/* Tuiles de sections : taille fixe, la case est toujours présente */
+.ap-sync-sections {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+}
+.ap-sync-section {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    min-width: 0;
+    padding: 0.55rem 0.7rem;
+    border: 1.5px solid #e4e9f2;
+    border-radius: 10px;
+    background: white;
+    cursor: pointer;
+    text-align: left;
+    transition: border-color 0.18s ease, background 0.18s ease;
+}
+.ap-sync-section:hover {
+    border-color: var(--fc);
+}
+.ap-sync-section-on {
+    border-color: var(--fc);
+    background: color-mix(in srgb, var(--fc) 9%, white);
+}
+.ap-sync-check {
+    flex-shrink: 0;
+    width: 20px;
+    height: 20px;
+    border-radius: 6px;
+    border: 2px solid var(--fc);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    transition: background 0.18s ease;
+}
+.ap-sync-check svg {
+    opacity: 0;
+    transform: scale(0.6);
+    transition: opacity 0.18s ease, transform 0.18s ease;
+}
+.ap-sync-section-on .ap-sync-check {
+    background: var(--fc);
+}
+.ap-sync-section-on .ap-sync-check svg {
+    opacity: 1;
+    transform: scale(1);
+}
+.ap-sync-section-name {
+    font-family: 'Roboto', sans-serif;
+    font-weight: 700;
+    font-size: 0.76rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--fc);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Liste des agendas */
+.ap-sync-providers {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    transition: opacity 0.2s ease;
+}
+.ap-sync-providers-empty {
+    opacity: 0.4;
+}
+.ap-sync-providers-empty .ap-sync-provider {
+    pointer-events: none;
+}
+.ap-sync-provider {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+    padding: 0.65rem 0.9rem;
+    border: 1.5px solid #e4e9f2;
+    border-radius: 12px;
+    background: white;
+    color: #022864;
+    text-decoration: none;
+    transition: border-color 0.2s ease, background 0.2s ease, transform 0.2s ease;
+}
+.ap-sync-provider:hover {
+    border-color: #022864;
+    background: #f7f9fc;
+    color: #022864;
+    transform: translateX(3px);
+}
+.ap-sync-provider-icon {
+    flex-shrink: 0;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: #eef2f9;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s ease, color 0.2s ease;
+}
+.ap-sync-provider:hover .ap-sync-provider-icon {
+    background: #022864;
+    color: white;
+}
+.ap-sync-provider-text {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+}
+.ap-sync-provider-label {
+    font-family: 'Titan One', sans-serif;
+    font-size: 0.9rem;
+    letter-spacing: 0.03em;
+    line-height: 1.2;
+}
+.ap-sync-provider-hint {
+    font-family: 'Roboto', sans-serif;
+    font-size: 0.72rem;
+    color: #8a97b1;
+}
+.ap-sync-provider-chevron {
+    flex-shrink: 0;
+    color: #aab0be;
+    transition: color 0.2s ease;
+}
+.ap-sync-provider:hover .ap-sync-provider-chevron {
+    color: #022864;
+}
+
+.ap-sync-copy,
+.ap-sync-hint {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.35rem;
+    width: 100%;
+    margin: 0.85rem 0 0;
+    font-family: 'Roboto', sans-serif;
+    font-size: 0.78rem;
+    color: #8a97b1;
+}
+.ap-sync-copy {
+    border: none;
+    background: none;
+    padding: 0.2rem 0;
+    cursor: pointer;
+    transition: color 0.2s ease;
+}
+.ap-sync-copy:hover {
+    color: #022864;
+}
+.ap-sync-hint {
+    font-style: italic;
+}
+
+.ap-sync-note {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.35rem;
+    margin: 1.1rem 0 0;
+    padding-top: 0.85rem;
+    border-top: 1px solid #edf0f7;
+    font-family: 'Roboto', sans-serif;
+    font-size: 0.7rem;
+    color: #aab0be;
+    text-align: center;
+}
+
+/* ── Fiche événement (EventDetailModal) ── */
+.ap-evt-dialog {
+    max-width: 500px;
+}
+.ap-evt-content {
+    border: none;
+    border-top: 5px solid var(--ec, #022864);
+    border-radius: 18px;
+    box-shadow: 0 24px 60px rgba(2,40,100,0.25);
+    overflow: hidden;
+}
+.ap-evt-header {
+    border-bottom: none;
+    padding: 1.1rem 1.5rem 0;
+    align-items: center;
+}
+.ap-evt-badges {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.4rem;
+}
+.ap-evt-section,
+.ap-evt-highlight,
+.ap-evt-past {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    font-family: 'Roboto', sans-serif;
+    font-weight: 700;
+    font-size: 0.66rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    border-radius: 50px;
+    padding: 0.25rem 0.7rem;
+}
+.ap-evt-section {
+    background: var(--ec, #022864);
+    color: white;
+}
+.ap-evt-highlight {
+    background: rgba(212,175,55,0.14);
+    color: #9a7b1c;
+}
+.ap-evt-past {
+    background: #edf0f7;
+    color: #8a97b1;
+}
+.ap-evt-body {
+    padding: 0.8rem 1.5rem 1.5rem;
+}
+.ap-evt-title {
+    font-family: 'Titan One', sans-serif;
+    font-size: 1.45rem;
+    color: #022864;
+    line-height: 1.2;
+    margin: 0 0 1rem;
+}
+.ap-evt-facts {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 1.1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.55rem;
+}
+.ap-evt-facts li {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.65rem;
+    font-family: 'Roboto', sans-serif;
+    font-size: 0.9rem;
+    color: #1a1a2e;
+    line-height: 1.4;
+}
+.ap-evt-facts li > svg {
+    flex-shrink: 0;
+    margin-top: 2px;
+    color: var(--ec, #022864);
+}
+.ap-evt-maps {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.2rem;
+    margin-left: 0.55rem;
+    font-size: 0.78rem;
+    font-weight: 500;
+    color: #022864;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    white-space: nowrap;
+}
+.ap-evt-maps:hover {
+    color: #033a8c;
+}
+.ap-evt-desc {
+    font-family: 'Roboto', sans-serif;
+    font-size: 0.88rem;
+    color: #4a5468;
+    line-height: 1.6;
+    white-space: pre-line;
+    background: #f7f9fc;
+    border-radius: 12px;
+    padding: 0.85rem 1rem;
+    margin: 0 0 1.2rem;
+}
+.ap-evt-add {
+    border-top: 1px solid #edf0f7;
+    padding-top: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+}
+.ap-evt-add-btns {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.5rem;
+}
+.ap-evt-add-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.45rem;
+    padding: 0.6rem 0.4rem;
+    border: 1.5px solid #e4e9f2;
+    border-radius: 10px;
+    background: white;
+    color: #022864;
+    font-family: 'Titan One', sans-serif;
+    font-size: 0.82rem;
+    letter-spacing: 0.03em;
+    text-decoration: none;
+    transition: border-color 0.2s ease, background 0.2s ease, color 0.2s ease;
+}
+.ap-evt-add-btn:hover {
+    border-color: #022864;
+    background: #022864;
+    color: white;
+}

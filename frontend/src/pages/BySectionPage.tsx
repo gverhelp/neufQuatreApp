@@ -5,12 +5,15 @@ import { Container, Alert } from 'react-bootstrap';
 import { motion } from 'framer-motion';
 import { 
     BsArrowRight, BsArrowLeft, BsEnvelopeFill, BsCreditCard2Front, BsBroadcast,
+    BsCalendar3, BsCalendarPlusFill,
 } from 'react-icons/bs';
 import { FaTshirt, FaUserCircle } from 'react-icons/fa';
 
 import '../styles/Sections.css';
-import { SectionData, ChefData } from '../types/interfaces';
+import { SectionData, ChefData, EventData } from '../types/interfaces';
 import CarouselBlock from '../components/CarouselBlock';
+import CalendarSyncModal from '../components/CalendarSyncModal';
+import EventDetailModal from '../components/EventDetailModal';
 
 /* ════════════════════════════════════════════════════════
    CONSTANTS
@@ -292,6 +295,99 @@ const GallerySection: React.FC<{ images: string[]; captions: string[] }> = ({ im
    INFO SECTION — uniforme, contacts, compte, radio camp
 ════════════════════════════════════════════════════════ */
 
+/* ════════════════════════════════════════════════════════
+   AGENDA CARD — prochaines activités + abonnement
+════════════════════════════════════════════════════════ */
+
+const AgendaCard: React.FC<{ data: SectionData }> = ({ data }) => {
+    const baseURL = import.meta.env.VITE_API_URL;
+    const [events,   setEvents]   = useState<EventData[]>([]);
+    const [showSync, setShowSync] = useState(false);
+    const [detail,   setDetail]   = useState<EventData | null>(null);
+
+    useEffect(() => {
+        axios.get<EventData[]>(`${baseURL}/events/`)
+            .then(r => setEvents(r.data))
+            .catch(e => console.error('Erreur chargement événements:', e));
+    }, [baseURL]);
+
+    const now = new Date();
+    const upcoming = events
+        .filter(e => e.section === data.slug && new Date(e.end_time) >= now)
+        .sort((a, b) => new Date(a.start_time).getTime() - new Date(b.start_time).getTime())
+        .slice(0, 3);
+
+    const ofName =
+        data.slug === 'unite' ? "de l'Unité" :
+        data.slug === 'clan'  ? 'du Clan'    :
+        `des ${data.name}`;
+
+    /* Les activités d'unité concernent tout le monde : cochées d'office */
+    const preselected = data.slug === 'unite' ? ['unite'] : [data.slug, 'unite'];
+
+    return (
+        <motion.div className="bsp-info-card bsp-info-card-wide" variants={staggerItem}>
+            <div className="bsp-info-card-head">
+                <div className="bsp-info-icon">
+                    <BsCalendar3 size={17} />
+                </div>
+                <h3 className="bsp-info-title">Agenda</h3>
+            </div>
+
+            <div className="bsp-info-body">
+                <p className="bsp-info-text">
+                    Réunions, week-ends, camp… Ajoute l'agenda {ofName} à ton téléphone :
+                    les nouvelles activités et les changements y apparaîtront automatiquement.
+                </p>
+
+                {upcoming.length > 0 && (
+                    <ul className="bsp-agenda-list">
+                        {upcoming.map(ev => {
+                            const d = new Date(ev.start_time);
+                            return (
+                                <li key={ev.id}>
+                                    <button type="button" className="bsp-agenda-item" onClick={() => setDetail(ev)}>
+                                        <span className="bsp-agenda-date">
+                                            <span className="bsp-agenda-day">{d.getDate()}</span>
+                                            <span className="bsp-agenda-month">
+                                                {d.toLocaleDateString('fr-BE', { month: 'short' }).replace('.', '')}
+                                            </span>
+                                        </span>
+                                        <span className="bsp-agenda-info">
+                                            <span className="bsp-agenda-title">{ev.title}</span>
+                                            <span className="bsp-agenda-meta">
+                                                {d.toLocaleDateString('fr-BE', { weekday: 'long' })}
+                                                {' · '}
+                                                {d.toLocaleTimeString('fr-BE', { hour: '2-digit', minute: '2-digit' })}
+                                                {ev.location && ` · ${ev.location}`}
+                                            </span>
+                                        </span>
+                                        <BsArrowRight size={13} className="bsp-agenda-chevron" />
+                                    </button>
+                                </li>
+                            );
+                        })}
+                    </ul>
+                )}
+
+                <div className="bsp-agenda-actions">
+                    <button type="button" className="bsp-info-btn" onClick={() => setShowSync(true)}>
+                        <BsCalendarPlusFill size={14} />
+                        Ajouter l'agenda {ofName}
+                    </button>
+                    <Link to={`/agenda?section=${data.slug}#calendrier`} className="bsp-agenda-link">
+                        Voir l'agenda complet
+                        <BsArrowRight size={13} />
+                    </Link>
+                </div>
+            </div>
+
+            <CalendarSyncModal show={showSync} onHide={() => setShowSync(false)} initialSections={preselected} />
+            <EventDetailModal event={detail} onHide={() => setDetail(null)} />
+        </motion.div>
+    );
+};
+
 const InfoSection: React.FC<{ data: SectionData }> = ({ data }) => (
     <section className="bsp-info-wrap">
         <Container>
@@ -349,6 +445,9 @@ const InfoSection: React.FC<{ data: SectionData }> = ({ data }) => (
                         </div>
                     </div>
                 </motion.div>
+
+                {/* ── Agenda (pleine largeur) ── */}
+                <AgendaCard data={data} />
 
                 {/* ── Contacts ── */}
                 <motion.div className="bsp-info-card" variants={staggerItem}>
