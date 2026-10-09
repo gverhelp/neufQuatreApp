@@ -5,7 +5,7 @@ import { motion } from 'framer-motion';
 import Masonry from 'react-masonry-css';
 import {
     BsFileEarmarkTextFill, BsFileArrowDownFill,
-    BsLink45Deg, BsPlayCircleFill, BsImageFill,
+    BsLink45Deg,
 } from 'react-icons/bs';
 
 import '../styles/InformationsPage.css';
@@ -36,28 +36,6 @@ const stagger = {
 const staggerItem = {
     hidden:  { opacity: 0, y: 22 },
     visible: { opacity: 1, y: 0, transition: { duration: 0.46, ease: [0.25, 0.1, 0.25, 1] as const } },
-};
-
-/* ════════════════════════════════════════════════════════
-   UTILITY — detect info card media type
-════════════════════════════════════════════════════════ */
-
-type InfoType = 'image' | 'video' | 'embed' | 'link' | 'text';
-
-function getInfoType(info: InformationData): InfoType {
-    if (info.image)     return 'image';
-    if (info.video)     return 'video';
-    if (info.videoLink) return 'embed';
-    if (info.link)      return 'link';
-    return 'text';
-}
-
-const TYPE_META: Record<InfoType, { label: string; icon: React.ReactNode; color: string; bg: string } | null> = {
-    image:  { label: 'Image',  icon: <BsImageFill size={10} />,      color: '#015AA9', bg: 'rgba(1,90,169,0.09)' },
-    video:  { label: 'Vidéo',  icon: <BsPlayCircleFill size={10} />, color: '#DA1F29', bg: 'rgba(218,31,41,0.09)' },
-    embed:  { label: 'Vidéo',  icon: <BsPlayCircleFill size={10} />, color: '#DA1F29', bg: 'rgba(218,31,41,0.09)' },
-    link:   { label: 'Lien',   icon: <BsLink45Deg size={11} />,      color: '#186E54', bg: 'rgba(24,110,84,0.09)' },
-    text:   null,
 };
 
 /* ════════════════════════════════════════════════════════
@@ -141,9 +119,6 @@ const PageHero: React.FC<HeroProps> = ({ docsCount, infosCount, loading }) => (
 ════════════════════════════════════════════════════════ */
 
 const InfoCard: React.FC<{ info: InformationData; index: number }> = ({ info, index }) => {
-    const type     = getInfoType(info);
-    const typeMeta = TYPE_META[type];
-
     return (
         <motion.div
             className="ip-info-card"
@@ -176,16 +151,6 @@ const InfoCard: React.FC<{ info: InformationData; index: number }> = ({ info, in
 
             {/* ── Body ── */}
             <div className="ip-info-body">
-                {typeMeta && (
-                    <span
-                        className="ip-info-type-badge"
-                        style={{ color: typeMeta.color, background: typeMeta.bg }}
-                    >
-                        {typeMeta.icon}
-                        {typeMeta.label}
-                    </span>
-                )}
-
                 <h3 className="ip-info-title">{info.title}</h3>
 
                 {info.description && (
