@@ -58,3 +58,28 @@ class EventsIcsTests(TestCase):
         body = self.get_ics()
         for line in body.split('\r\n'):
             self.assertLessEqual(len(line.encode('utf-8')), 75)
+
+
+class EventIcsTests(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        section = Section.objects.create(name='Lutins')
+        cls.event = Event.objects.create(
+            title='Hike',
+            start_time=datetime(2026, 11, 7, 9, 0, tzinfo=dt_timezone.utc),
+            end_time=datetime(2026, 11, 7, 17, 0, tzinfo=dt_timezone.utc),
+            section=section,
+        )
+
+    def test_single_event_attachment(self):
+        response = self.client.get(reverse('event-ics', args=[self.event.pk]))
+        self.assertEqual(response.status_code, 200)
+        self.assertIn('attachment;', response['Content-Disposition'])
+        body = response.content.decode('utf-8')
+        self.assertEqual(body.count('BEGIN:VEVENT'), 1)
+        self.assertIn('SUMMARY:[Lutins] Hike', body)
+        self.assertNotIn('REFRESH-INTERVAL', body)
+
+    def test_unknown_event_404(self):
+        response = self.client.get(reverse('event-ics', args=[999999]))
+        self.assertEqual(response.status_code, 404)
