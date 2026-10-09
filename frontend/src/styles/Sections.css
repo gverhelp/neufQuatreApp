@@ -1230,3 +1230,107 @@
         padding: 0.28rem 0.9rem;
     }
 }
+/* ── Agenda card (prochaines activités + abonnement) ── */
+.bsp-agenda-list {
+    list-style: none;
+    padding: 0;
+    margin: 0.2rem 0 0.4rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+.bsp-agenda-item {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+    padding: 0.55rem 0.9rem 0.55rem 0.6rem;
+    border: 1.5px solid #e4e9f2;
+    border-left: 4px solid var(--bs-accent, #022864);
+    border-radius: 12px;
+    background: #f7f9fc;
+    text-align: left;
+    cursor: pointer;
+    transition: transform 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+}
+.bsp-agenda-item:hover {
+    transform: translateX(4px);
+    background: white;
+    border-color: color-mix(in srgb, var(--bs-accent, #022864) 40%, #e4e9f2);
+    border-left-color: var(--bs-accent, #022864);
+}
+.bsp-agenda-date {
+    flex-shrink: 0;
+    width: 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    line-height: 1;
+}
+.bsp-agenda-day {
+    font-family: 'Titan One', sans-serif;
+    font-size: 1.35rem;
+    color: var(--bs-accent, #022864);
+}
+.bsp-agenda-month {
+    font-family: 'Roboto', sans-serif;
+    font-size: 0.62rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #8a97b1;
+    margin-top: 3px;
+}
+.bsp-agenda-info {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+.bsp-agenda-title {
+    font-family: 'Roboto', sans-serif;
+    font-weight: 700;
+    font-size: 0.92rem;
+    color: #1a1a2e;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.bsp-agenda-meta {
+    font-family: 'Roboto', sans-serif;
+    font-size: 0.76rem;
+    color: #8a97b1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.bsp-agenda-meta::first-letter {
+    text-transform: uppercase;
+}
+.bsp-agenda-chevron {
+    flex-shrink: 0;
+    color: #aab0be;
+}
+.bsp-agenda-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.9rem 1.4rem;
+    margin-top: 0.4rem;
+}
+.bsp-agenda-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-family: 'Roboto', sans-serif;
+    font-weight: 700;
+    font-size: 0.85rem;
+    color: #022864;
+    text-decoration: none;
+}
+.bsp-agenda-link:hover {
+    color: var(--bs-accent, #022864);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+}

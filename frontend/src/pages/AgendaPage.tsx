@@ -1,38 +1,35 @@
 import React, { useEffect, useState, useMemo, useRef, useLayoutEffect } from 'react';
+import { useLocation, useSearchParams } from 'react-router-dom';
 import axios from 'axios';
-import { Container, Modal } from 'react-bootstrap';
+import { Container } from 'react-bootstrap';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
     BsCalendar3, BsGeoAltFill, BsClock, BsClockFill,
-    BsFileArrowDownFill, BsFlag, BsFlagFill,
-    BsChevronLeft, BsChevronRight,
-    BsCalendarPlusFill, BsGoogle, BsApple, BsLink45Deg, BsCheck2, BsArrowRepeat,
+    BsFileEarmarkPdfFill, BsDownload, BsFlag, BsFlagFill,
+    BsChevronLeft, BsChevronRight, BsCalendarPlusFill,
 } from 'react-icons/bs';
 
 import '../styles/AgendaPage.css';
 import { EventData, AgendaDocument } from '../types/interfaces';
-
-/* ════════════════════════════════════════════════════════
-   CONSTANTS
-════════════════════════════════════════════════════════ */
-
-const SECTIONS = [
-    { name: 'Baladins',   slug: 'baladins',   color: '#00A0DD' },
-    { name: 'Lutins',     slug: 'lutins',     color: '#CC0739' },
-    { name: 'Louveteaux', slug: 'louveteaux', color: '#186E54' },
-    { name: 'Guides',     slug: 'guides',     color: '#1D325A' },
-    { name: 'Éclaireurs', slug: 'eclaireurs', color: '#015AA9' },
-    { name: 'Pionniers',  slug: 'pionniers',  color: '#DA1F29' },
-    { name: 'Clan',       slug: 'clan',       color: '#FEB800' },
-    { name: 'Unité',      slug: 'unite',      color: '#022864' },
-];
-
-const getSectionInfo = (slug: string) =>
-    SECTIONS.find(s => s.slug === slug) ?? { name: slug, color: '#022864' };
+import { SECTIONS, getSectionInfo, isSectionSlug } from '../utils/agenda';
+import CalendarSyncModal from '../components/CalendarSyncModal';
+import EventDetailModal from '../components/EventDetailModal';
 
 /* ════════════════════════════════════════════════════════
    UTILITIES
 ════════════════════════════════════════════════════════ */
+
+/** Rend un élément non-<button> cliquable au clavier (Entrée / Espace) */
+const clickableProps = (onActivate: () => void) => ({
+    role: 'button' as const,
+    tabIndex: 0,
+    onClick: onActivate,
+    onKeyDown: (e: React.KeyboardEvent) => {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onActivate(); }
+    },
+});
+
+type OpenEvent = (ev: EventData) => void;
 
 function fmtShort(iso: string) {
     return new Date(iso).toLocaleDateString('fr-BE', { day: 'numeric', month: 'short' })
@@ -77,31 +74,22 @@ const sameDay    = (a: Date, b: Date) =>
 const sameMonth  = (a: Date, b: Date) =>
     a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth();
 
-/** 6×7 grid starting Monday for the month containing `cursor` */
+/** Grille 5×7 ou 6×7 (selon le mois) commençant le lundi, pour le mois de `cursor` */
 function getMonthGrid(cursor: Date): Date[] {
     const first = new Date(cursor.getFullYear(), cursor.getMonth(), 1);
     const firstDow = (first.getDay() + 6) % 7;        // 0 = Monday
+    const daysInMonth = new Date(cursor.getFullYear(), cursor.getMonth() + 1, 0).getDate();
+    const cells = Math.ceil((firstDow + daysInMonth) / 7) * 7;
     const start = new Date(first);
     start.setDate(1 - firstDow);
-    return Array.from({ length: 35 }, (_, i) => {
+    return Array.from({ length: cells }, (_, i) => {
         const d = new Date(start);
         d.setDate(start.getDate() + i);
         return d;
     });
 }
 
-/** Monday-aligned start of week for `d` */
-function startOfWeek(d: Date): Date {
-    const x = startOfDay(d);
-    const dow = (x.getDay() + 6) % 7;
-    x.setDate(x.getDate() - dow);
-    return x;
-}
-
-/** Number of weeks between two Monday-aligned dates (rounded) */
-function weeksBetween(a: Date, b: Date): number {
-    return Math.round((b.getTime() - a.getTime()) / (7 * 24 * 3600 * 1000));
-}
+const endOfMonth = (d: Date) => new Date(d.getFullYear(), d.getMonth() + 1, 0, 23, 59, 59, 999);
 
 function fmtMonthShort(d: Date) {
     return d.toLocaleDateString('fr-BE', { month: 'short' }).replace('.', '');
@@ -211,7 +199,7 @@ const PageHero: React.FC<HeroProps> = ({ events, loading }) => {
    HIGHLIGHTS SECTION
 ════════════════════════════════════════════════════════ */
 
-const HighlightsSection: React.FC<{ events: EventData[] }> = ({ events }) => {
+const HighlightsSection: React.FC<{ events: EventData[]; onOpenEvent: OpenEvent }> = ({ events, onOpenEvent }) => {
     const highlights = events.filter(e => e.highlight);
     if (!highlights.length) return null;
 
@@ -241,7 +229,8 @@ const HighlightsSection: React.FC<{ events: EventData[] }> = ({ events }) => {
                         return (
                             <motion.div
                                 key={ev.id}
-                                className={`ap-hl-card${isPast ? ' ap-hl-card-past' : ''}`}
+                                className={`ap-hl-card ap-clickable${isPast ? ' ap-hl-card-past' : ''}`}
+                                {...clickableProps(() => onOpenEvent(ev))}
                                 style={{ '--hl-color': section.color, borderLeftColor: section.color, opacity: isPast ? 0.48 : 1 } as React.CSSProperties}
                                 variants={staggerItem}
                                 animate={!isPast ? {
@@ -347,20 +336,31 @@ const FilterPills: React.FC<FilterPillsProps> = ({ sections, active, onSelect, l
    CALENDAR — small subcomponents
 ════════════════════════════════════════════════════════ */
 
-const EventListItem: React.FC<{ ev: EventData }> = ({ ev }) => {
+interface EventListItemProps {
+    ev: EventData;
+    /** Affiche le jour de la semaine sous le numéro (liste d'un mois) au lieu du mois */
+    withWeekday?: boolean;
+    past?: boolean;
+    onOpen?: OpenEvent;
+}
+
+const EventListItem: React.FC<EventListItemProps> = ({ ev, withWeekday, past, onOpen }) => {
     const s = getSectionInfo(ev.section);
     const sd = new Date(ev.start_time).toDateString() === new Date(ev.end_time).toDateString();
     return (
         <div
-            className="ap-upcoming-item"
+            className={`ap-upcoming-item${past ? ' ap-upcoming-item-past' : ''}${onOpen ? ' ap-clickable' : ''}`}
             style={{ '--uc': s.color } as React.CSSProperties}
+            {...(onOpen ? clickableProps(() => onOpen(ev)) : {})}
         >
             <div className="ap-upcoming-date">
                 <span className="ap-upcoming-day">
                     {new Date(ev.start_time).toLocaleDateString('fr-BE', { day: '2-digit' })}
                 </span>
                 <span className="ap-upcoming-month">
-                    {new Date(ev.start_time).toLocaleDateString('fr-BE', { month: 'short' }).replace('.', '')}
+                    {withWeekday
+                        ? fmtDayName(ev.start_time)
+                        : new Date(ev.start_time).toLocaleDateString('fr-BE', { month: 'short' }).replace('.', '')}
                 </span>
             </div>
             <div className="ap-upcoming-info">
@@ -398,10 +398,11 @@ interface DayCellProps {
     onClick: () => void;
     onEventHover: (ev: EventData, rect: DOMRect) => void;
     onEventLeave: () => void;
+    onEventClick: OpenEvent;
 }
 
 const DayCell: React.FC<DayCellProps> = ({
-    day, events, inMonth, isToday, isWeekend, isSelected, onClick, onEventHover, onEventLeave,
+    day, events, inMonth, isToday, isWeekend, isSelected, onClick, onEventHover, onEventLeave, onEventClick,
 }) => {
     const visible = events.slice(0, 3);
     const more = events.length - visible.length;
@@ -434,6 +435,7 @@ const DayCell: React.FC<DayCellProps> = ({
                                     onEventHover(ev, (e.currentTarget as HTMLElement).getBoundingClientRect());
                                 }}
                                 onMouseLeave={e => { e.stopPropagation(); onEventLeave(); }}
+                                onClick={e => { e.stopPropagation(); onEventLeave(); onEventClick(ev); }}
                             >
                                 {ev.highlight && <span className="ap-daycell-event-star">★</span>}
                                 {ev.title}
@@ -451,10 +453,66 @@ const DayCell: React.FC<DayCellProps> = ({
    CALENDAR SECTION
 ════════════════════════════════════════════════════════ */
 
-const CalendarSection: React.FC<{ events: EventData[] }> = ({ events }) => {
+interface MonthHeaderProps {
+    month: Date;
+    now: Date;
+    onPrev: () => void;
+    onNext: () => void;
+    onToday: () => void;
+    /** Version mobile : flèches aux bords, « Aujourd'hui » sur sa propre ligne */
+    compact?: boolean;
+}
+
+/* Les flèches ne bougent jamais : titre à largeur fixe et bouton « Aujourd'hui » dans sa propre colonne */
+const MonthHeader: React.FC<MonthHeaderProps> = ({ month, now, onPrev, onNext, onToday, compact }) => (
+    <div className={`ap-calhead${compact ? ' ap-calhead-compact' : ''}`}>
+        <div className="ap-calhead-center">
+            <button type="button" className="ap-calhead-nav" onClick={onPrev} aria-label="Mois précédent">
+                <BsChevronLeft size={16} />
+            </button>
+
+            <div className="ap-calhead-title" aria-live="polite">
+                <span className="ap-calhead-month">
+                    {month.toLocaleDateString('fr-BE', { month: 'long' }).replace(/^\w/, c => c.toUpperCase())}
+                </span>
+                <span className="ap-calhead-year">{month.getFullYear()}</span>
+            </div>
+
+            <button type="button" className="ap-calhead-nav" onClick={onNext} aria-label="Mois suivant">
+                <BsChevronRight size={16} />
+            </button>
+        </div>
+
+        <AnimatePresence initial={false}>
+            {!sameMonth(month, now) && (
+                <motion.button
+                    type="button"
+                    className="ap-calhead-today"
+                    onClick={onToday}
+                    initial={{ opacity: 0, scale: 0.85 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.85 }}
+                    transition={{ duration: 0.2 }}
+                    title="Revenir à aujourd'hui"
+                >
+                    <span className="ap-calhead-today-num">{now.getDate()}</span>
+                    <span className="ap-calhead-today-label">Aujourd'hui</span>
+                </motion.button>
+            )}
+        </AnimatePresence>
+    </div>
+);
+
+interface CalendarSectionProps {
+    events: EventData[];
+    activeSection: string | null;
+    onSectionChange: (slug: string | null) => void;
+    onOpenEvent: OpenEvent;
+}
+
+const CalendarSection: React.FC<CalendarSectionProps> = ({ events, activeSection, onSectionChange, onOpenEvent }) => {
     const baseURL = import.meta.env.VITE_API_URL;
     const [agendaDoc, setAgendaDoc] = useState<AgendaDocument | null>(null);
-    const [activeSection, setActiveSection] = useState<string | null>(null);
     const [currentMonth, setCurrentMonth] = useState<Date>(() => {
         const x = new Date(); x.setDate(1); x.setHours(0, 0, 0, 0); return x;
     });
@@ -504,50 +562,25 @@ const CalendarSection: React.FC<{ events: EventData[] }> = ({ events }) => {
     }, [filteredEvents]);
     const maxMonthCount = Math.max(1, ...Array.from(monthCounts.values()));
 
-    /* Mobile agenda — upcoming events grouped by week */
-    const mobileWeeks = useMemo(() => {
-        const upcoming = filteredEvents
-            .filter(e => new Date(e.end_time) >= now)
+    /* Mobile — événements du mois affiché (y compris ceux qui chevauchent le mois) */
+    const monthEvents = useMemo(() => {
+        const end = endOfMonth(currentMonth);
+        return filteredEvents
+            .filter(e => new Date(e.start_time) <= end && new Date(e.end_time) >= currentMonth)
             .sort((a, b) => new Date(a.start_time).getTime() - new Date(b.start_time).getTime());
+    }, [filteredEvents, currentMonth]);
 
-        const todayWk = startOfWeek(now);
-        const groups: { key: string; label: string; events: EventData[] }[] = [];
-        const idxByKey = new Map<string, number>();
+    /* Premier mois après le mois affiché qui contient un événement (mois vide sur mobile) */
+    const nextEventMonth = useMemo(() => {
+        const end = endOfMonth(currentMonth).getTime();
+        const next = filteredEvents
+            .map(e => new Date(e.start_time))
+            .filter(d => d.getTime() > end)
+            .sort((a, b) => a.getTime() - b.getTime())[0];
+        return next ? new Date(next.getFullYear(), next.getMonth(), 1) : null;
+    }, [filteredEvents, currentMonth]);
 
-        upcoming.forEach(ev => {
-            const wk = startOfWeek(new Date(ev.start_time));
-            const k  = wk.toISOString();
-            let idx = idxByKey.get(k);
-            if (idx === undefined) {
-                const wb = weeksBetween(todayWk, wk);
-                let label: string;
-                if (wb <= 0)        label = 'Cette semaine';
-                else if (wb === 1)  label = 'Semaine prochaine';
-                else {
-                    const wkEnd = new Date(wk);
-                    wkEnd.setDate(wk.getDate() + 6);
-                    const fmt = (d: Date) =>
-                        d.toLocaleDateString('fr-BE', { day: 'numeric', month: 'short' }).replace('.', '');
-                    label = `Semaine du ${fmt(wk)} au ${fmt(wkEnd)}`;
-                }
-                idx = groups.length;
-                groups.push({ key: k, label, events: [] });
-                idxByKey.set(k, idx);
-            }
-            groups[idx].events.push(ev);
-        });
-        return groups;
-    }, [filteredEvents, now]);
-
-    /* Sidebar fallback list (5 next events) */
-    const upcomingEvents = useMemo(() =>
-        filteredEvents
-            .filter(e => new Date(e.end_time) >= now)
-            .sort((a, b) => new Date(a.start_time).getTime() - new Date(b.start_time).getTime())
-            .slice(0, 5)
-    , [filteredEvents, now]);
-
-    /* 6×7 grid for the visible month */
+    /* Grille du mois affiché */
     const grid = useMemo(() => getMonthGrid(currentMonth), [currentMonth]);
 
     /* Navigation */
@@ -564,23 +597,16 @@ const CalendarSection: React.FC<{ events: EventData[] }> = ({ events }) => {
         setSelectedDay(now);
     };
 
-    /* Auto-scroll year strip so the active month stays visible */
-    const stripActiveRef = useRef<HTMLButtonElement>(null);
-    useEffect(() => {
-        stripActiveRef.current?.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
-    }, [currentMonth]);
-
     useEffect(() => {
         axios.get(`${baseURL}/agenda-document/`).then(r => {
             if (r.data[0]) setAgendaDoc(r.data[0]);
         }).catch(console.error);
     }, []);
 
-    const isViewingCurrentMonth = sameMonth(currentMonth, now);
     const monthKey = `${currentMonth.getFullYear()}-${currentMonth.getMonth()}`;
 
     return (
-        <section className="ap-cal-section">
+        <section className="ap-cal-section" id="calendrier">
             <Container>
                 <div className="ap-sec-header">
                     <motion.h2 className="ap-sec-heading" {...fadeUp(0.08)}>Calendrier</motion.h2>
@@ -591,7 +617,7 @@ const CalendarSection: React.FC<{ events: EventData[] }> = ({ events }) => {
                     <FilterPills
                         sections={availableSections}
                         active={activeSection}
-                        onSelect={setActiveSection}
+                        onSelect={onSectionChange}
                     />
                 )}
 
@@ -616,7 +642,6 @@ const CalendarSection: React.FC<{ events: EventData[] }> = ({ events }) => {
                                     return (
                                         <button
                                             key={k}
-                                            ref={active ? stripActiveRef : null}
                                             type="button"
                                             className={`ap-yearstrip-btn${active ? ' ap-yearstrip-active' : ''}`}
                                             style={{ '--intensity': intensity } as React.CSSProperties}
@@ -630,44 +655,13 @@ const CalendarSection: React.FC<{ events: EventData[] }> = ({ events }) => {
                                 })}
                             </div>
 
-                            {/* Header — month name, prev/next, today pill */}
-                            <div className="ap-calhead">
-                                <button type="button" className="ap-calhead-nav"
-                                    onClick={goPrev} aria-label="Mois précédent">
-                                    <BsChevronLeft size={16} />
-                                </button>
-
-                                <div className="ap-calhead-title">
-                                    <span className="ap-calhead-month">
-                                        {currentMonth.toLocaleDateString('fr-BE', { month: 'long' })
-                                            .replace(/^\w/, c => c.toUpperCase())}
-                                    </span>
-                                    <span className="ap-calhead-year">{currentMonth.getFullYear()}</span>
-                                </div>
-
-                                <button type="button" className="ap-calhead-nav"
-                                    onClick={goNext} aria-label="Mois suivant">
-                                    <BsChevronRight size={16} />
-                                </button>
-
-                                <AnimatePresence>
-                                    {!isViewingCurrentMonth && (
-                                        <motion.button
-                                            type="button"
-                                            className="ap-calhead-today"
-                                            onClick={goToday}
-                                            initial={{ opacity: 0, scale: 0.85 }}
-                                            animate={{ opacity: 1, scale: 1 }}
-                                            exit={{ opacity: 0, scale: 0.85 }}
-                                            transition={{ duration: 0.22 }}
-                                            title="Revenir à aujourd'hui"
-                                        >
-                                            <span className="ap-calhead-today-num">{now.getDate()}</span>
-                                            <span className="ap-calhead-today-label">Aujourd'hui</span>
-                                        </motion.button>
-                                    )}
-                                </AnimatePresence>
-                            </div>
+                            <MonthHeader
+                                month={currentMonth}
+                                now={now}
+                                onPrev={goPrev}
+                                onNext={goNext}
+                                onToday={goToday}
+                            />
 
                             {/* Day-of-week header */}
                             <div className="ap-calgrid-head">
@@ -709,37 +703,73 @@ const CalendarSection: React.FC<{ events: EventData[] }> = ({ events }) => {
                                                     y: rect.top,
                                                 })}
                                                 onEventLeave={() => setCalTooltip(null)}
+                                                onEventClick={onOpenEvent}
                                             />
                                         );
                                     })}
                                 </motion.div>
                             </AnimatePresence>
+
+                            <p className="ap-cal-hint">
+                                Clique sur un jour pour voir le détail de ses événements.
+                            </p>
                         </div>
 
-                        {/* Mobile agenda — week-grouped list */}
+                        {/* Mobile — liste des événements du mois */}
                         <div className="ap-mobag d-lg-none">
-                            {mobileWeeks.length === 0 ? (
-                                <div className="ap-mobag-empty">Aucun événement à venir.</div>
-                            ) : (
-                                mobileWeeks.map(g => (
-                                    <div key={g.key} className="ap-mobag-group">
-                                        <div className="ap-mobag-week">
-                                            <BsCalendar3 size={11} />
-                                            {g.label}
+                            <MonthHeader
+                                month={currentMonth}
+                                now={now}
+                                onPrev={goPrev}
+                                onNext={goNext}
+                                onToday={goToday}
+                                compact
+                            />
+
+                            <AnimatePresence mode="wait" initial={false}>
+                                <motion.div
+                                    key={monthKey}
+                                    initial={{ opacity: 0, y: 10 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    exit={{ opacity: 0, y: -10 }}
+                                    transition={{ duration: 0.22, ease: 'easeOut' }}
+                                >
+                                    {monthEvents.length === 0 ? (
+                                        <div className="ap-mobag-empty">
+                                            <p>Aucun événement ce mois-ci.</p>
+                                            {nextEventMonth && (
+                                                <button
+                                                    type="button"
+                                                    className="ap-mobag-next"
+                                                    onClick={() => setCurrentMonth(nextEventMonth)}
+                                                >
+                                                    Aller à {nextEventMonth.toLocaleDateString('fr-BE', { month: 'long' })}
+                                                    <BsChevronRight size={12} />
+                                                </button>
+                                            )}
                                         </div>
+                                    ) : (
                                         <div className="ap-mobag-list">
-                                            {g.events.map(ev => <EventListItem key={ev.id} ev={ev} />)}
+                                            {monthEvents.map(ev => (
+                                                <EventListItem
+                                                    key={ev.id}
+                                                    ev={ev}
+                                                    withWeekday={sameMonth(new Date(ev.start_time), currentMonth)}
+                                                    past={new Date(ev.end_time) < now}
+                                                    onOpen={onOpenEvent}
+                                                />
+                                            ))}
                                         </div>
-                                    </div>
-                                ))
-                            )}
+                                    )}
+                                </motion.div>
+                            </AnimatePresence>
                         </div>
                     </motion.div>
 
                     {/* SIDEBAR */}
                     <div className="ap-cal-sidebar">
                         <AnimatePresence mode="wait">
-                            {selectedDay ? (
+                            {selectedDay && (
                                 <motion.div
                                     key={`day-${dayKey(selectedDay)}`}
                                     className="ap-side-card d-none d-lg-block"
@@ -770,34 +800,10 @@ const CalendarSection: React.FC<{ events: EventData[] }> = ({ events }) => {
                                             <p className="ap-side-empty">Aucun événement ce jour-là.</p>
                                         ) : (
                                             <div className="ap-upcoming-list">
-                                                {dayEvts.map(ev => <EventListItem key={ev.id} ev={ev} />)}
+                                                {dayEvts.map(ev => <EventListItem key={ev.id} ev={ev} onOpen={onOpenEvent} />)}
                                             </div>
                                         );
                                     })()}
-                                </motion.div>
-                            ) : (
-                                <motion.div
-                                    key="upcoming-default"
-                                    className="ap-side-card d-none d-lg-block"
-                                    initial={{ opacity: 0, x: 16 }}
-                                    animate={{ opacity: 1, x: 0 }}
-                                    exit={{ opacity: 0, x: -16 }}
-                                    transition={{ duration: 0.28 }}
-                                >
-                                    <div className="ap-side-title">
-                                        <BsClockFill size={13} />
-                                        Prochains événements
-                                    </div>
-                                    {upcomingEvents.length === 0 ? (
-                                        <p className="ap-side-empty">Aucun événement à venir.</p>
-                                    ) : (
-                                        <div className="ap-upcoming-list">
-                                            {upcomingEvents.map(ev => <EventListItem key={ev.id} ev={ev} />)}
-                                        </div>
-                                    )}
-                                    <p className="ap-side-hint">
-                                        Clique sur un jour du calendrier pour voir ses événements.
-                                    </p>
                                 </motion.div>
                             )}
                         </AnimatePresence>
@@ -815,7 +821,7 @@ const CalendarSection: React.FC<{ events: EventData[] }> = ({ events }) => {
                                 viewport={{ once: true }}
                             >
                                 <div className="ap-side-title">
-                                    <BsFileArrowDownFill size={15} />
+                                    <BsFileEarmarkPdfFill size={15} />
                                     {agendaDoc.title}
                                 </div>
                                 {agendaDoc.description && (
@@ -827,7 +833,7 @@ const CalendarSection: React.FC<{ events: EventData[] }> = ({ events }) => {
                                     rel="noopener noreferrer"
                                     className="ap-download-btn"
                                 >
-                                    <BsFileArrowDownFill size={14} />
+                                    <BsDownload size={14} />
                                     Télécharger le PDF
                                 </a>
                             </motion.div>
@@ -877,8 +883,14 @@ const CalendarSection: React.FC<{ events: EventData[] }> = ({ events }) => {
    TIMELINE SECTION
 ════════════════════════════════════════════════════════ */
 
-const TimelineSection: React.FC<{ events: EventData[] }> = ({ events }) => {
-    const [activeSection, setActiveSection] = useState<string | null>(null);
+interface TimelineSectionProps {
+    events: EventData[];
+    activeSection: string | null;
+    onSectionChange: (slug: string | null) => void;
+    onOpenEvent: OpenEvent;
+}
+
+const TimelineSection: React.FC<TimelineSectionProps> = ({ events, activeSection, onSectionChange, onOpenEvent }) => {
     const now = new Date();
 
     const activeSlugs = new Set(events.map(e => e.section));
@@ -1043,7 +1055,7 @@ const TimelineSection: React.FC<{ events: EventData[] }> = ({ events }) => {
                         <FilterPills
                             sections={availableSections}
                             active={activeSection}
-                            onSelect={setActiveSection}
+                            onSelect={onSectionChange}
                             light
                         />
 
@@ -1139,8 +1151,9 @@ const TimelineSection: React.FC<{ events: EventData[] }> = ({ events }) => {
 
                                                     const card = (
                                                         <div
-                                                            className={`ap-tl-card${isLeft ? ' ap-tl-card-left' : ' ap-tl-card-right'}`}
+                                                            className={`ap-tl-card ap-clickable${isLeft ? ' ap-tl-card-left' : ' ap-tl-card-right'}`}
                                                             style={{ '--cc': section.color } as React.CSSProperties}
+                                                            {...clickableProps(() => onOpenEvent(ev))}
                                                         >
                                                             <div className="ap-tl-card-head">
                                                                 <div className="ap-tl-card-date"
@@ -1292,136 +1305,6 @@ const TimelineSection: React.FC<{ events: EventData[] }> = ({ events }) => {
    CALENDAR SYNC (abonnement iCal Google / Apple)
 ════════════════════════════════════════════════════════ */
 
-/* URL https du flux iCal ; toutes les sections → pas de filtre (inclut les futures sections) */
-const buildFeedUrl = (slugs: string[]) => {
-    const url = new URL(`${import.meta.env.VITE_API_URL}/events/calendar.ics`, window.location.origin);
-    if (slugs.length < SECTIONS.length) url.search = `?sections=${slugs.join(',')}`;
-    return url.toString();
-};
-
-interface CalendarSyncModalProps {
-    show: boolean;
-    onHide: () => void;
-    initialSection: string | null;
-}
-
-const CalendarSyncModal: React.FC<CalendarSyncModalProps> = ({ show, onHide, initialSection }) => {
-    const [selected, setSelected] = useState<string[]>([]);
-    const [copied, setCopied] = useState(false);
-
-    /* À chaque ouverture : présélectionne la section filtrée dans le calendrier */
-    const handleShow = () => {
-        setSelected(initialSection ? [initialSection] : []);
-        setCopied(false);
-    };
-
-    const allSelected = selected.length === SECTIONS.length;
-    const isEmpty     = selected.length === 0;
-
-    const toggle = (slug: string) =>
-        setSelected(cur => cur.includes(slug) ? cur.filter(s => s !== slug) : [...cur, slug]);
-
-    /* Garde l'ordre de SECTIONS dans l'URL, peu importe l'ordre des clics */
-    const feedUrl   = buildFeedUrl(SECTIONS.filter(s => selected.includes(s.slug)).map(s => s.slug));
-    const webcalUrl = feedUrl.replace(/^https?:/, 'webcal:');
-    const googleUrl = `https://calendar.google.com/calendar/render?cid=${encodeURIComponent(webcalUrl)}`;
-
-    const copyLink = async () => {
-        try {
-            await navigator.clipboard.writeText(feedUrl);
-            setCopied(true);
-            setTimeout(() => setCopied(false), 2200);
-        } catch {
-            window.prompt('Copie ce lien :', feedUrl);
-        }
-    };
-
-    return (
-        <Modal show={show} onShow={handleShow} onHide={onHide} centered dialogClassName="ap-sync-dialog" contentClassName="ap-sync-content">
-            <Modal.Header closeButton className="ap-sync-header">
-                <Modal.Title className="ap-sync-title">
-                    <BsCalendarPlusFill size={18} />
-                    Ajouter à mon agenda
-                </Modal.Title>
-            </Modal.Header>
-
-            <Modal.Body className="ap-sync-body">
-                <p className="ap-sync-intro">
-                    Choisis les sections à suivre. Les événements apparaîtront dans ton agenda
-                    et se mettront à jour automatiquement.
-                </p>
-
-                <div className="ap-sync-label-row">
-                    <span className="ap-sync-label">Sections</span>
-                    <button
-                        type="button"
-                        className="ap-sync-toggle-all"
-                        onClick={() => setSelected(allSelected ? [] : SECTIONS.map(s => s.slug))}
-                    >
-                        {allSelected ? 'Tout désélectionner' : 'Tout sélectionner'}
-                    </button>
-                </div>
-
-                <div className="ap-sync-pills" role="group" aria-label="Sections à ajouter">
-                    {SECTIONS.map(s => {
-                        const on = selected.includes(s.slug);
-                        return (
-                            <button
-                                key={s.slug}
-                                type="button"
-                                className={`ap-filter-btn ap-sync-pill${on ? ' ap-filter-active' : ''}`}
-                                style={{ '--fc': s.color } as React.CSSProperties}
-                                onClick={() => toggle(s.slug)}
-                                aria-pressed={on}
-                            >
-                                {on && <BsCheck2 size={13} />}
-                                {s.name}
-                            </button>
-                        );
-                    })}
-                </div>
-
-                <div className={`ap-sync-actions${isEmpty ? ' ap-sync-actions-empty' : ''}`}>
-                    <a
-                        href={googleUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="ap-download-btn ap-sync-btn"
-                        aria-disabled={isEmpty}
-                        tabIndex={isEmpty ? -1 : undefined}
-                    >
-                        <BsGoogle size={14} />
-                        Google Agenda
-                    </a>
-                    <a
-                        href={webcalUrl}
-                        className="ap-download-btn ap-sync-btn ap-sync-btn-outline"
-                        aria-disabled={isEmpty}
-                        tabIndex={isEmpty ? -1 : undefined}
-                    >
-                        <BsApple size={15} />
-                        Apple Calendrier
-                    </a>
-                </div>
-
-                {isEmpty ? (
-                    <p className="ap-sync-hint">Sélectionne au moins une section.</p>
-                ) : (
-                    <button type="button" className="ap-sync-copy" onClick={copyLink}>
-                        {copied ? <BsCheck2 size={14} /> : <BsLink45Deg size={15} />}
-                        {copied ? 'Lien copié' : 'Copier le lien (Outlook, autres agendas)'}
-                    </button>
-                )}
-
-                <p className="ap-sync-note">
-                    <BsArrowRepeat size={12} />
-                    Google peut mettre jusqu'à 24 h pour afficher les modifications.
-                </p>
-            </Modal.Body>
-        </Modal>
-    );
-};
-
 const CalendarSyncCard: React.FC<{ activeSection: string | null }> = ({ activeSection }) => {
     const [show, setShow] = useState(false);
 
@@ -1439,8 +1322,8 @@ const CalendarSyncCard: React.FC<{ activeSection: string | null }> = ({ activeSe
                     Synchroniser l'agenda
                 </div>
                 <p className="ap-download-desc">
-                    Retrouve les événements de tes sections directement dans Google Agenda
-                    ou le calendrier de ton iPhone.
+                    Retrouve les événements de tes sections directement dans Google Agenda,
+                    Outlook ou le calendrier de ton iPhone.
                 </p>
                 <button type="button" className="ap-download-btn" onClick={() => setShow(true)}>
                     <BsCalendarPlusFill size={14} />
@@ -1451,7 +1334,7 @@ const CalendarSyncCard: React.FC<{ activeSection: string | null }> = ({ activeSe
             <CalendarSyncModal
                 show={show}
                 onHide={() => setShow(false)}
-                initialSection={activeSection}
+                initialSections={activeSection ? [activeSection] : []}
             />
         </>
     );
@@ -1465,6 +1348,17 @@ const AgendaPage: React.FC = () => {
     const baseURL = import.meta.env.VITE_API_URL;
     const [events,  setEvents]  = useState<EventData[]>([]);
     const [loading, setLoading] = useState(true);
+    const [detailEvent, setDetailEvent] = useState<EventData | null>(null);
+
+    /* Filtre unique (calendrier + timeline), stocké dans l'URL pour être partageable :
+       /agenda?section=baladins (#calendrier pour arriver directement sur le calendrier) */
+    const [searchParams, setSearchParams] = useSearchParams();
+    const { hash } = useLocation();
+    const urlSection = searchParams.get('section');
+    const activeSection = isSectionSlug(urlSection) ? urlSection : null;
+
+    const selectSection = (slug: string | null) =>
+        setSearchParams(slug ? { section: slug } : {}, { replace: true, preventScrollReset: true });
 
     useEffect(() => {
         axios.get<EventData[]>(`${baseURL}/events/`)
@@ -1473,12 +1367,32 @@ const AgendaPage: React.FC = () => {
             .finally(() => setLoading(false));
     }, []);
 
+    /* Ancre (#calendrier) : on attend les événements, sinon la mise en page bouge encore.
+       Saut instantané : un défilement « smooth » (scroll-behavior global) est interrompu
+       par le scrollTo(0, 0) de ScrollToTop au chargement de la page. */
+    useEffect(() => {
+        if (loading || !hash) return;
+        document.getElementById(hash.slice(1))?.scrollIntoView({ behavior: 'instant', block: 'start' });
+    }, [loading, hash]);
+
     return (
         <div className="p-0">
             <PageHero events={events} loading={loading} />
-            <HighlightsSection events={events} />
-            <CalendarSection events={events} />
-            <TimelineSection events={events} />
+            <HighlightsSection events={events} onOpenEvent={setDetailEvent} />
+            <CalendarSection
+                events={events}
+                activeSection={activeSection}
+                onSectionChange={selectSection}
+                onOpenEvent={setDetailEvent}
+            />
+            <TimelineSection
+                events={events}
+                activeSection={activeSection}
+                onSectionChange={selectSection}
+                onOpenEvent={setDetailEvent}
+            />
+
+            <EventDetailModal event={detailEvent} onHide={() => setDetailEvent(null)} />
         </div>
     );
 };

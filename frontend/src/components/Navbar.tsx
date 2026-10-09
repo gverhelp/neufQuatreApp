@@ -104,8 +104,8 @@ function NavigationBar() {
                             <img alt="" src="/94.png" />
                         </span>
                         <span className="nb-brand-text">
-                            <span className="nb-brand-title">94<sup>ème</sup> Saint-Augustin</span>
-                            <span className="nb-brand-sub">Unité scoute · Forest</span>
+                            <span className="nb-brand-sub">Unité scoute 94 · Forest</span>
+                            <span className="nb-brand-title">Saint-Augustin</span>
                         </span>
                     </Link>
 
