@@ -1,5 +1,6 @@
 from rest_framework.routers import DefaultRouter
 from accueil.api.urls import accueil_router
+from accueil.api.views import InscriptionView
 from sections.api.urls import sections_router
 from agenda.api.urls import agenda_router
 from radio_camp.api.urls import radio_camp_router
@@ -19,6 +20,7 @@ router.registry.extend(radio_camp_router.registry)
 router.registry.extend(infos_router.registry)
 
 urlpatterns = [
+    path('inscriptions/', InscriptionView.as_view(), name='inscriptions'),
     # Avant le router : sinon `events/<pk>.<format>` intercepte « calendar.ics »
     path('events/calendar.ics', events_ics, name='events-ics'),
     path('events/<int:pk>/calendar.ics', event_ics, name='event-ics'),

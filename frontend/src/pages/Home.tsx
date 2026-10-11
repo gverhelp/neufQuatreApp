@@ -9,7 +9,7 @@ import {
 } from 'react-icons/bs';
 
 import '../styles/Home.css';
-import { AccueilItem, AccueilButton, EventData } from '../types/interfaces';
+import { AccueilItem, AccueilButton, EventData, InscriptionData } from '../types/interfaces';
 import { getSectionInfo } from '../utils/agenda';
 import EventDetailModal from '../components/EventDetailModal';
 
@@ -72,7 +72,13 @@ function formatDate(iso: string) {
    HERO
 ════════════════════════════════════════════════════════ */
 
-const HeroSection: React.FC<{ buttons: AccueilButton[] }> = ({ buttons }) => {
+interface HeroProps {
+    inscription: InscriptionData | null;
+    contactLink: string | undefined;
+}
+
+const HeroSection: React.FC<HeroProps> = ({ inscription, contactLink }) => {
+    const signupLink = inscription?.ouvertes ? inscription.lien_formulaire : '';
     const [modal, setModal] = useState(false);
     const ref = useRef<HTMLDivElement>(null);
     const { scrollYProgress } = useScroll({ target: ref, offset: ['start start', 'end start'] });
@@ -117,19 +123,19 @@ const HeroSection: React.FC<{ buttons: AccueilButton[] }> = ({ buttons }) => {
                     transition={{ delay: 1.05, duration: 0.5, ease: 'easeOut' }}
                 >
                     <a
-                        href={buttons[0]?.link || '#'}
-                        target={buttons[0]?.link ? '_blank' : undefined}
-                        rel={buttons[0]?.link ? 'noopener noreferrer' : undefined}
+                        href={signupLink || '#'}
+                        target={signupLink ? '_blank' : undefined}
+                        rel={signupLink ? 'noopener noreferrer' : undefined}
                         className="h-btn h-btn-gold"
-                        onClick={e => { if (!buttons[0]?.link) { e.preventDefault(); setModal(true); } }}
+                        onClick={e => { if (!signupLink) { e.preventDefault(); setModal(true); } }}
                     >
                         <BsPencilFill size={14} />
                         S'inscrire
                     </a>
                     <a
-                        href={buttons[1]?.link || '#'}
-                        target={buttons[1]?.link ? '_blank' : undefined}
-                        rel={buttons[1]?.link ? 'noopener noreferrer' : undefined}
+                        href={contactLink || '#'}
+                        target={contactLink ? '_blank' : undefined}
+                        rel={contactLink ? 'noopener noreferrer' : undefined}
                         className="h-btn h-btn-ghost"
                     >
                         <BsEnvelopeFill size={14} />
@@ -376,17 +382,20 @@ const Home: React.FC = () => {
     const baseURL = import.meta.env.VITE_API_URL;
     const [items,   setItems]   = useState<AccueilItem[]>([]);
     const [buttons, setButtons] = useState<AccueilButton[]>([]);
+    const [inscription, setInscription] = useState<InscriptionData | null>(null);
     const [events,  setEvents]  = useState<EventData[]>([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         (async () => {
             try {
-                const [ri, rb, re] = await Promise.all([
+                const [ri, rb, re, rins] = await Promise.all([
                     axios.get<AccueilItem[]>(`${baseURL}/accueil-items/`),
                     axios.get<AccueilButton[]>(`${baseURL}/accueil-buttons`),
                     axios.get<EventData[]>(`${baseURL}/events/`),
+                    axios.get<InscriptionData>(`${baseURL}/inscriptions/`),
                 ]);
+                setInscription(rins.data);
                 setItems(ri.data.sort((a, b) => a.id - b.id));
                 setButtons(rb.data.sort((a, b) => a.id - b.id));
                 setEvents(re.data);
@@ -400,7 +409,8 @@ const Home: React.FC = () => {
 
     return (
         <>
-            <HeroSection buttons={buttons} />
+            {/* Le seul AccueilButton restant est le bouton de contact */}
+            <HeroSection inscription={inscription} contactLink={buttons[0]?.link} />
             {!loading && <EventsTeaser events={events} />}
             {loading
                 ? <ContentSkeleton bg="#ffffff" />

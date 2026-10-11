@@ -1813,3 +1813,55 @@ button.rcbs-gate-back {
 
 /* Le titre ne passe pas sous le badge */
 .rcbs-picker-card-name { padding-right: 5.5rem; }
+
+
+/* ══════════════════════════════════════════════════════════
+   CARTE — nom des sections sur les épingles + badge « En direct »
+══════════════════════════════════════════════════════════ */
+.rcp-pin-label {
+    position: absolute;
+    left: calc(100% + 6px);
+    top: 50%;
+    transform: translateY(-50%);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    white-space: nowrap;
+    font-family: 'Titan One', sans-serif;
+    font-size: 0.85rem;
+    color: var(--pc);
+    background: #ffffff;
+    border-radius: 8px;
+    padding: 0.22rem 0.6rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.28);
+    pointer-events: none;
+    z-index: 2;
+    transition: background 0.2s ease, color 0.2s ease;
+}
+.rcp-pin:hover .rcp-pin-label,
+.rcp-pin:focus-visible .rcp-pin-label {
+    background: var(--pc);
+    color: #ffffff;
+}
+
+.rcp-live-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    font-family: 'Roboto', sans-serif;
+    font-size: 0.55rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #c62828;
+    background: #ffe9e9;
+    border-radius: 999px;
+    padding: 0.15rem 0.5rem;
+}
+.rcp-live-badge .rcp-live-dot {
+    width: 6px;
+    height: 6px;
+    margin: 0;
+    background: #e53935;
+}
+.rcp-dest-head .rcp-live-badge { margin-left: auto; }

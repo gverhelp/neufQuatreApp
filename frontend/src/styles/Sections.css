@@ -668,7 +668,68 @@
 }
 
 @media (max-width: 991px) { .bsp-staff-grid { grid-template-columns: repeat(2, 1fr); } }
-@media (max-width: 600px) { .bsp-staff-grid { grid-template-columns: 1fr; } }
+
+/* Une carte dépliée ne doit pas étirer les autres de sa rangée */
+.bsp-staff-grid { align-items: start; }
+
+.bsp-staff-sheet.offcanvas-bottom {
+    height: auto;
+    max-height: 85vh;
+    border-radius: 20px 20px 0 0;
+    border-top: 4px solid var(--bs-accent, #022864);
+}
+.bsp-staff-sheet-handle {
+    width: 40px;
+    height: 4px;
+    border-radius: 4px;
+    background: #d4dbe8;
+    margin: 0.6rem auto 0;
+}
+.bsp-staff-sheet .offcanvas-header {
+    gap: 0.85rem;
+    align-items: center;
+    padding: 0.9rem 1.2rem 0.4rem;
+}
+.bsp-staff-sheet .offcanvas-header .btn-close { align-self: flex-start; margin-left: auto; }
+.bsp-staff-sheet-photo {
+    width: 64px;
+    height: 64px;
+    border-radius: 14px;
+    object-fit: cover;
+    flex-shrink: 0;
+    border: 3px solid var(--bs-accent, #022864);
+}
+.bsp-staff-sheet .bsp-staff-totem { font-size: 1.2rem; margin: 0; }
+.bsp-staff-sheet-name {
+    font-family: 'Roboto', sans-serif;
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: #9ca3af;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+}
+.bsp-staff-sheet .offcanvas-body { padding: 0.6rem 1.2rem 1.6rem; }
+.bsp-staff-sheet-resp {
+    display: inline-block;
+    font-family: 'Roboto', sans-serif;
+    font-size: 0.62rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #ffffff;
+    background: var(--bs-accent, #022864);
+    border-radius: 999px;
+    padding: 0.3em 0.8em;
+    margin-bottom: 0.7rem;
+}
+.bsp-staff-sheet-bio {
+    font-family: 'Roboto', sans-serif;
+    font-size: 0.92rem;
+    color: #4b5563;
+    line-height: 1.65;
+    white-space: pre-line;
+    margin: 0;
+}
 
 .bsp-staff-card {
     display: flex;
@@ -768,22 +829,32 @@
     color: #4b5563;
     line-height: 1.65;
     margin: 0;
-    flex: 1;
-    max-height: 8rem;
-    overflow-y: auto;
-    overscroll-behavior: contain;
-    padding-right: 4px;
-    scrollbar-width: thin;
-    scrollbar-color: var(--bs-accent, #022864) transparent;
     white-space: pre-line;
 }
 
-.bsp-staff-bio::-webkit-scrollbar { width: 4px; }
-.bsp-staff-bio::-webkit-scrollbar-track { background: transparent; }
-.bsp-staff-bio::-webkit-scrollbar-thumb {
-    background: var(--bs-accent, #022864);
-    border-radius: 4px;
-    opacity: 0.5;
+/* 4 lignes par défaut ; « Lire la suite » déplie la carte (plus de défilement interne) */
+.bsp-staff-bio-clamped {
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.bsp-staff-more {
+    align-self: flex-start;
+    margin-top: 0.55rem;
+    padding: 0;
+    border: none;
+    background: none;
+    font-family: 'Roboto', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--bs-accent, #022864);
+    cursor: pointer;
+}
+.bsp-staff-more:hover {
+    text-decoration: underline;
+    text-underline-offset: 3px;
 }
 
 .bsp-staff-ghost {
@@ -1069,58 +1140,46 @@
    CAROUSEL BLOCK — shared styles (kept for CarouselBlock component)
 ══════════════════════════════════════════════════════════ */
 .cb-wrapper {
+    padding: 3.5rem 12px;
+}
+
+/* Cadre arrondi : la photo ne colle plus aux sections voisines */
+.cb-frame {
     position: relative;
-    background: #0a0a0a;
+    border-radius: 18px;
+    overflow: hidden;
+    background: #0d1b33;
+    box-shadow: 0 14px 40px rgba(2, 40, 100, 0.16);
 }
 
 .cb-carousel,
 .cb-carousel .carousel-inner,
 .cb-carousel .carousel-item {
-    height: 75vh;
-    min-height: 320px;
+    height: min(62vh, 580px);
+    min-height: 300px;
 }
 
 .cb-image {
-    height: 75vh;
-    min-height: 320px;
+    height: min(62vh, 580px);
+    min-height: 300px;
     object-fit: cover;
-    filter: brightness(0.88);
-    transition: filter 0.4s ease;
 }
 
-.cb-carousel:hover .cb-image {
-    filter: brightness(0.95);
-}
-
-.cb-carousel .carousel-item::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: none;
-    pointer-events: none;
-}
-
+/* Légende : carte opaque, liseré à la couleur de la section */
 .cb-caption {
-    bottom: 2.5rem;
-    left: 0;
-    right: 0;
-    text-align: center;
-    padding: 0 2rem;
-}
-
-.cb-caption-text {
-    display: inline-block;
-    font-family: 'Roboto', sans-serif;
-    font-size: 0.9rem;
-    font-weight: 500;
-    letter-spacing: 0.03em;
-    color: rgba(255, 255, 255, 0.92);
-    background: rgba(2, 40, 100, 0.5);
-    backdrop-filter: blur(6px);
-    border-radius: 50px;
-    padding: 0.35rem 1.1rem;
-    margin: 0;
-    max-width: 560px;
+    position: absolute;
+    left: 1rem;
+    bottom: 1rem;
+    max-width: calc(100% - 2rem);
+    background: #ffffff;
+    border-left: 4px solid var(--bs-accent, #FFBE0A);
+    border-radius: 10px;
+    padding: 0.55rem 0.95rem;
+    font-family: 'Titan One', sans-serif;
+    font-size: 0.95rem;
+    color: #022864;
+    line-height: 1.3;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -1136,62 +1195,57 @@
     font-weight: 700;
     letter-spacing: 0.06em;
     color: white;
-    background: rgba(2, 40, 100, 0.6);
-    backdrop-filter: blur(4px);
+    background: rgba(2, 40, 100, 0.85);
     border-radius: 50px;
     padding: 0.3rem 0.8rem;
 }
 
+/* Flèches toujours visibles (le survol n'existe pas sur mobile) */
 .cb-carousel .carousel-control-prev,
 .cb-carousel .carousel-control-next {
-    width: 48px;
-    height: 48px;
-    top: 50%;
-    transform: translateY(-50%);
-    border-radius: 50%;
-    background: rgba(2, 40, 100, 0.55);
-    backdrop-filter: blur(4px);
-    opacity: 0;
-    transition: opacity 0.2s ease, background 0.2s ease;
-    margin: 0 0.75rem;
-}
-
-.cb-carousel:hover .carousel-control-prev,
-.cb-carousel:hover .carousel-control-next {
+    width: auto;
     opacity: 1;
+    padding: 0 1rem;
 }
-
-.cb-carousel .carousel-control-prev:hover,
-.cb-carousel .carousel-control-next:hover {
-    background: rgba(2, 40, 100, 0.85);
-}
-
-.cb-carousel .carousel-control-prev-icon,
-.cb-carousel .carousel-control-next-icon {
-    width: 1.1rem;
-    height: 1.1rem;
-}
-
-.cb-carousel .carousel-indicators {
-    bottom: 0.6rem;
-    gap: 6px;
-    margin: 0;
-}
-
-.cb-carousel .carousel-indicators [data-bs-target] {
-    width: 7px;
-    height: 7px;
+.cb-arrow {
+    width: 42px;
+    height: 42px;
     border-radius: 50%;
-    border: none;
-    background: rgba(255, 255, 255, 0.45);
-    transition: background 0.25s ease, transform 0.25s ease;
-    flex-shrink: 0;
-    margin: 0;
+    background: #ffffff;
+    color: #022864;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+    transition: transform 0.2s ease, background 0.2s ease;
+}
+.cb-carousel .carousel-control-prev:hover .cb-arrow,
+.cb-carousel .carousel-control-next:hover .cb-arrow {
+    transform: scale(1.08);
+    background: #FFBE0A;
 }
 
-.cb-carousel .carousel-indicators .active {
-    background: white;
-    transform: scale(1.35);
+/* Points sous la photo */
+.cb-dots {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 1rem;
+}
+.cb-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 8px;
+    border: none;
+    padding: 0;
+    background: rgba(2, 40, 100, 0.22);
+    cursor: pointer;
+    transition: width 0.25s ease, background 0.25s ease;
+}
+.cb-dot-active {
+    width: 22px;
+    background: #FFBE0A;
 }
 
 .cb-empty {
@@ -1217,19 +1271,22 @@
 }
 
 @media (max-width: 768px) {
+    .cb-wrapper { padding: 2.5rem 1.25rem; }
+
     .cb-carousel,
     .cb-carousel .carousel-inner,
     .cb-carousel .carousel-item,
     .cb-image {
-        height: 38vh;
+        height: 42vh;
         min-height: 220px;
     }
 
-    .cb-caption-text {
-        font-size: 0.8rem;
-        padding: 0.28rem 0.9rem;
-    }
+    .cb-caption { font-size: 0.82rem; left: 0.75rem; bottom: 0.75rem; max-width: calc(100% - 1.5rem); }
+    .cb-arrow   { width: 36px; height: 36px; }
+    .cb-carousel .carousel-control-prev,
+    .cb-carousel .carousel-control-next { padding: 0 0.6rem; }
 }
+
 /* ── Agenda card (prochaines activités + abonnement) ── */
 .bsp-agenda-list {
     list-style: none;
@@ -1366,4 +1423,20 @@
     color: #186E54;
     border-color: #186E54;
     background: #e8f4ef;
+}
+
+/* Placé en fin de fichier : doit l'emporter sur les règles de base des cartes du staff */
+/* ── Mobile : grille compacte 2 colonnes, bio dans un panneau ── */
+@media (max-width: 600px) {
+    .bsp-staff-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.75rem; }
+    .bsp-staff-card { cursor: pointer; border-radius: 14px; }
+    .bsp-staff-card:hover { transform: none; }
+    .bsp-staff-img { aspect-ratio: 1 / 1; border-bottom-width: 3px; }
+    .bsp-staff-placeholder svg { width: 54px; height: 54px; }
+    .bsp-staff-resp-badge { top: 0.45rem; right: 0.45rem; font-size: 0.5rem; padding: 0.25em 0.6em; }
+    .bsp-staff-body { padding: 0.6rem 0.7rem 0.75rem; }
+    .bsp-staff-totem { font-size: 0.95rem; }
+    .bsp-staff-name { font-size: 0.6rem; padding-bottom: 0; border-bottom: none; margin-bottom: 0; }
+    .bsp-staff-bio,
+    .bsp-staff-more { display: none; }
 }

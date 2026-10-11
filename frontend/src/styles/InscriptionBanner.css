@@ -1,0 +1,83 @@
+/* ══════════════════════════════════════════════════════════
+   BANDEAU INSCRIPTIONS — page Infos & documents
+══════════════════════════════════════════════════════════ */
+.insc-banner {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    background: #f7f9fc;
+    border: 1.5px solid #e4e9f2;
+    border-radius: 16px;
+    padding: 1rem 1.2rem;
+    margin-bottom: 3rem;
+}
+.insc-banner-open {
+    background: #fff8e6;
+    border-color: #FFBE0A;
+}
+
+.insc-icon {
+    flex-shrink: 0;
+    width: 46px;
+    height: 46px;
+    border-radius: 12px;
+    background: #eef2f9;
+    color: #022864;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.insc-banner-open .insc-icon { background: #FFBE0A; }
+
+.insc-text {
+    flex: 1;
+    min-width: 0;
+}
+.insc-title {
+    font-family: 'Titan One', sans-serif;
+    font-size: 1.1rem;
+    color: #022864;
+    line-height: 1.2;
+}
+.insc-sub {
+    font-family: 'Roboto', sans-serif;
+    font-size: 0.86rem;
+    color: #6b7589;
+    margin-top: 0.2rem;
+}
+
+.insc-btn {
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    font-family: 'Titan One', sans-serif;
+    font-size: 0.88rem;
+    letter-spacing: 0.03em;
+    color: #ffffff;
+    background: #022864;
+    border: 2px solid #022864;
+    border-radius: 10px;
+    padding: 0.6rem 1.1rem;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: background 0.2s ease, transform 0.2s ease;
+}
+.insc-btn:hover {
+    background: #033a8c;
+    color: #ffffff;
+    transform: translateY(-2px);
+}
+.insc-btn-outline {
+    background: #ffffff;
+    color: #022864;
+}
+.insc-btn-outline:hover {
+    background: #022864;
+}
+
+@media (max-width: 640px) {
+    .insc-banner { flex-wrap: wrap; }
+    .insc-text   { flex-basis: calc(100% - 62px); }
+    .insc-btn    { width: 100%; justify-content: center; }
+}

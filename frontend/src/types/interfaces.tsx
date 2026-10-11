@@ -11,6 +11,14 @@ export interface AccueilButton {
     link: string;
 }
 
+/* Réglage « Inscriptions » de l'admin (GET /api/inscriptions/) */
+export interface InscriptionData {
+    ouvertes: boolean;
+    lien_formulaire: string;
+    titre: string;
+    texte: string;
+}
+
 
 // Section page Interfaces
 export interface SectionData {
