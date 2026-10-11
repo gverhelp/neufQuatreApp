@@ -12,8 +12,8 @@ import '../styles/Footer.css';
    CONSTANTS
 ════════════════════════════════════════════════════════ */
 
-const EXTERNAL_LINKS = [
-    { name: 'Les Scouts',   path: 'https://lesscouts.be/fr',              description: 'Site officiel' },
+const EXTERNAL_LINKS: { name: string; path: string; description: string; logo?: string }[] = [
+    { name: 'Les Scouts',   path: 'https://lesscouts.be/fr',              description: 'Site officiel', logo: '/les_scouts.png' },
     // { name: 'Les Guides',   path: 'https://www.guides.be/',               description: 'Site officiel' },
     { name: 'La Scouterie', path: 'https://www.lascouterie-economats.be/', description: 'Économat' },
 ];
@@ -44,14 +44,14 @@ const Footer = () => (
                 {/* ── À propos ── */}
                 <Col lg={4} md={6}>
                     <div className="ft-brand">
-                        <img
-                            src="/les_scouts.png"
-                            alt="Logo LC94 Saint-Augustin"
+                        <img loading="lazy" decoding="async"
+                            src="/94.png"
+                            alt="Logo de la 94ème Unité Saint-Augustin"
                             className="ft-logo"
                         />
                         <div>
-                            <div className="ft-brand-eyebrow">Unité scoute</div>
-                            <div className="ft-brand-name">94<sup>ème</sup> Saint-Augustin</div>
+                            <div className="ft-brand-eyebrow">Unité scoute 94 · Forest</div>
+                            <div className="ft-brand-name">Saint-Augustin</div>
                         </div>
                     </div>
 
@@ -115,6 +115,7 @@ const Footer = () => (
                                 className="ft-ext-card"
                             >
                                 <div className="ft-ext-head">
+                                    {l.logo && <img src={l.logo} alt="" className="ft-ext-logo" />}
                                     <span className="ft-ext-name">{l.name}</span>
                                     <BsArrowUpRight size={12} className="ft-ext-arrow" />
                                 </div>
