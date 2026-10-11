@@ -37,7 +37,7 @@ function CarouselBlock({ images, captions }: CarouselBlockProps) {
             >
                 {images.map((image, index) => (
                     <Carousel.Item key={index}>
-                        <Image
+                        <Image loading="lazy" decoding="async"
                             fluid
                             src={image}
                             className="w-100 cb-image"

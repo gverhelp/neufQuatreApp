@@ -448,16 +448,25 @@
     flex-direction: row;
     gap: 1.1rem;
     align-items: flex-start;
+    width: 100%;
+    text-align: left;
+    cursor: pointer;
     background: #f8fafd;
     border: 1.5px solid rgba(2,40,100,0.07);
+    border-left: 4px solid var(--ec, #022864);
     border-radius: 18px;
     padding: 1.4rem;
     transition: transform 0.28s ease, box-shadow 0.28s ease, border-color 0.28s ease;
+}
+.ev-card:focus-visible {
+    outline: 2px solid #022864;
+    outline-offset: 3px;
 }
 .ev-card:hover {
     transform: translateY(-5px);
     box-shadow: 0 14px 38px rgba(2,40,100,0.09);
     border-color: rgba(2,40,100,0.16);
+    border-left-color: var(--ec, #022864);
 }
 
 /* Date chip (left column) */
@@ -465,7 +474,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    background: #022864;
+    background: var(--ec, #022864);
     border-radius: 12px;
     padding: 0.6rem 0.8rem;
     min-width: 50px;
@@ -478,7 +487,7 @@
     font-weight: 700;
     letter-spacing: 0.12em;
     text-transform: uppercase;
-    color: rgba(255,255,255,0.55);
+    color: rgba(255,255,255,0.8);
     line-height: 1;
     margin-bottom: 0.2rem;
 }
@@ -494,7 +503,7 @@
     font-weight: 700;
     letter-spacing: 0.1em;
     text-transform: uppercase;
-    color: #FFBE0A;
+    color: rgba(255,255,255,0.85);
     line-height: 1;
     margin-top: 0.2rem;
 }
@@ -533,12 +542,23 @@
     font-weight: 700;
     letter-spacing: 0.1em;
     text-transform: uppercase;
-    background: rgba(2,40,100,0.07);
-    color: #022864;
+    background: color-mix(in srgb, var(--ec, #022864) 12%, white);
+    color: var(--ec, #022864);
     border-radius: 50px;
     padding: 0.2rem 0.7rem;
     align-self: flex-start;
     margin-top: 0.2rem;
+}
+
+/* Clan (jaune clair) : texte foncé pour rester lisible */
+.ev-card-light .ev-chip-day,
+.ev-card-light .ev-chip-date,
+.ev-card-light .ev-chip-month { color: #022864; }
+.ev-card-light .ev-card-pill   { color: #8a6400; }
+
+/* Mobile : « Tout l'agenda » sous la liste */
+.ev-bottom {
+    margin-top: 1.4rem;
 }
 
 /* ══════════════════════════════════════════════════════════

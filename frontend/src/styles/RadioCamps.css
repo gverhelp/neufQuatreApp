@@ -159,6 +159,22 @@
     white-space: nowrap;
 }
 
+/* Point rouge pulsé : un camp est en cours */
+.rcp-live-dot {
+    display: inline-block;
+    width: 0.42em;
+    height: 0.42em;
+    margin-right: 0.35em;
+    border-radius: 50%;
+    background: #ff4d4f;
+    vertical-align: middle;
+    box-shadow: 0 0 0 0 rgba(255, 77, 79, 0.6);
+    animation: rcp-live-pulse 1.8s ease-out infinite;
+}
+@keyframes rcp-live-pulse {
+    to { box-shadow: 0 0 0 0.5em rgba(255, 77, 79, 0); }
+}
+
 .rcp-hstat-label {
     font-family: 'Roboto', sans-serif;
     font-size: 0.62rem;
@@ -1715,3 +1731,85 @@ button.rcbs-gate-back {
         padding: 3.5rem 1.25rem 4rem;
     }
 }
+
+
+/* ══════════════════════════════════════════════════════════
+   CARTES OPAQUES — destinations (mobile) et choix du camp
+   Fond blanc plein : lisibles quel que soit le fond de carte derrière
+══════════════════════════════════════════════════════════ */
+.rcp-dest-card,
+.rcbs-picker-card {
+    background: #ffffff;
+    border: none;
+    backdrop-filter: none;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.22);
+}
+.rcp-dest-card:hover,
+.rcp-dest-card:focus-visible,
+.rcbs-picker-card:hover,
+.rcbs-picker-card:focus-visible {
+    background: #ffffff;
+    box-shadow: 0 18px 40px rgba(0, 0, 0, 0.3);
+}
+.rcp-dest-card:focus-visible,
+.rcbs-picker-card:focus-visible {
+    outline: 3px solid #FFBE0A;
+    outline-offset: 3px;
+}
+
+/* Barre de couleur de la section, pleine largeur */
+.rcp-dest-bar,
+.rcbs-picker-card-bar {
+    height: 4px;
+    transform: none;
+}
+
+.rcp-dest-name,
+.rcbs-picker-card-name { color: #022864; }
+.rcp-dest-band { color: var(--pc); }
+.rcp-dest-pin-icon { color: var(--pc); }
+
+.rcbs-picker-card-dates {
+    color: #4a5468;
+    background: #eef2f9;
+    border: none;
+}
+
+.rcp-dest-cta,
+.rcbs-picker-card-cta {
+    color: #022864;
+    border-top: 1px solid #edf0f7;
+}
+.rcp-dest-card:hover .rcp-dest-cta,
+.rcp-dest-card:focus-visible .rcp-dest-cta { color: #022864; }
+
+/* Statut du camp */
+.rcbs-picker-status {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-family: 'Roboto', sans-serif;
+    font-size: 0.62rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    border-radius: 999px;
+    padding: 0.25rem 0.65rem;
+}
+.rcbs-picker-status-live     { background: #ffe9e9; color: #c62828; }
+.rcbs-picker-status-upcoming { background: #fff4d6; color: #8a6400; }
+.rcbs-picker-status-past     { background: #edf0f7; color: #6b7589; }
+
+.rcbs-picker-live-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #e53935;
+    animation: rcp-live-pulse 1.8s ease-out infinite;
+}
+
+/* Le titre ne passe pas sous le badge */
+.rcbs-picker-card-name { padding-right: 5.5rem; }

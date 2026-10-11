@@ -40,6 +40,11 @@ class RadioCampPrivacyTests(TestCase):
         self.assertEqual(r.status_code, 200)
         self.assertEqual(len(r.json()['posts']), 1)
 
+    def test_global_summary_has_dates_only(self):
+        r = self.client.get('/api/radio-camps/summary/')
+        self.assertEqual(r.status_code, 200)
+        self.assertEqual(set(r.json()[0]), {'id', 'section', 'title', 'start_date', 'end_date'})
+
     def test_section_summary_has_no_posts(self):
         r = self.client.get('/api/radio-camps/by-section/louveteaux/')
         self.assertEqual(r.status_code, 200)

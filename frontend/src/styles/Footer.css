@@ -67,10 +67,10 @@
 }
 
 .ft-logo {
-    width: 54px;
-    height: 54px;
+    width: 78px;
+    height: 56px;
     object-fit: contain;
-    filter: brightness(0) invert(1);
+    filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.35));
     flex-shrink: 0;
 }
 
@@ -78,7 +78,7 @@
     font-family: 'Roboto', sans-serif;
     font-size: 0.62rem;
     font-weight: 700;
-    letter-spacing: 0.16em;
+    letter-spacing: 0.24em;
     text-transform: uppercase;
     color: #FFBE0A;
     margin-bottom: 0.18rem;
@@ -86,16 +86,12 @@
 
 .ft-brand-name {
     font-family: 'Titan One', sans-serif;
-    font-size: 1.2rem;
+    font-size: 1.45rem;
     color: #ffffff;
     line-height: 1.05;
     letter-spacing: -0.01em;
 }
 
-.ft-brand-name sup {
-    font-size: 0.55em;
-    top: -0.65em;
-}
 
 .ft-brand-tagline {
     font-family: 'Roboto', sans-serif;
@@ -290,7 +286,17 @@
     gap: 0.5rem;
 }
 
+.ft-ext-logo {
+    width: 18px;
+    height: 26px;
+    object-fit: contain;
+    filter: brightness(0) invert(1);
+    opacity: 0.85;
+    flex-shrink: 0;
+}
+
 .ft-ext-name {
+    flex: 1;
     font-size: 0.9rem;
     font-weight: 700;
     color: #ffffff;

@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 import { motion } from 'framer-motion';
 import { Container } from 'react-bootstrap';
 import {
@@ -8,6 +9,8 @@ import {
 } from 'react-icons/bs';
 
 import '../styles/RadioCamps.css';
+import { RadioCampSummary } from '../types/interfaces';
+import { campStatus, fmtCampMonth } from '../utils/radioCamp';
 
 /* ════════════════════════════════════════════════════════
    CONSTANTS
@@ -58,7 +61,18 @@ const staggerItem = {
    HERO
 ════════════════════════════════════════════════════════ */
 
-const PageHero: React.FC = () => (
+/* Statistique d'en-tête : camps en cours, sinon date du prochain camp */
+function campHighlight(camps: RadioCampSummary[]) {
+    const live = camps.filter(c => campStatus(c) === 'live');
+    if (live.length) return { num: String(live.length), label: live.length > 1 ? 'Camps en direct' : 'Camp en direct', live: true };
+    const next = camps.find(c => campStatus(c) === 'upcoming');   // triés par date de début
+    if (next) return { num: fmtCampMonth(next.start_date), label: 'Prochain camp', live: false };
+    return null;
+}
+
+const PageHero: React.FC<{ camps: RadioCampSummary[] }> = ({ camps }) => {
+    const highlight = campHighlight(camps);
+    return (
     <section className="rcp-hero">
         <Container className="rcp-hero-container">
             <div className="rcp-hero-inner">
@@ -108,11 +122,18 @@ const PageHero: React.FC = () => (
                         <span className="rcp-hstat-num">{DESTINATIONS.length}</span>
                         <span className="rcp-hstat-label">Destinations</span>
                     </div>
-                    <div className="rcp-hstat-sep" />
-                    <div className="rcp-hstat">
-                        <span className="rcp-hstat-num">24/7</span>
-                        <span className="rcp-hstat-label">En direct</span>
-                    </div>
+                    {highlight && (
+                        <>
+                            <div className="rcp-hstat-sep" />
+                            <div className="rcp-hstat">
+                                <span className="rcp-hstat-num">
+                                    {highlight.live && <span className="rcp-live-dot" aria-hidden />}
+                                    {highlight.num}
+                                </span>
+                                <span className="rcp-hstat-label">{highlight.label}</span>
+                            </div>
+                        </>
+                    )}
                 </motion.div>
             </div>
 
@@ -121,7 +142,8 @@ const PageHero: React.FC = () => (
             </div>
         </Container>
     </section>
-);
+    );
+};
 
 /* ════════════════════════════════════════════════════════
    HOW IT WORKS
@@ -306,9 +328,17 @@ const MapBlock: React.FC = () => {
 ════════════════════════════════════════════════════════ */
 
 const RadioCamps: React.FC = () => {
+    const [camps, setCamps] = useState<RadioCampSummary[]>([]);
+
+    useEffect(() => {
+        axios.get<RadioCampSummary[]>(`${import.meta.env.VITE_API_URL}/radio-camps/summary/`)
+            .then(r => setCamps(r.data))
+            .catch(e => console.error('Erreur chargement Radio Camps :', e));
+    }, []);
+
     return (
         <div className="p-0">
-            <PageHero />
+            <PageHero camps={camps} />
             <HowItWorks />
             <MapBlock />
         </div>

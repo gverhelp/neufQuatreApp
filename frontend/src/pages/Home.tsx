@@ -5,11 +5,13 @@ import { motion, useScroll, useTransform } from 'framer-motion';
 import { Container, Modal, Button } from 'react-bootstrap';
 import {
     BsCalendar3, BsPeopleFill, BsFileEarmarkTextFill, BsBroadcast,
-    BsArrowRight, BsPencilFill, BsEnvelopeFill, BsArrowDown, BsGeoAltFill,
+    BsArrowRight, BsPencilFill, BsEnvelopeFill, BsArrowDown, BsGeoAltFill, BsClock,
 } from 'react-icons/bs';
 
 import '../styles/Home.css';
 import { AccueilItem, AccueilButton, EventData } from '../types/interfaces';
+import { getSectionInfo } from '../utils/agenda';
+import EventDetailModal from '../components/EventDetailModal';
 
 /* ════════════════════════════════════════════════════════
    CONSTANTS
@@ -46,6 +48,18 @@ const staggerItem = {
 /* ════════════════════════════════════════════════════════
    UTILITY
 ════════════════════════════════════════════════════════ */
+
+const fmtTime = (iso: string) =>
+    new Date(iso).toLocaleTimeString('fr-BE', { hour: '2-digit', minute: '2-digit' });
+
+/* « 12:30 – 17:30 » le même jour, sinon « Ven. 18:00 → dim. 12:00 » */
+function timeLabel(ev: EventData) {
+    const s = new Date(ev.start_time);
+    const e = new Date(ev.end_time);
+    if (s.toDateString() === e.toDateString()) return `${fmtTime(ev.start_time)} – ${fmtTime(ev.end_time)}`;
+    const wd = (d: Date) => d.toLocaleDateString('fr-BE', { weekday: 'short' });
+    return `${wd(s)} ${fmtTime(ev.start_time)} → ${wd(e)} ${fmtTime(ev.end_time)}`;
+}
 
 function formatDate(iso: string) {
     const d = new Date(iso);
@@ -156,6 +170,7 @@ const HeroSection: React.FC<{ buttons: AccueilButton[] }> = ({ buttons }) => {
 ════════════════════════════════════════════════════════ */
 
 const EventsTeaser: React.FC<{ events: EventData[] }> = ({ events }) => {
+    const [detail, setDetail] = useState<EventData | null>(null);
     const now = new Date();
     const upcoming = events
         .filter(e => new Date(e.start_time) >= now)
@@ -163,6 +178,12 @@ const EventsTeaser: React.FC<{ events: EventData[] }> = ({ events }) => {
         .slice(0, 3);
 
     if (upcoming.length === 0) return null;
+
+    const seeAll = (extra: string) => (
+        <Link to="/agenda" className={`ev-see-all ${extra}`}>
+            Tout l'agenda <BsArrowRight size={13} />
+        </Link>
+    );
 
     return (
         <section className="ev-wrap">
@@ -172,10 +193,8 @@ const EventsTeaser: React.FC<{ events: EventData[] }> = ({ events }) => {
                         <motion.h2 className="blk-heading" {...fadeUp(0.08)}>Prochains événements</motion.h2>
                         <motion.div className="blk-rule" {...fadeUp(0.14)} />
                     </div>
-                    <motion.div {...fadeUp(0.1)}>
-                        <Link to="/agenda" className="ev-see-all">
-                            Tout l'agenda <BsArrowRight size={13} />
-                        </Link>
+                    <motion.div {...fadeUp(0.1)} className="d-none d-md-block">
+                        {seeAll('')}
                     </motion.div>
                 </div>
 
@@ -188,8 +207,16 @@ const EventsTeaser: React.FC<{ events: EventData[] }> = ({ events }) => {
                 >
                     {upcoming.map(ev => {
                         const { day, date, month } = formatDate(ev.start_time);
+                        const section = getSectionInfo(ev.section);
                         return (
-                            <motion.div key={ev.id} className="ev-card" variants={staggerItem}>
+                            <motion.button
+                                key={ev.id}
+                                type="button"
+                                className={`ev-card${section.slug === 'clan' ? ' ev-card-light' : ''}`}
+                                style={{ '--ec': section.color } as React.CSSProperties}
+                                variants={staggerItem}
+                                onClick={() => setDetail(ev)}
+                            >
                                 <div className="ev-chip">
                                     <span className="ev-chip-day">{day}</span>
                                     <span className="ev-chip-date">{date}</span>
@@ -197,21 +224,28 @@ const EventsTeaser: React.FC<{ events: EventData[] }> = ({ events }) => {
                                 </div>
                                 <div className="ev-card-body">
                                     <p className="ev-card-title">{ev.title}</p>
+                                    <p className="ev-card-loc">
+                                        <BsClock size={10} />
+                                        {timeLabel(ev)}
+                                    </p>
                                     {ev.location && (
                                         <p className="ev-card-loc">
                                             <BsGeoAltFill size={10} />
                                             {ev.location}
                                         </p>
                                     )}
-                                    {ev.section && (
-                                        <span className="ev-card-pill">{ev.section}</span>
-                                    )}
+                                    <span className="ev-card-pill">{section.name}</span>
                                 </div>
-                            </motion.div>
+                            </motion.button>
                         );
                     })}
                 </motion.div>
+
+                {/* Mobile : le lien vient après la liste */}
+                <div className="ev-bottom d-md-none">{seeAll('')}</div>
             </Container>
+
+            <EventDetailModal event={detail} onHide={() => setDetail(null)} />
         </section>
     );
 };
@@ -231,7 +265,7 @@ const ContentPanel: React.FC<{ item: AccueilItem; reverse: boolean; bg: string }
                     transition={{ duration: 0.68, ease: 'easeOut' }}
                     viewport={{ once: true }}
                 >
-                    <img src={item.image} alt={item.titre} />
+                    <img loading="lazy" decoding="async" src={item.image} alt={item.titre} />
                 </motion.div>
 
                 <motion.div
@@ -276,7 +310,7 @@ const ContentSkeleton: React.FC<{ bg: string }> = ({ bg }) => (
 
 const ImageBreak: React.FC = () => (
     <section className="ib-wrap">
-        <motion.img
+        <motion.img loading="lazy" decoding="async"
             src="background8.webp"
             className="ib-photo"
             alt=""

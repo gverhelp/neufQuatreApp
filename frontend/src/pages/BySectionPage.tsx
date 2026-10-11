@@ -5,7 +5,7 @@ import { Container, Alert } from 'react-bootstrap';
 import { motion } from 'framer-motion';
 import { 
     BsArrowRight, BsArrowLeft, BsEnvelopeFill, BsCreditCard2Front, BsBroadcast,
-    BsCalendar3, BsCalendarPlusFill,
+    BsCalendar3, BsCalendarPlusFill, BsCopy, BsCheck2,
 } from 'react-icons/bs';
 import { FaTshirt, FaUserCircle } from 'react-icons/fa';
 
@@ -245,7 +245,7 @@ const StaffSection: React.FC<StaffProps> = ({ sectionName }) => {
                             >
                                 <div className="bsp-staff-img">
                                     {m.image ? (
-                                        <img src={m.image} alt={m.totem} />
+                                        <img loading="lazy" decoding="async" src={m.image} alt={m.totem} />
                                     ) : (
                                         <div className="bsp-staff-placeholder">
                                             <FaUserCircle size={86} />
@@ -294,6 +294,36 @@ const GallerySection: React.FC<{ images: string[]; captions: string[] }> = ({ im
 /* ════════════════════════════════════════════════════════
    INFO SECTION — uniforme, contacts, compte, radio camp
 ════════════════════════════════════════════════════════ */
+
+/* ════════════════════════════════════════════════════════
+   COPY BUTTON — copie une valeur dans le presse-papiers
+════════════════════════════════════════════════════════ */
+
+const CopyButton: React.FC<{ value: string; label: string }> = ({ value, label }) => {
+    const [copied, setCopied] = useState(false);
+
+    const copy = async () => {
+        try {
+            await navigator.clipboard.writeText(value);
+            setCopied(true);
+            setTimeout(() => setCopied(false), 2000);
+        } catch {
+            window.prompt('Copie cette valeur :', value);
+        }
+    };
+
+    return (
+        <button
+            type="button"
+            className={`bsp-copy-btn${copied ? ' bsp-copy-btn-done' : ''}`}
+            onClick={copy}
+            aria-label={`Copier ${label}`}
+        >
+            {copied ? <BsCheck2 size={14} /> : <BsCopy size={13} />}
+            <span aria-live="polite">{copied ? 'Copié' : 'Copier'}</span>
+        </button>
+    );
+};
 
 /* ════════════════════════════════════════════════════════
    AGENDA CARD — prochaines activités + abonnement
@@ -418,12 +448,12 @@ const InfoSection: React.FC<{ data: SectionData }> = ({ data }) => (
 
                         <div className="bsp-info-imgs">
                             <div className="bsp-info-img-wrap">
-                                <img src="/UniformePourTous.webp" alt="Uniforme commun" />
+                                <img loading="lazy" decoding="async" src="/UniformePourTous.webp" alt="Uniforme commun" />
                                 <span className="bsp-info-img-caption">Pour tous</span>
                             </div>
                             {data.uniformImage && (
                                 <div className="bsp-info-img-wrap">
-                                    <img src={data.uniformImage} alt="Uniforme de section" />
+                                    <img loading="lazy" decoding="async" src={data.uniformImage} alt="Uniforme de section" />
                                     <span className="bsp-info-img-caption">{data.name}</span>
                                 </div>
                             )}
@@ -462,9 +492,12 @@ const InfoSection: React.FC<{ data: SectionData }> = ({ data }) => (
                             Besoin d'informations ? Contactez le staff de la section via l'email ci-dessous.
                         </p>
                         {data.email ? (
-                            <a href={`mailto:${data.email}`} className="bsp-info-pill">
-                                {data.email}
-                            </a>
+                            <div className="bsp-copy-row">
+                                <a href={`mailto:${data.email}`} className="bsp-info-pill">
+                                    {data.email}
+                                </a>
+                                <CopyButton value={data.email} label="l'adresse email" />
+                            </div>
                         ) : (
                             <span className="bsp-info-muted">
                                 Email non disponible pour le moment.
@@ -487,7 +520,11 @@ const InfoSection: React.FC<{ data: SectionData }> = ({ data }) => (
                                 Tous les virements liés aux activités de la section (week-end, camp…) sont à faire sur ce compte.
                             </p>
                             {data.bankAccount ? (
-                                <div className="bsp-info-account">{data.bankAccount}</div>
+                                <div className="bsp-copy-row">
+                                    <div className="bsp-info-account">{data.bankAccount}</div>
+                                    {/* Sans espaces : se colle tel quel dans les applis bancaires */}
+                                    <CopyButton value={data.bankAccount.replace(/\s+/g, '')} label="le numéro de compte" />
+                                </div>
                             ) : (
                                 <span className="bsp-info-muted">
                                     Compte bancaire non disponible pour le moment.
@@ -514,15 +551,10 @@ const InfoSection: React.FC<{ data: SectionData }> = ({ data }) => (
                                 Un outil pour suivre les aventures de vos enfants durant le camp.
                                 Cliquez sur le bouton ci-dessous et saisissez le mot de passe fourni par le staff.
                             </p>
-                            <a
-                                href={`/radio-camps/${data.slug}`}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="bsp-info-btn"
-                            >
+                            <Link to={`/radio-camps/${data.slug}`} className="bsp-info-btn">
                                 Accéder au Radio camp
                                 <BsArrowRight size={13} />
-                            </a>
+                            </Link>
                         </div>
                     </motion.div>
                 )}

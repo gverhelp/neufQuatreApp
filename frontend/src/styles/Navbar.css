@@ -124,8 +124,10 @@
     color: #FFBE0A;
 }
 
+/* Mobile : le nom seul à côté du logo (le sur-titre ne tient pas) */
 @media (max-width: 480px) {
-    .nb-brand-text { display: none; }
+    .nb-brand-sub   { display: none; }
+    .nb-brand-title { font-size: 1.1rem; }
 }
 
 
