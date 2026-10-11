@@ -436,79 +436,6 @@
     outline: none;
 }
 
-/* Tooltip card */
-.rcp-pin-card {
-    position: absolute;
-    bottom: calc(100% + 14px);
-    left: 50%;
-    transform: translateX(-50%) translateY(6px);
-    opacity: 0;
-    pointer-events: none;
-    min-width: 170px;
-    padding: 0.8rem 1rem 0.85rem;
-    background: #ffffff;
-    border: 1px solid rgba(2, 40, 100, 0.1);
-    border-radius: 14px;
-    box-shadow: 0 14px 36px rgba(0, 0, 0, 0.3);
-    transition: opacity 0.22s ease, transform 0.22s ease;
-    display: flex;
-    flex-direction: column;
-    gap: 0.1rem;
-    text-align: left;
-    /* border-top: 3px solid var(--pc); */
-    z-index: 20;
-}
-
-.rcp-pin-card::after {
-    content: '';
-    position: absolute;
-    top: 100%;
-    left: 50%;
-    transform: translateX(-50%);
-    border: 8px solid transparent;
-    border-top-color: #ffffff;
-}
-
-.rcp-pin:hover .rcp-pin-card,
-.rcp-pin:focus-visible .rcp-pin-card {
-    opacity: 1;
-    transform: translateX(-50%) translateY(0);
-    pointer-events: auto;
-}
-
-.rcp-pin-card-band {
-    font-family: 'Roboto', sans-serif;
-    font-size: 0.6rem;
-    font-weight: 700;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--pc);
-}
-
-.rcp-pin-card-name {
-    font-family: 'Titan One', sans-serif;
-    font-size: 1.1rem;
-    color: #022864;
-    line-height: 1.15;
-    letter-spacing: -0.01em;
-}
-
-.rcp-pin-card-cta {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    margin-top: 0.55rem;
-    padding-top: 0.5rem;
-    border-top: 1px solid #eef2f9;
-    font-family: 'Roboto', sans-serif;
-    font-size: 0.7rem;
-    font-weight: 700;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--pc);
-}
-
-
 /* ── Mobile destinations grid ── */
 .rcp-mobile-dests {
     margin-top: 2.5rem;
@@ -1843,6 +1770,30 @@ button.rcbs-gate-back {
     background: var(--pc);
     color: #ffffff;
 }
+
+/* Partie révélée au survol : « · Meute → » */
+.rcp-pin-label-extra {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    max-width: 0;
+    opacity: 0;
+    overflow: hidden;
+    font-family: 'Roboto', sans-serif;
+    font-size: 0.66rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    transition: max-width 0.28s ease, opacity 0.2s ease;
+}
+.rcp-pin:hover .rcp-pin-label-extra,
+.rcp-pin:focus-visible .rcp-pin-label-extra {
+    max-width: 12rem;
+    opacity: 1;
+}
+/* Sur fond coloré, le badge « En direct » reste lisible */
+.rcp-pin:hover .rcp-live-badge,
+.rcp-pin:focus-visible .rcp-live-badge { background: #ffffff; }
 
 .rcp-live-badge {
     display: inline-flex;
