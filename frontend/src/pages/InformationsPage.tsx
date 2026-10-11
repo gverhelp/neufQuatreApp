@@ -127,7 +127,7 @@ const InfoCard: React.FC<{ info: InformationData; index: number }> = ({ info, in
             {/* ── Media ── */}
             {info.image && (
                 <div className="ip-info-media">
-                    <img src={info.image} alt={info.title} className="ip-info-img" />
+                    <img loading="lazy" decoding="async" src={info.image} alt={info.title} className="ip-info-img" />
                 </div>
             )}
             {info.video && (
