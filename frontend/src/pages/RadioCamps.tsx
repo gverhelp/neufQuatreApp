@@ -282,20 +282,15 @@ const MapBlock: React.FC<{ liveSlugs: Set<string> }> = ({ liveSlugs }) => {
                                 <BsGeoAltFill size={14} />
                             </span>
 
-                            {/* Nom toujours visible : on sait sur quelle épingle cliquer */}
+                            {/* Nom toujours visible ; au survol, l'étiquette s'étend (nom d'unité + flèche) */}
                             <span className="rcp-pin-label">
                                 {d.label}
-                                {liveSlugs.has(d.slug) && <LiveBadge />}
-                            </span>
-
-                            <div className="rcp-pin-card">
-                                <span className="rcp-pin-card-band">{d.band}</span>
-                                <span className="rcp-pin-card-name">{d.label}</span>
-                                <span className="rcp-pin-card-cta">
-                                    Accéder
+                                <span className="rcp-pin-label-extra" aria-hidden>
+                                    · {d.band}
                                     <BsArrowRight size={12} />
                                 </span>
-                            </div>
+                                {liveSlugs.has(d.slug) && <LiveBadge />}
+                            </span>
                         </motion.button>
                     </div>
                 ))}

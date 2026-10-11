@@ -669,9 +669,6 @@
 
 @media (max-width: 991px) { .bsp-staff-grid { grid-template-columns: repeat(2, 1fr); } }
 
-/* Une carte dépliée ne doit pas étirer les autres de sa rangée */
-.bsp-staff-grid { align-items: start; }
-
 .bsp-staff-sheet.offcanvas-bottom {
     height: auto;
     max-height: 85vh;
@@ -829,32 +826,21 @@
     color: #4b5563;
     line-height: 1.65;
     margin: 0;
+    flex: 1;
+    max-height: 8rem;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding-right: 4px;
+    scrollbar-width: thin;
+    scrollbar-color: var(--bs-accent, #022864) transparent;
     white-space: pre-line;
 }
 
-/* 4 lignes par défaut ; « Lire la suite » déplie la carte (plus de défilement interne) */
-.bsp-staff-bio-clamped {
-    display: -webkit-box;
-    -webkit-line-clamp: 4;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-}
-
-.bsp-staff-more {
-    align-self: flex-start;
-    margin-top: 0.55rem;
-    padding: 0;
-    border: none;
-    background: none;
-    font-family: 'Roboto', sans-serif;
-    font-size: 0.8rem;
-    font-weight: 700;
-    color: var(--bs-accent, #022864);
-    cursor: pointer;
-}
-.bsp-staff-more:hover {
-    text-decoration: underline;
-    text-underline-offset: 3px;
+.bsp-staff-bio::-webkit-scrollbar { width: 4px; }
+.bsp-staff-bio::-webkit-scrollbar-track { background: transparent; }
+.bsp-staff-bio::-webkit-scrollbar-thumb {
+    background: var(--bs-accent, #022864);
+    border-radius: 4px;
 }
 
 .bsp-staff-ghost {
@@ -1392,38 +1378,48 @@
     text-underline-offset: 3px;
 }
 
-/* ── Bouton « Copier » (email, numéro de compte) ── */
-.bsp-copy-row {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 0.5rem;
-}
-.bsp-copy-btn {
+/* ── Email / numéro de compte avec icône de copie intégrée ── */
+.bsp-copy-field {
     display: inline-flex;
     align-items: center;
-    gap: 0.35rem;
-    font-family: 'Roboto', sans-serif;
-    font-size: 0.8rem;
-    font-weight: 700;
-    color: #022864;
-    background: #ffffff;
-    border: 1.5px solid #c2d0e8;
-    border-radius: 10px;
-    padding: 0.55rem 0.8rem;
+    gap: 0.6rem;
+    max-width: 100%;
+}
+button.bsp-copy-field {
     cursor: pointer;
-    transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+    text-align: left;
+    transition: background 0.22s ease, border-color 0.22s ease;
 }
-.bsp-copy-btn:hover {
-    border-color: #022864;
-    background: #eef2f9;
+button.bsp-copy-field:hover {
+    border-color: var(--bs-accent, #022864);
 }
-.bsp-copy-btn-done,
-.bsp-copy-btn-done:hover {
-    color: #186E54;
+.bsp-copy-text {
+    color: inherit;
+    text-decoration: none;
+    min-width: 0;
+}
+.bsp-copy-text:hover { color: inherit; text-decoration: underline; text-underline-offset: 3px; }
+.bsp-copy-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    padding: 0 0 0 0.6rem;
+    border: none;
+    border-left: 1px solid color-mix(in srgb, currentColor 25%, transparent);
+    background: none;
+    color: inherit;
+    cursor: pointer;
+}
+.bsp-copy-icon svg { opacity: 0.65; transition: opacity 0.2s ease; }
+.bsp-copy-field:hover .bsp-copy-icon svg,
+.bsp-copy-done .bsp-copy-icon svg { opacity: 1; }
+.bsp-copy-done,
+.bsp-copy-done:hover {
     border-color: #186E54;
-    background: #e8f4ef;
 }
+.bsp-copy-done .bsp-copy-icon { color: #186E54; }
+.bsp-info-pill.bsp-copy-done:hover .bsp-copy-icon { color: #ffffff; }
 
 /* Placé en fin de fichier : doit l'emporter sur les règles de base des cartes du staff */
 /* ── Mobile : grille compacte 2 colonnes, bio dans un panneau ── */
@@ -1437,6 +1433,5 @@
     .bsp-staff-body { padding: 0.6rem 0.7rem 0.75rem; }
     .bsp-staff-totem { font-size: 0.95rem; }
     .bsp-staff-name { font-size: 0.6rem; padding-bottom: 0; border-bottom: none; margin-bottom: 0; }
-    .bsp-staff-bio,
-    .bsp-staff-more { display: none; }
+    .bsp-staff-bio { display: none; }
 }

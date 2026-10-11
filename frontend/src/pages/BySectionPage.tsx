@@ -1,4 +1,4 @@
-import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { Container, Alert, Offcanvas } from 'react-bootstrap';
@@ -177,23 +177,6 @@ interface StaffCardProps {
 }
 
 const StaffCard: React.FC<StaffCardProps> = ({ chef, onOpenMobile }) => {
-    const bioRef = useRef<HTMLParagraphElement>(null);
-    const [expanded,  setExpanded]  = useState(false);
-    const [clampable, setClampable] = useState(false);
-
-    /* « Lire la suite » seulement si la bio dépasse réellement 4 lignes */
-    useLayoutEffect(() => {
-        const el = bioRef.current;
-        if (!el) return;
-        const measure = () => {
-            if (!el.classList.contains('bsp-staff-bio-clamped')) return;
-            setClampable(el.scrollHeight > el.clientHeight + 1);
-        };
-        measure();
-        window.addEventListener('resize', measure);
-        return () => window.removeEventListener('resize', measure);
-    }, [chef.bafouille]);
-
     const openIfMobile = () => {
         if (window.matchMedia(MOBILE_QUERY).matches) onOpenMobile(chef);
     };
@@ -219,26 +202,8 @@ const StaffCard: React.FC<StaffCardProps> = ({ chef, onOpenMobile }) => {
             <div className="bsp-staff-body">
                 <div className="bsp-staff-totem">{chef.totem}</div>
                 <div className="bsp-staff-name">{chef.name}</div>
-                {chef.bafouille && (
-                    <>
-                        <p
-                            ref={bioRef}
-                            className={`bsp-staff-bio${expanded ? '' : ' bsp-staff-bio-clamped'}`}
-                        >
-                            {chef.bafouille}
-                        </p>
-                        {(clampable || expanded) && (
-                            <button
-                                type="button"
-                                className="bsp-staff-more"
-                                onClick={e => { e.stopPropagation(); setExpanded(v => !v); }}
-                                aria-expanded={expanded}
-                            >
-                                {expanded ? 'Réduire ↑' : 'Lire la suite ↓'}
-                            </button>
-                        )}
-                    </>
-                )}
+                {/* Grand écran : la bio défile dans la carte ; mobile : elle s'ouvre dans le panneau */}
+                {chef.bafouille && <p className="bsp-staff-bio">{chef.bafouille}</p>}
             </div>
         </motion.div>
     );
@@ -384,9 +349,8 @@ const GallerySection: React.FC<{ images: string[]; captions: string[] }> = ({ im
    COPY BUTTON — copie une valeur dans le presse-papiers
 ════════════════════════════════════════════════════════ */
 
-const CopyButton: React.FC<{ value: string; label: string }> = ({ value, label }) => {
+function useCopy(value: string) {
     const [copied, setCopied] = useState(false);
-
     const copy = async () => {
         try {
             await navigator.clipboard.writeText(value);
@@ -396,16 +360,42 @@ const CopyButton: React.FC<{ value: string; label: string }> = ({ value, label }
             window.prompt('Copie cette valeur :', value);
         }
     };
+    return { copied, copy };
+}
 
+const CopyIcon: React.FC<{ copied: boolean }> = ({ copied }) => (
+    <>
+        {copied ? <BsCheck2 size={15} /> : <BsCopy size={13} />}
+        <span className="visually-hidden" aria-live="polite">{copied ? 'Copié' : ''}</span>
+    </>
+);
+
+/* Email : le texte ouvre la messagerie, l'icône copie (un bouton ne peut pas être dans un <a>) */
+const EmailField: React.FC<{ email: string }> = ({ email }) => {
+    const { copied, copy } = useCopy(email);
+    return (
+        <div className={`bsp-info-pill bsp-copy-field${copied ? ' bsp-copy-done' : ''}`}>
+            <a href={`mailto:${email}`} className="bsp-copy-text">{email}</a>
+            <button type="button" className="bsp-copy-icon" onClick={copy} aria-label="Copier l'adresse email" title="Copier">
+                <CopyIcon copied={copied} />
+            </button>
+        </div>
+    );
+};
+
+/* Compte : tout le cadre copie (sans espaces, pour les applis bancaires) */
+const AccountField: React.FC<{ account: string }> = ({ account }) => {
+    const { copied, copy } = useCopy(account.replace(/\s+/g, ''));
     return (
         <button
             type="button"
-            className={`bsp-copy-btn${copied ? ' bsp-copy-btn-done' : ''}`}
+            className={`bsp-info-account bsp-copy-field${copied ? ' bsp-copy-done' : ''}`}
             onClick={copy}
-            aria-label={`Copier ${label}`}
+            aria-label="Copier le numéro de compte"
+            title="Copier"
         >
-            {copied ? <BsCheck2 size={14} /> : <BsCopy size={13} />}
-            <span aria-live="polite">{copied ? 'Copié' : 'Copier'}</span>
+            <span>{account}</span>
+            <span className="bsp-copy-icon" aria-hidden><CopyIcon copied={copied} /></span>
         </button>
     );
 };
@@ -577,12 +567,7 @@ const InfoSection: React.FC<{ data: SectionData }> = ({ data }) => (
                             Besoin d'informations ? Contactez le staff de la section via l'email ci-dessous.
                         </p>
                         {data.email ? (
-                            <div className="bsp-copy-row">
-                                <a href={`mailto:${data.email}`} className="bsp-info-pill">
-                                    {data.email}
-                                </a>
-                                <CopyButton value={data.email} label="l'adresse email" />
-                            </div>
+                            <EmailField email={data.email} />
                         ) : (
                             <span className="bsp-info-muted">
                                 Email non disponible pour le moment.
@@ -605,11 +590,7 @@ const InfoSection: React.FC<{ data: SectionData }> = ({ data }) => (
                                 Tous les virements liés aux activités de la section (week-end, camp…) sont à faire sur ce compte.
                             </p>
                             {data.bankAccount ? (
-                                <div className="bsp-copy-row">
-                                    <div className="bsp-info-account">{data.bankAccount}</div>
-                                    {/* Sans espaces : se colle tel quel dans les applis bancaires */}
-                                    <CopyButton value={data.bankAccount.replace(/\s+/g, '')} label="le numéro de compte" />
-                                </div>
+                                <AccountField account={data.bankAccount} />
                             ) : (
                                 <span className="bsp-info-muted">
                                     Compte bancaire non disponible pour le moment.
