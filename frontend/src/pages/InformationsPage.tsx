@@ -10,6 +10,7 @@ import {
 
 import '../styles/InformationsPage.css';
 import { DocumentData, InformationData } from '../types/interfaces';
+import InscriptionBanner from '../components/InscriptionBanner';
 
 /* ════════════════════════════════════════════════════════
    ANIMATION HELPERS
@@ -268,6 +269,8 @@ const InformationsPage: React.FC = () => {
                 <>
                     <section className="ip-infos-section">
                         <Container>
+                            <InscriptionBanner />
+
                             <div className="ip-sec-header">
                                 <motion.h2 className="ip-sec-heading" {...fadeUp(0.08)}>Informations</motion.h2>
                                 <motion.div className="ip-sec-rule" {...fadeUp(0.14)} />
