@@ -157,6 +157,10 @@ else:
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 MEDIA_ROOT = os.path.join(BASE_DIR, "mediafiles")
 
+# Photos / vidéos des Radio Camps : en prod, nginx envoie le fichier après accord de Django
+# (X-Accel-Redirect vers la location interne /protected-media/ de nginx.ssl.conf)
+PROTECTED_MEDIA_X_ACCEL = os.getenv('DJANGO_ENV') == 'production'
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field

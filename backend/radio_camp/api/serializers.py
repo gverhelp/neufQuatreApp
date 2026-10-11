@@ -1,18 +1,32 @@
+from django.urls import reverse
 from rest_framework import serializers
 from ..models import RadioCamp, Post, Photo, Video
 from sections.models import Section
 
 
+def _protected_url(serializer, route, pk):
+    url = reverse(route, args=[pk])
+    request = serializer.context.get('request')
+    return request.build_absolute_uri(url) if request else url
+
+
 class VideoSerializer(serializers.ModelSerializer):
-    post = Post()
+    # URL vers la vue protégée (vérifie le mot de passe du camp), jamais vers /media/
+    video = serializers.SerializerMethodField()
+
+    def get_video(self, obj):
+        return _protected_url(self, 'radio-camp-video-file', obj.pk)
 
     class Meta:
         model = Video
         fields = ['id', 'post', 'video', 'caption']
 
 class PhotoSerializer(serializers.ModelSerializer):
-    post = Post()
-    
+    image = serializers.SerializerMethodField()
+
+    def get_image(self, obj):
+        return _protected_url(self, 'radio-camp-photo-file', obj.pk)
+
     class Meta:
         model = Photo
         fields = ['id', 'post', 'image', 'caption']

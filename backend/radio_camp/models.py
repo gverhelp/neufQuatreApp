@@ -1,6 +1,23 @@
+import os
+import uuid
+
 from django.db import models
 from sections.models import Section
 from django.contrib.auth.hashers import make_password, identify_hasher
+
+
+# Noms aléatoires : impossible de deviner l'URL d'une photo ou d'une vidéo de camp
+def _random_filename(folder, filename):
+    ext = os.path.splitext(filename)[1].lower()
+    return f'{folder}/{uuid.uuid4().hex}{ext}'
+
+
+def photo_upload_to(instance, filename):
+    return _random_filename('radio_camp_photos', filename)
+
+
+def video_upload_to(instance, filename):
+    return _random_filename('radio_camp_videos', filename)
 
 
 # Create your models here.
@@ -38,7 +55,7 @@ class Post(models.Model):
 
 class Photo(models.Model):
     post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='photos')
-    image = models.ImageField(upload_to='radio_camp_photos/')
+    image = models.ImageField(upload_to=photo_upload_to)
     caption = models.CharField(max_length=255, blank=True, null=True)
 
     def __str__(self):
@@ -47,7 +64,7 @@ class Photo(models.Model):
 
 class Video(models.Model):
     post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='videos')
-    video = models.FileField(upload_to='radio_camp_videos/')
+    video = models.FileField(upload_to=video_upload_to)
     caption = models.CharField(max_length=255, blank=True, null=True)
 
     def __str__(self):
