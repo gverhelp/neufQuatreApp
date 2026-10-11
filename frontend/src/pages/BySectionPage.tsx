@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
-import { Container, Alert } from 'react-bootstrap';
+import { Container, Alert, Offcanvas } from 'react-bootstrap';
 import { motion } from 'framer-motion';
 import { 
     BsArrowRight, BsArrowLeft, BsEnvelopeFill, BsCreditCard2Front, BsBroadcast,
@@ -168,10 +168,87 @@ const SectionHero: React.FC<HeroProps> = ({ meta, description, image, loading })
    STAFF SECTION
 ════════════════════════════════════════════════════════ */
 
-interface StaffProps { sectionName: string; }
+/* Sur mobile, la carte est compacte (photo + nom) et la bio s'ouvre dans un panneau */
+const MOBILE_QUERY = '(max-width: 600px)';
 
-const StaffSection: React.FC<StaffProps> = ({ sectionName }) => {
+interface StaffCardProps {
+    chef: ChefData;
+    onOpenMobile: (chef: ChefData) => void;
+}
+
+const StaffCard: React.FC<StaffCardProps> = ({ chef, onOpenMobile }) => {
+    const bioRef = useRef<HTMLParagraphElement>(null);
+    const [expanded,  setExpanded]  = useState(false);
+    const [clampable, setClampable] = useState(false);
+
+    /* « Lire la suite » seulement si la bio dépasse réellement 4 lignes */
+    useLayoutEffect(() => {
+        const el = bioRef.current;
+        if (!el) return;
+        const measure = () => {
+            if (!el.classList.contains('bsp-staff-bio-clamped')) return;
+            setClampable(el.scrollHeight > el.clientHeight + 1);
+        };
+        measure();
+        window.addEventListener('resize', measure);
+        return () => window.removeEventListener('resize', measure);
+    }, [chef.bafouille]);
+
+    const openIfMobile = () => {
+        if (window.matchMedia(MOBILE_QUERY).matches) onOpenMobile(chef);
+    };
+
+    return (
+        <motion.div
+            className="bsp-staff-card"
+            variants={staggerItem}
+            onClick={openIfMobile}
+        >
+            <div className="bsp-staff-img">
+                {chef.image ? (
+                    <img loading="lazy" decoding="async" src={chef.image} alt={chef.totem} />
+                ) : (
+                    <div className="bsp-staff-placeholder">
+                        <FaUserCircle size={86} />
+                    </div>
+                )}
+                {chef.chefResp && (
+                    <span className="bsp-staff-resp-badge">Chef·fe responsable</span>
+                )}
+            </div>
+            <div className="bsp-staff-body">
+                <div className="bsp-staff-totem">{chef.totem}</div>
+                <div className="bsp-staff-name">{chef.name}</div>
+                {chef.bafouille && (
+                    <>
+                        <p
+                            ref={bioRef}
+                            className={`bsp-staff-bio${expanded ? '' : ' bsp-staff-bio-clamped'}`}
+                        >
+                            {chef.bafouille}
+                        </p>
+                        {(clampable || expanded) && (
+                            <button
+                                type="button"
+                                className="bsp-staff-more"
+                                onClick={e => { e.stopPropagation(); setExpanded(v => !v); }}
+                                aria-expanded={expanded}
+                            >
+                                {expanded ? 'Réduire ↑' : 'Lire la suite ↓'}
+                            </button>
+                        )}
+                    </>
+                )}
+            </div>
+        </motion.div>
+    );
+};
+
+interface StaffProps { sectionName: string; accent: string; }
+
+const StaffSection: React.FC<StaffProps> = ({ sectionName, accent }) => {
     const baseURL = import.meta.env.VITE_API_URL;
+    const [sheetChef, setSheetChef] = useState<ChefData | null>(null);
     const [chefs,   setChefs]   = useState<ChefData[]>([]);
     const [loading, setLoading] = useState(true);
     const [error,   setError]   = useState<string | null>(null);
@@ -238,35 +315,43 @@ const StaffSection: React.FC<StaffProps> = ({ sectionName }) => {
                         viewport={{ once: true, amount: 0.05 }}
                     >
                         {chefs.map(m => (
-                            <motion.div
-                                key={m.id}
-                                className="bsp-staff-card"
-                                variants={staggerItem}
-                            >
-                                <div className="bsp-staff-img">
-                                    {m.image ? (
-                                        <img loading="lazy" decoding="async" src={m.image} alt={m.totem} />
-                                    ) : (
-                                        <div className="bsp-staff-placeholder">
-                                            <FaUserCircle size={86} />
-                                        </div>
-                                    )}
-                                    {m.chefResp && (
-                                        <span className="bsp-staff-resp-badge">Chef·fe responsable</span>
-                                    )}
-                                </div>
-                                <div className="bsp-staff-body">
-                                    <div className="bsp-staff-totem">{m.totem}</div>
-                                    <div className="bsp-staff-name">{m.name}</div>
-                                    {m.bafouille && (
-                                        <p className="bsp-staff-bio">{m.bafouille}</p>
-                                    )}
-                                </div>
-                            </motion.div>
+                            <StaffCard key={m.id} chef={m} onOpenMobile={setSheetChef} />
                         ))}
                     </motion.div>
                 ))}
             </Container>
+
+            {/* Mobile : fiche complète du chef, ouverte depuis le bas de l'écran */}
+            <Offcanvas
+                show={!!sheetChef}
+                onHide={() => setSheetChef(null)}
+                placement="bottom"
+                className="bsp-staff-sheet"
+                style={{ '--bs-accent': accent } as React.CSSProperties}
+            >
+                {sheetChef && (
+                    <>
+                        <div className="bsp-staff-sheet-handle" aria-hidden />
+                        <Offcanvas.Header closeButton>
+                            {sheetChef.image && (
+                                <img src={sheetChef.image} alt="" className="bsp-staff-sheet-photo" />
+                            )}
+                            <div>
+                                <Offcanvas.Title className="bsp-staff-totem">{sheetChef.totem}</Offcanvas.Title>
+                                <div className="bsp-staff-sheet-name">{sheetChef.name}</div>
+                            </div>
+                        </Offcanvas.Header>
+                        <Offcanvas.Body>
+                            {sheetChef.chefResp && (
+                                <span className="bsp-staff-sheet-resp">Chef·fe responsable</span>
+                            )}
+                            <p className="bsp-staff-sheet-bio">
+                                {sheetChef.bafouille || 'Pas encore de bafouille…'}
+                            </p>
+                        </Offcanvas.Body>
+                    </>
+                )}
+            </Offcanvas>
         </section>
     );
 };
@@ -612,7 +697,7 @@ const BySectionPage: React.FC<{ sectionName: string }> = ({ sectionName }) => {
                 loading={loading}
             />
 
-            <StaffSection sectionName={sectionName} />
+            <StaffSection sectionName={sectionName} accent={meta.color} />
 
             {sectionData && (
                 <GallerySection

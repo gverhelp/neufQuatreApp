@@ -204,7 +204,15 @@ const HowItWorks: React.FC = () => (
    MAP — desktop
 ════════════════════════════════════════════════════════ */
 
-const MapBlock: React.FC = () => {
+/* Badge affiché pendant qu'un camp de la section est en cours */
+const LiveBadge: React.FC = () => (
+    <span className="rcp-live-badge">
+        <span className="rcp-live-dot" aria-hidden />
+        En direct
+    </span>
+);
+
+const MapBlock: React.FC<{ liveSlugs: Set<string> }> = ({ liveSlugs }) => {
     const navigate = useNavigate();
 
     return (
@@ -274,6 +282,12 @@ const MapBlock: React.FC = () => {
                                 <BsGeoAltFill size={14} />
                             </span>
 
+                            {/* Nom toujours visible : on sait sur quelle épingle cliquer */}
+                            <span className="rcp-pin-label">
+                                {d.label}
+                                {liveSlugs.has(d.slug) && <LiveBadge />}
+                            </span>
+
                             <div className="rcp-pin-card">
                                 <span className="rcp-pin-card-band">{d.band}</span>
                                 <span className="rcp-pin-card-name">{d.label}</span>
@@ -309,6 +323,7 @@ const MapBlock: React.FC = () => {
                             <div className="rcp-dest-head">
                                 <BsGeoAltFill size={14} className="rcp-dest-pin-icon" />
                                 <span className="rcp-dest-name">{d.label}</span>
+                                {liveSlugs.has(d.slug) && <LiveBadge />}
                             </div>
                             <div className="rcp-dest-band">{d.band}</div>
                             <span className="rcp-dest-cta">
@@ -340,7 +355,7 @@ const RadioCamps: React.FC = () => {
         <div className="p-0">
             <PageHero camps={camps} />
             <HowItWorks />
-            <MapBlock />
+            <MapBlock liveSlugs={new Set(camps.filter(c => campStatus(c) === 'live').map(c => c.section))} />
         </div>
     );
 };
