@@ -6,7 +6,8 @@ from radio_camp.api.urls import radio_camp_router
 from infos.api.urls import infos_router
 from django.urls import path, include
 from radio_camp.api.views import (
-    VerifyRadioCampPassword, RadioCampsBySection, radio_camp_photo_file, radio_camp_video_file,
+    VerifyRadioCampPassword, RadioCampsBySection, RadioCampsSummary,
+    radio_camp_photo_file, radio_camp_video_file,
 )
 from agenda.api.views import events_ics, event_ics
 
@@ -23,6 +24,7 @@ urlpatterns = [
     path('events/<int:pk>/calendar.ics', event_ics, name='event-ics'),
     path('radio-camps/photos/<int:pk>/file/', radio_camp_photo_file, name='radio-camp-photo-file'),
     path('radio-camps/videos/<int:pk>/file/', radio_camp_video_file, name='radio-camp-video-file'),
+    path('radio-camps/summary/', RadioCampsSummary.as_view(), name='radio-camps-summary'),
     path('radio-camps/by-section/<str:section_slug>/', RadioCampsBySection.as_view(), name='radio-camps-by-section'),
     path('radio-camps/<int:pk>/verify-password/', VerifyRadioCampPassword.as_view(), name='verify-radio-camp-password'),
     path('', include(router.urls)),

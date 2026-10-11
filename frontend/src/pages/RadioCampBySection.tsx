@@ -11,6 +11,7 @@ import {
 
 import { RadioCampData, RadioCampSummary } from '../types/interfaces';
 import '../styles/RadioCamps.css';
+import { campStatus, CAMP_STATUS_LABEL } from '../utils/radioCamp';
 
 /* ════════════════════════════════════════════════════════
    CONSTANTS
@@ -119,17 +120,23 @@ const CampPicker: React.FC<PickerProps> = ({ meta, camps, onSelect }) => (
             </motion.div>
 
             <div className="rcbs-picker-grid">
-                {camps.map((camp, i) => (
+                {camps.map((camp, i) => {
+                    const status = campStatus(camp);
+                    return (
                     <motion.button
                         key={camp.id}
                         type="button"
-                        className="rcbs-picker-card"
+                        className={`rcbs-picker-card rcbs-picker-card-${status}`}
                         onClick={() => onSelect(camp)}
                         initial={{ opacity: 0, y: 24 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.5, ease: 'easeOut', delay: 0.12 + i * 0.07 }}
                     >
                         <div className="rcbs-picker-card-bar" aria-hidden />
+                        <span className={`rcbs-picker-status rcbs-picker-status-${status}`}>
+                            {status === 'live' && <span className="rcbs-picker-live-dot" aria-hidden />}
+                            {CAMP_STATUS_LABEL[status]}
+                        </span>
                         {/* <div className="rcbs-picker-card-head">
                             <BsBroadcastPin size={14} className="rcbs-picker-card-icon" />
                             <span className="rcbs-picker-card-band">{meta.band}</span>
@@ -146,7 +153,8 @@ const CampPicker: React.FC<PickerProps> = ({ meta, camps, onSelect }) => (
                             <BsArrowRight size={12} />
                         </div>
                     </motion.button>
-                ))}
+                    );
+                })}
             </div>
         </Container>
     </section>
@@ -447,7 +455,7 @@ const PostCard: React.FC<PostCardProps> = ({ index, post, onImageClick }) => (
                                         className="ratio ratio-1x1 rcbs-photo"
                                         onClick={() => onImageClick(photo.image, photo.caption)}
                                     >
-                                        <Image
+                                        <Image loading="lazy" decoding="async"
                                             src={photo.image}
                                             alt={photo.caption || ''}
                                             style={{ objectFit: 'cover', width: '100%', height: '100%' }}

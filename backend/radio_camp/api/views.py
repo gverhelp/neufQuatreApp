@@ -67,6 +67,15 @@ class RadioCampsBySection(APIView):
         return Response(serializer.data)
 
 
+# Dates de tous les camps (aucun contenu) : statut « en direct / prochain camp » de la page Radio Camp
+class RadioCampsSummary(APIView):
+    permission_classes = [AllowAny]
+
+    def get(self, request):
+        camps = RadioCamp.objects.select_related('section').order_by('start_date')
+        return Response(RadioCampSummarySerializer(camps, many=True).data)
+
+
 # API View to verify the password for a specific RadioCamp
 class VerifyRadioCampPassword(APIView):
     permission_classes = [AllowAny]
