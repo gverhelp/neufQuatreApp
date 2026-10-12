@@ -404,6 +404,11 @@
     height: auto;
     display: block;
 }
+/* Largeur max : le schéma (et donc ses textes) ne grossit plus sur les grands écrans */
+.sp-journey-graph .sp-journey-svg {
+    max-width: 900px;
+    margin: 0 auto;
+}
 
 /* Bandeau chef·fe d'unité : neutre, au-dessus de tout le parcours */
 .sp-st-unit {
@@ -412,12 +417,12 @@
 }
 .sp-st-unit-title {
     font-family: 'Titan One', sans-serif;
-    font-size: 12px;
+    font-size: 10px;
     fill: #ffffff;
 }
 .sp-st-unit-sub {
     font-family: 'Roboto', sans-serif;
-    font-size: 10px;
+    font-size: 8.5px;
     font-weight: 500;
     fill: rgba(255, 255, 255, 0.65);
 }
@@ -427,7 +432,7 @@
 .sp-st-lane-mixte { fill: rgba(255, 255, 255, 0.07); }
 .sp-st-lane-label {
     font-family: 'Roboto', sans-serif;
-    font-size: 9.5px;
+    font-size: 7.5px;
     font-weight: 700;
     letter-spacing: 0.1em;
     fill: rgba(255, 255, 255, 0.6);
@@ -435,15 +440,15 @@
 
 .sp-st-line {
     fill: none;
-    stroke: rgba(255, 255, 255, 0.75);
-    stroke-width: 4;
+    stroke: rgba(255, 255, 255, 0.7);
+    stroke-width: 2.5;
     stroke-linecap: round;
 }
 
 /* Stations */
 .sp-st-dot {
     stroke: #ffffff;
-    stroke-width: 3;
+    stroke-width: 2;
     transform-box: fill-box;
     transform-origin: center;
     transition: transform 0.2s ease;
@@ -459,14 +464,7 @@
     text-transform: uppercase;
     fill: rgba(255, 255, 255, 0.55);
 }
-/* Liseré couleur du fond autour du texte : la ligne passe « derrière » le nom (comme sur un plan de métro) */
-.sp-st-name,
-.sp-st-sub {
-    paint-order: stroke;
-    stroke: #10336d;
-    stroke-width: 4px;
-    stroke-linejoin: round;
-}
+
 
 .sp-st-link { cursor: pointer; outline: none; }
 .sp-st-link:hover .sp-st-dot,
@@ -478,7 +476,7 @@
 .sp-st-axis { stroke: rgba(255, 255, 255, 0.22); }
 .sp-st-age {
     font-family: 'Roboto', sans-serif;
-    font-size: 9px;
+    font-size: 7.5px;
     font-weight: 700;
     fill: rgba(255, 255, 255, 0.55);
 }

@@ -174,20 +174,21 @@ const sectionColor = (slug: string) => SECTIONS.find(s => s.slug === slug)?.colo
 
 /* Desktop : viewBox 680 × 300 — couloirs horizontaux, échelle d'âge en bas */
 const DESKTOP_STATIONS: Station[] = [
-    { slug: 'baladins',   label: 'Baladins',   sub: 'Ribambelle',    x: 130, y: 153, path: '/sections/baladins'   },
-    { slug: 'lutins',     label: 'Lutins',     sub: 'Ronde',         x: 235, y: 87,  path: '/sections/lutins'     },
-    { slug: 'louveteaux', label: 'Louveteaux', sub: 'Meute',         x: 235, y: 219, path: '/sections/louveteaux' },
-    { slug: 'guides',     label: 'Guides',     sub: 'Compagnie',     x: 345, y: 87,  path: '/sections/guides'     },
-    { slug: 'eclaireurs', label: 'Éclaireurs', sub: 'Troupe',        x: 345, y: 219, path: '/sections/eclaireurs' },
-    { slug: 'pionniers',  label: 'Pionniers',  sub: 'Poste',         x: 450, y: 153, path: '/sections/pionniers'  },
-    { slug: 'animateurs', label: 'Animateurs', sub: 'Staff',         x: 540, y: 153                               },
-    { slug: 'clan',       label: 'Clan',       sub: 'Anciens chefs', x: 630, y: 153, path: '/sections/clan'       },
+    { slug: 'baladins',   label: 'Baladins',   sub: 'Ribambelle',    x: 130, y: 140, path: '/sections/baladins'   },
+    { slug: 'lutins',     label: 'Lutins',     sub: 'Ronde',         x: 235, y: 74,  path: '/sections/lutins'     },
+    { slug: 'louveteaux', label: 'Louveteaux', sub: 'Meute',         x: 235, y: 206, path: '/sections/louveteaux' },
+    { slug: 'guides',     label: 'Guides',     sub: 'Compagnie',     x: 345, y: 74,  path: '/sections/guides'     },
+    { slug: 'eclaireurs', label: 'Éclaireurs', sub: 'Troupe',        x: 345, y: 206, path: '/sections/eclaireurs' },
+    { slug: 'pionniers',  label: 'Pionniers',  sub: 'Poste',         x: 450, y: 140, path: '/sections/pionniers'  },
+    { slug: 'animateurs', label: 'Animateurs', sub: 'Staff',         x: 540, y: 140                               },
+    { slug: 'clan',       label: 'Clan',       sub: 'Anciens chefs', x: 630, y: 140, path: '/sections/clan'       },
 ];
+/* Les stations sont dans le haut de leur couloir : nom et sous-titre tiennent en dessous, dans la bande */
 const DESKTOP_LINES = [
-    'M130,153 C185,153 180,87 235,87', 'M130,153 C185,153 180,219 235,219',
-    'M235,87 L345,87', 'M235,219 L345,219',
-    'M345,87 C400,87 395,153 450,153', 'M345,219 C400,219 395,153 450,153',
-    'M450,153 L540,153', 'M540,153 L630,153',
+    'M130,140 C185,140 180,74 235,74', 'M130,140 C185,140 180,206 235,206',
+    'M235,74 L345,74', 'M235,206 L345,206',
+    'M345,74 C400,74 395,140 450,140', 'M345,206 C400,206 395,140 450,140',
+    'M450,140 L540,140', 'M540,140 L630,140',
 ];
 
 /* Mobile : sélecteur d'âge → sections correspondantes */
@@ -212,7 +213,7 @@ const AgeSelector: React.FC = () => {
                 <span className="sp-age-unit-sub">Parents, anciens chefs ou volontaires · coordonne toute l'unité</span>
             </div>
 
-            <div className="sp-age-question">Quelle section pour ton enfant ? Choisis son âge (en années) :</div>
+            <div className="sp-age-question">Quelle section pour votre enfant ? Choisissez son âge (en années) :</div>
 
             {/* 5 colonnes égales : toutes les pastilles ont la même taille */}
             <div className="sp-age-chips" role="group" aria-label="Âge de l'enfant">
@@ -281,11 +282,11 @@ const StationNode: React.FC<{ st: Station; nameSize: number; subSize: number }> 
     } : {};
     return (
         <g className={`sp-st${st.path ? ' sp-st-link' : ''}`} {...linkProps}>
-            <circle className="sp-st-dot" cx={st.x} cy={st.y} r={11} fill={sectionColor(st.slug)} />
-            <text x={st.x} y={st.y + 26} textAnchor="middle" className="sp-st-name" style={{ fontSize: nameSize }}>
+            <circle className="sp-st-dot" cx={st.x} cy={st.y} r={7} fill={sectionColor(st.slug)} />
+            <text x={st.x} y={st.y + 20} textAnchor="middle" className="sp-st-name" style={{ fontSize: nameSize }}>
                 {st.label}
             </text>
-            <text x={st.x} y={st.y + 26 + subSize + 4} textAnchor="middle" className="sp-st-sub" style={{ fontSize: subSize }}>
+            <text x={st.x} y={st.y + 20 + subSize + 3} textAnchor="middle" className="sp-st-sub" style={{ fontSize: subSize }}>
                 {st.sub}
             </text>
         </g>
@@ -318,12 +319,12 @@ const JourneyBlock: React.FC = () => (
                     <rect x="78" y="58"  width="596" height="58" rx="10" className="sp-st-lane" />
                     <rect x="78" y="124" width="596" height="58" rx="10" className="sp-st-lane sp-st-lane-mixte" />
                     <rect x="78" y="190" width="596" height="58" rx="10" className="sp-st-lane" />
-                    <text x="68" y="91"  textAnchor="end" className="sp-st-lane-label">FILLES</text>
-                    <text x="68" y="157" textAnchor="end" className="sp-st-lane-label">MIXTE</text>
-                    <text x="68" y="223" textAnchor="end" className="sp-st-lane-label">GARÇONS</text>
+                    <text x="68" y="90"  textAnchor="end" className="sp-st-lane-label">FILLES</text>
+                    <text x="68" y="156" textAnchor="end" className="sp-st-lane-label">MIXTE</text>
+                    <text x="68" y="222" textAnchor="end" className="sp-st-lane-label">GARÇONS</text>
 
                     {DESKTOP_LINES.map((d, i) => <path key={i} d={d} className="sp-st-line" />)}
-                    {DESKTOP_STATIONS.map(st => <StationNode key={st.slug} st={st} nameSize={11} subSize={7.5} />)}
+                    {DESKTOP_STATIONS.map(st => <StationNode key={st.slug} st={st} nameSize={9.5} subSize={6.4} />)}
 
                     <line x1="92" y1="266" x2="668" y2="266" className="sp-st-axis" />
                     {[['6 – 8 ANS', 130], ['8 – 12 ANS', 235], ['12 – 16 ANS', 345], ['16 – 18 ANS', 450], ['18 ANS +', 585]].map(([t, x]) => (
