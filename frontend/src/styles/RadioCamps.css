@@ -245,7 +245,8 @@
     box-shadow: 0 4px 18px rgba(2, 40, 100, 0.06);
 }
 
-.rcp-step:hover {
+.rcp-step:hover,
+.rcp-step-active {
     transform: translateY(-6px);
     border-color: #c2d0e8;
     box-shadow: 0 18px 40px rgba(2, 40, 100, 0.12);
@@ -263,7 +264,8 @@
     transition: color 0.28s ease;
 }
 
-.rcp-step:hover .rcp-step-num {
+.rcp-step:hover .rcp-step-num,
+.rcp-step-active .rcp-step-num {
     color: rgba(255, 190, 10, 0.32);
 }
 

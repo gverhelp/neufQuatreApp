@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { motion } from 'framer-motion';
+import { motion, useMotionValueEvent, useScroll } from 'framer-motion';
 import { Container } from 'react-bootstrap';
 import {
     BsArrowRight, BsGeoAltFill, BsCompass,
@@ -167,7 +167,26 @@ const steps = [
     },
 ];
 
-const HowItWorks: React.FC = () => (
+/* Les cartes s'allument une à une (même rendu qu'au survol) à mesure qu'on fait défiler la section */
+const HowItWorks: React.FC = () => {
+    const stepsRef = useRef<HTMLDivElement>(null);
+    const [activeCount, setActiveCount] = useState(0);
+    const { scrollYProgress } = useScroll({ target: stepsRef, offset: ['start 70%', 'end 40%'] });
+
+    useMotionValueEvent(scrollYProgress, 'change', p => {
+        const cards = Array.from(stepsRef.current?.children ?? []) as HTMLElement[];
+        const stacked = cards.length > 1 && cards[1].getBoundingClientRect().top - cards[0].getBoundingClientRect().top > 40;
+        if (stacked) {
+            // Mobile (cartes empilées) : chaque carte s'allume quand son haut passe aux 2/3 de l'écran
+            const limit = window.innerHeight * 0.66;
+            setActiveCount(cards.filter(c => c.getBoundingClientRect().top < limit).length);
+        } else {
+            // Desktop (cartes côte à côte) : elles s'allument une à une avec la progression du défilement
+            setActiveCount(p <= 0.02 ? 0 : Math.min(steps.length, Math.ceil(p * steps.length)));
+        }
+    });
+
+    return (
     <section className="rcp-steps-wrap">
         <Container>
             <div className="rcp-sec-header">
@@ -181,6 +200,7 @@ const HowItWorks: React.FC = () => (
             </div>
 
             <motion.div
+                ref={stepsRef}
                 className="rcp-steps"
                 variants={stagger}
                 initial="hidden"
@@ -188,7 +208,11 @@ const HowItWorks: React.FC = () => (
                 viewport={{ once: true, amount: 0.1 }}
             >
                 {steps.map((s, i) => (
-                    <motion.div key={i} className="rcp-step" variants={staggerItem}>
+                    <motion.div
+                        key={i}
+                        className={`rcp-step${i < activeCount ? ' rcp-step-active' : ''}`}
+                        variants={staggerItem}
+                    >
                         <div className="rcp-step-num">{String(i + 1).padStart(2, '0')}</div>
                         <div className="rcp-step-icon">{s.icon}</div>
                         <h3 className="rcp-step-title">{s.title}</h3>
@@ -198,7 +222,8 @@ const HowItWorks: React.FC = () => (
             </motion.div>
         </Container>
     </section>
-);
+    );
+};
 
 /* ════════════════════════════════════════════════════════
    MAP — desktop
