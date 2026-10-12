@@ -227,25 +227,16 @@ const HighlightsSection: React.FC<{ events: EventData[]; onOpenEvent: OpenEvent 
                         const isPast = new Date(ev.end_time) < now;
 
                         return (
-                            <motion.div
-                                key={ev.id}
+                            <motion.div key={ev.id} className="ap-hl-item" variants={staggerItem}>
+                            {/* Halo à la couleur de la section qui « respire » (événements à venir uniquement) */}
+                            <div
+                                className={`ap-hl-halo${isPast ? '' : ' ap-hl-halo-live'}`}
+                                style={{ '--hl-color': section.color, '--hl-delay': `${i * 0.8}s` } as React.CSSProperties}
+                            >
+                            <div
                                 className={`ap-hl-card ap-clickable${isPast ? ' ap-hl-card-past' : ''}`}
                                 {...clickableProps(() => onOpenEvent(ev))}
                                 style={{ '--hl-color': section.color, borderLeftColor: section.color, opacity: isPast ? 0.48 : 1 } as React.CSSProperties}
-                                variants={staggerItem}
-                                animate={!isPast ? {
-                                    boxShadow: [
-                                        '0 4px 18px rgba(2,40,100,0.07)',
-                                        '0 8px 28px rgba(2,40,100,0.14)',
-                                        '0 4px 18px rgba(2,40,100,0.07)',
-                                    ],
-                                } : {}}
-                                transition={!isPast ? {
-                                    duration: 3.2,
-                                    ease: 'easeInOut',
-                                    repeat: Infinity,
-                                    delay: i * 0.5,
-                                } : {}}
                             >
                                 {/* Date chip */}
                                 <div className="ap-hl-date-chip" style={{ background: section.color }}>
@@ -284,6 +275,8 @@ const HighlightsSection: React.FC<{ events: EventData[]; onOpenEvent: OpenEvent 
                                         <p className="ap-hl-desc">{ev.description}</p>
                                     )}
                                 </div>
+                            </div>
+                            </div>
                             </motion.div>
                         );
                     });

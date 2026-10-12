@@ -227,8 +227,46 @@
     overflow: hidden;
 }
 
-.ap-hl-card:hover {
-    transform: translateY(-4px);
+/* ── Halo des événements phares ──
+   L'ombre colorée est dessinée une seule fois sur un calque ; seule son opacité est animée
+   (aucun recalcul d'ombre à chaque image). Le halo est hors de la carte car elle a overflow: hidden. */
+.ap-hl-item { display: flex; }
+
+.ap-hl-halo {
+    position: relative;
+    flex: 1;
+    display: flex;
+    border-radius: 14px;
+    transition: transform 0.25s ease;
+}
+.ap-hl-halo > .ap-hl-card { flex: 1; }
+.ap-hl-halo:hover { transform: translateY(-4px); }
+
+.ap-hl-halo-live::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+    box-shadow:
+        0 0 0 1.5px color-mix(in srgb, var(--hl-color, #022864) 28%, transparent),
+        0 10px 30px color-mix(in srgb, var(--hl-color, #022864) 32%, transparent);
+    opacity: 0.15;
+    will-change: opacity, transform;
+    animation: ap-hl-breathe 4.8s ease-in-out infinite;
+    animation-delay: var(--hl-delay, 0s);
+}
+
+/* Le halo s'élargit d'environ 3 px de chaque côté au pic (la carte, elle, ne bouge pas).
+   Échelle différente en largeur et en hauteur : les cartes sont larges et basses. */
+@keyframes ap-hl-breathe {
+    0%, 100% { opacity: 0.15; transform: scale(1, 1); }
+    50%      { opacity: 1;    transform: scale(1.016, 1.06); }
+}
+
+/* Réglage « réduire les animations » de l'appareil : halo fixe, discret */
+@media (prefers-reduced-motion: reduce) {
+    .ap-hl-halo-live::before { animation: none; opacity: 0.6; }
 }
 
 .ap-hl-card-past {
