@@ -393,7 +393,7 @@
 }
 
 
-/* ── Desktop SVG graph ── */
+/* ── Plan de métro (desktop et mobile partagent les mêmes classes) ── */
 
 .sp-journey-graph {
     margin-top: 3rem;
@@ -405,87 +405,202 @@
     display: block;
 }
 
-.sp-journey-svg > path {
+/* Bandeau chef·fe d'unité : neutre, au-dessus de tout le parcours */
+.sp-st-unit {
+    fill: rgba(255, 255, 255, 0.07);
+    stroke: rgba(255, 255, 255, 0.28);
+}
+.sp-st-unit-title {
+    font-family: 'Titan One', sans-serif;
+    font-size: 12px;
+    fill: #ffffff;
+}
+.sp-st-unit-sub {
+    font-family: 'Roboto', sans-serif;
+    font-size: 10px;
+    font-weight: 500;
+    fill: rgba(255, 255, 255, 0.65);
+}
+
+/* Couloirs Filles / Mixte / Garçons */
+.sp-st-lane       { fill: rgba(255, 255, 255, 0.04); }
+.sp-st-lane-mixte { fill: rgba(255, 255, 255, 0.07); }
+.sp-st-lane-label {
+    font-family: 'Roboto', sans-serif;
+    font-size: 9.5px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    fill: rgba(255, 255, 255, 0.6);
+}
+
+.sp-st-line {
     fill: none;
-    stroke: rgba(255, 255, 255, 0.22);
-    stroke-width: 2.5;
+    stroke: rgba(255, 255, 255, 0.75);
+    stroke-width: 4;
     stroke-linecap: round;
 }
 
-.sp-jsvg-node {
-    cursor: default;
+/* Stations */
+.sp-st-dot {
+    stroke: #ffffff;
+    stroke-width: 3;
+    transform-box: fill-box;
+    transform-origin: center;
+    transition: transform 0.2s ease;
 }
-
-.sp-jsvg-node:hover circle:last-of-type {
-    filter: brightness(1.2);
-}
-
-.sp-jsvg-name {
+.sp-st-name {
     font-family: 'Titan One', sans-serif;
-    font-size: 16px;
     fill: #ffffff;
 }
-
-.sp-jsvg-age {
+.sp-st-sub {
     font-family: 'Roboto', sans-serif;
-    font-size: 11px;
     font-weight: 700;
     letter-spacing: 0.08em;
     text-transform: uppercase;
-    fill: rgba(255, 255, 255, 0.5);
+    fill: rgba(255, 255, 255, 0.55);
+}
+/* Liseré couleur du fond autour du texte : la ligne passe « derrière » le nom (comme sur un plan de métro) */
+.sp-st-name,
+.sp-st-sub {
+    paint-order: stroke;
+    stroke: #10336d;
+    stroke-width: 4px;
+    stroke-linejoin: round;
 }
 
+.sp-st-link { cursor: pointer; outline: none; }
+.sp-st-link:hover .sp-st-dot,
+.sp-st-link:focus-visible .sp-st-dot { transform: scale(1.3); }
+.sp-st-link:hover .sp-st-name,
+.sp-st-link:focus-visible .sp-st-name { fill: #FFBE0A; }
 
-/* ── Mobile vertical list (hidden on desktop) ── */
+/* Échelle d'âge */
+.sp-st-axis { stroke: rgba(255, 255, 255, 0.22); }
+.sp-st-age {
+    font-family: 'Roboto', sans-serif;
+    font-size: 9px;
+    font-weight: 700;
+    fill: rgba(255, 255, 255, 0.55);
+}
 
+/* ── Mobile : sélecteur d'âge (remplace le plan) ── */
 .sp-journey-mobile {
     display: none;
     margin-top: 2rem;
-    flex-direction: column;
-    gap: 0.2rem;
 }
 
-.sp-jm-step {
-    --sc: #022864;
+.sp-age-unit {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+    background: rgba(255, 255, 255, 0.07);
+    border: 1px solid rgba(255, 255, 255, 0.28);
+    border-radius: 12px;
+    padding: 0.65rem 0.9rem;
+    margin-bottom: 1.4rem;
+}
+.sp-age-unit-title {
+    font-family: 'Titan One', sans-serif;
+    font-size: 0.95rem;
+    color: #ffffff;
+}
+.sp-age-unit-sub {
+    font-family: 'Roboto', sans-serif;
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.65);
+}
+
+.sp-age-question {
+    font-family: 'Roboto', sans-serif;
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.75);
+    margin-bottom: 0.7rem;
+}
+
+/* Grille de 5 colonnes égales : pastilles de taille identique */
+.sp-age-chips {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 0.4rem;
+    margin-bottom: 1rem;
+}
+.sp-age-chip {
+    height: 40px;
+    border-radius: 50px;
+    border: 1.5px solid rgba(255, 255, 255, 0.35);
+    background: transparent;
+    color: #ffffff;
+    font-family: 'Roboto', sans-serif;
+    font-size: 0.82rem;
+    font-weight: 700;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+.sp-age-chip-on {
+    background: #FFBE0A;
+    border-color: #FFBE0A;
+    color: #022864;
+}
+
+.sp-age-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.55rem;
+}
+.sp-age-card {
     display: flex;
     align-items: center;
-    gap: 1rem;
-    padding: 0.75rem 0;
+    gap: 0.7rem;
+    background: #ffffff;
+    border-left: 5px solid var(--sc, #022864);
+    border-radius: 12px;
+    padding: 0.75rem 0.9rem;
+    text-decoration: none;
+    /* Fin contour clair : le liseré des sections foncées (Guides, Unité) se détache du fond bleu */
+    box-shadow: 0 0 0 1.5px rgba(255, 255, 255, 0.45);
 }
-
-.sp-jm-dot {
-    width: 16px;
-    height: 16px;
-    border-radius: 50%;
-    background: var(--sc);
-    border: 3px solid rgba(255, 255, 255, 0.9);
-    box-shadow: 0 0 0 3px color-mix(in srgb, var(--sc) 35%, transparent);
-    flex-shrink: 0;
+.sp-age-card-text {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
 }
-
-.sp-jm-name {
+.sp-age-card-name {
     font-family: 'Titan One', sans-serif;
-    font-size: 1rem;
-    color: #ffffff;
+    font-size: 1.05rem;
+    color: #022864;
     line-height: 1.15;
 }
-
-.sp-jm-age {
+.sp-age-card-sub {
     font-family: 'Roboto', sans-serif;
-    font-size: 0.72rem;
+    font-size: 0.66rem;
     font-weight: 700;
     letter-spacing: 0.08em;
     text-transform: uppercase;
-    color: rgba(255, 255, 255, 0.5);
-    margin-top: 0.15rem;
+    color: #8a97b1;
 }
-
-
-/* ── Responsive switch ── */
+.sp-age-genre {
+    flex-shrink: 0;
+    font-family: 'Roboto', sans-serif;
+    font-size: 0.62rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    border-radius: 50px;
+    padding: 0.2rem 0.6rem;
+}
+.sp-age-genre-f { background: #fde7ee; color: #a3123f; }
+.sp-age-genre-g { background: #e3eefb; color: #0b4f96; }
+.sp-age-genre-m { background: #efe9fd; color: #5b3fb5; }
+.sp-age-card-arrow {
+    flex-shrink: 0;
+    color: #aab0be;
+}
 
 @media (max-width: 768px) {
     .sp-journey-graph  { display: none; }
-    .sp-journey-mobile { display: flex; }
+    .sp-journey-mobile { display: block; }
 }
 
 
