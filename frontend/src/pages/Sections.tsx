@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
-import { motion } from 'framer-motion';
+import { Link, useNavigate } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
 import axios from 'axios';
 import { Container } from 'react-bootstrap';
 import { BsArrowRight, BsPeopleFill } from 'react-icons/bs';
@@ -165,33 +165,132 @@ const SectionsGrid: React.FC = () => (
 );
 
 /* ════════════════════════════════════════════════════════
-   JOURNEY — horizontal branching tree (left → right)
+   JOURNEY — plan de métro en couloirs (Filles / Mixte / Garçons)
 ════════════════════════════════════════════════════════ */
 
-const JOURNEY_NODES: { slug: string; x: number; y: number }[] = [
-    { slug: 'baladins',   x: 60,  y: 130 },
-    { slug: 'lutins',     x: 230, y: 50  },
-    { slug: 'louveteaux', x: 230, y: 210 },
-    { slug: 'guides',     x: 430, y: 50  },
-    { slug: 'eclaireurs', x: 430, y: 210 },
-    { slug: 'pionniers',  x: 630, y: 130 },
-    { slug: 'animateurs',  x: 790, y: 130 },
-    { slug: 'clan',       x: 940, y: 130 },
+interface Station { slug: string; label: string; sub: string; x: number; y: number; path?: string }
+
+const sectionColor = (slug: string) => SECTIONS.find(s => s.slug === slug)?.color ?? '#022864';
+
+/* Desktop : viewBox 680 × 300 — couloirs horizontaux, échelle d'âge en bas */
+const DESKTOP_STATIONS: Station[] = [
+    { slug: 'baladins',   label: 'Baladins',   sub: 'Ribambelle',    x: 130, y: 153, path: '/sections/baladins'   },
+    { slug: 'lutins',     label: 'Lutins',     sub: 'Ronde',         x: 235, y: 87,  path: '/sections/lutins'     },
+    { slug: 'louveteaux', label: 'Louveteaux', sub: 'Meute',         x: 235, y: 219, path: '/sections/louveteaux' },
+    { slug: 'guides',     label: 'Guides',     sub: 'Compagnie',     x: 345, y: 87,  path: '/sections/guides'     },
+    { slug: 'eclaireurs', label: 'Éclaireurs', sub: 'Troupe',        x: 345, y: 219, path: '/sections/eclaireurs' },
+    { slug: 'pionniers',  label: 'Pionniers',  sub: 'Poste',         x: 450, y: 153, path: '/sections/pionniers'  },
+    { slug: 'animateurs', label: 'Animateurs', sub: 'Staff',         x: 540, y: 153                               },
+    { slug: 'clan',       label: 'Clan',       sub: 'Anciens chefs', x: 630, y: 153, path: '/sections/clan'       },
+];
+const DESKTOP_LINES = [
+    'M130,153 C185,153 180,87 235,87', 'M130,153 C185,153 180,219 235,219',
+    'M235,87 L345,87', 'M235,219 L345,219',
+    'M345,87 C400,87 395,153 450,153', 'M345,219 C400,219 395,153 450,153',
+    'M450,153 L540,153', 'M540,153 L630,153',
 ];
 
-const R = 12;                       // dot radius in SVG units
-const JOURNEY_EDGES = [
-    `M ${60+R},130 C 150,130 160,50 ${230-R},50`,       // Baladins → Lutins
-    `M ${60+R},130 C 150,130 160,210 ${230-R},210`,     // Baladins → Louveteaux
-    `M ${230+R},50 L ${430-R},50`,                       // Lutins → Guides
-    `M ${230+R},210 L ${430-R},210`,                     // Louveteaux → Éclaireurs
-    `M ${430+R},50 C 530,50 560,130 ${630-R},130`,      // Guides → Pionniers
-    `M ${430+R},210 C 530,210 560,130 ${630-R},130`,    // Éclaireurs → Pionniers
-    `M ${630+R},130 L ${790-R},130`,                     // Pionniers → Animateurs
-    `M ${790+R},130 L ${940-R},130`,                     // Animateurs → Clan
+/* Mobile : sélecteur d'âge → sections correspondantes */
+const AGE_GROUPS: { label: string; slugs: string[] }[] = [
+    { label: '6–8',   slugs: ['baladins'] },
+    { label: '8–12',  slugs: ['lutins', 'louveteaux'] },
+    { label: '12–16', slugs: ['guides', 'eclaireurs'] },
+    { label: '16–18', slugs: ['pionniers'] },
+    { label: '18+',   slugs: ['animateurs', 'clan'] },
 ];
+const SUBTITLES: Record<string, string> = { clan: 'Anciens chefs' };
+const HAS_PAGE = (slug: string) => slug !== 'animateurs';
 
-const JOURNEY_ORDER = ['baladins','lutins','louveteaux','guides','eclaireurs','pionniers','animateurs','clan'];
+const AgeSelector: React.FC = () => {
+    const [group, setGroup] = useState(0);
+    const sections = AGE_GROUPS[group].slugs.map(slug => SECTIONS.find(s => s.slug === slug)!);
+
+    return (
+        <div className="sp-age">
+            <div className="sp-age-unit">
+                <span className="sp-age-unit-title">Chef·fe d'unité</span>
+                <span className="sp-age-unit-sub">Parents, anciens chefs ou volontaires · coordonne toute l'unité</span>
+            </div>
+
+            <div className="sp-age-question">Quelle section pour ton enfant ? Choisis son âge (en années) :</div>
+
+            {/* 5 colonnes égales : toutes les pastilles ont la même taille */}
+            <div className="sp-age-chips" role="group" aria-label="Âge de l'enfant">
+                {AGE_GROUPS.map((g, i) => (
+                    <button
+                        key={g.label}
+                        type="button"
+                        className={`sp-age-chip${i === group ? ' sp-age-chip-on' : ''}`}
+                        onClick={() => setGroup(i)}
+                        aria-pressed={i === group}
+                    >
+                        {g.label}
+                    </button>
+                ))}
+            </div>
+
+            <div className="sp-age-results" aria-live="polite">
+                <AnimatePresence mode="wait" initial={false}>
+                    <motion.div
+                        key={group}
+                        className="sp-age-list"
+                        initial={{ opacity: 0, y: 8 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -8 }}
+                        transition={{ duration: 0.2 }}
+                    >
+                        {sections.map(s => {
+                            const content = (
+                                <>
+                                    <span className="sp-age-card-text">
+                                        <span className="sp-age-card-name">{s.name}</span>
+                                        <span className="sp-age-card-sub">{SUBTITLES[s.slug] ?? s.band}</span>
+                                    </span>
+                                    <span className={`sp-age-genre sp-age-genre-${s.genre === 'Filles' ? 'f' : s.genre === 'Garçons' ? 'g' : 'm'}`}>
+                                        {s.genre}
+                                    </span>
+                                    {HAS_PAGE(s.slug) && <BsArrowRight size={13} className="sp-age-card-arrow" />}
+                                </>
+                            );
+                            return HAS_PAGE(s.slug) ? (
+                                <Link key={s.slug} to={`/sections/${s.slug}`} className="sp-age-card" style={{ '--sc': s.color } as React.CSSProperties}>
+                                    {content}
+                                </Link>
+                            ) : (
+                                <div key={s.slug} className="sp-age-card" style={{ '--sc': s.color } as React.CSSProperties}>
+                                    {content}
+                                </div>
+                            );
+                        })}
+                    </motion.div>
+                </AnimatePresence>
+            </div>
+        </div>
+    );
+};
+
+const StationNode: React.FC<{ st: Station; nameSize: number; subSize: number }> = ({ st, nameSize, subSize }) => {
+    const navigate = useNavigate();
+    const go = () => st.path && navigate(st.path);
+    const linkProps = st.path ? {
+        role: 'link',
+        tabIndex: 0,
+        'aria-label': `Section ${st.label}`,
+        onClick: go,
+        onKeyDown: (e: React.KeyboardEvent) => { if (e.key === 'Enter') go(); },
+    } : {};
+    return (
+        <g className={`sp-st${st.path ? ' sp-st-link' : ''}`} {...linkProps}>
+            <circle className="sp-st-dot" cx={st.x} cy={st.y} r={11} fill={sectionColor(st.slug)} />
+            <text x={st.x} y={st.y + 26} textAnchor="middle" className="sp-st-name" style={{ fontSize: nameSize }}>
+                {st.label}
+            </text>
+            <text x={st.x} y={st.y + 26 + subSize + 4} textAnchor="middle" className="sp-st-sub" style={{ fontSize: subSize }}>
+                {st.sub}
+            </text>
+        </g>
+    );
+};
 
 const JourneyBlock: React.FC = () => (
     <section className="sp-journey-wrap">
@@ -206,62 +305,36 @@ const JourneyBlock: React.FC = () => (
                 </motion.p>
             </div>
 
-            {/* ── Desktop / tablet: SVG graph ── */}
+            {/* ── Desktop / tablette : couloirs horizontaux ── */}
             <motion.div className="sp-journey-graph" {...fadeUp(0.25)}>
-                <svg viewBox="0 0 1000 270" className="sp-journey-svg">
-                    {/* edges */}
-                    {JOURNEY_EDGES.map((d, i) => (
-                        <path key={i} d={d} />
-                    ))}
+                <svg viewBox="0 0 680 300" className="sp-journey-svg" role="img"
+                    aria-label="Parcours dans l'unité : Baladins (mixte), puis Lutins et Guides pour les filles, Louveteaux et Éclaireurs pour les garçons, puis Pionniers, Animateurs et Clan (mixtes). Le ou la chef·fe d'unité coordonne l'ensemble.">
+                    <rect x="78" y="10" width="596" height="34" rx="10" className="sp-st-unit" />
+                    <text x="376" y="31" textAnchor="middle" className="sp-st-unit-title">
+                        Chef·fe d'unité
+                        <tspan className="sp-st-unit-sub"> · parents, anciens chefs ou volontaires · coordonne toute l'unité</tspan>
+                    </text>
 
-                    {/* nodes */}
-                    {JOURNEY_NODES.map(n => {
-                        const s = SECTIONS.find(sec => sec.slug === n.slug)!;
-                        return (
-                            <g key={n.slug} className="sp-jsvg-node">
-                                <circle cx={n.x} cy={n.y} r={R + 6} fill={s.color} opacity={0.18} />
-                                <circle cx={n.x} cy={n.y} r={R}
-                                    fill={s.color}
-                                    stroke="rgba(255,255,255,0.9)"
-                                    strokeWidth="3"
-                                />
-                                <text x={n.x} y={n.y + 30} textAnchor="middle" className="sp-jsvg-name">
-                                    {s.name}
-                                </text>
-                                <text x={n.x} y={n.y + 46} textAnchor="middle" className="sp-jsvg-age">
-                                    {s.age}
-                                </text>
-                            </g>
-                        );
-                    })}
+                    <rect x="78" y="58"  width="596" height="58" rx="10" className="sp-st-lane" />
+                    <rect x="78" y="124" width="596" height="58" rx="10" className="sp-st-lane sp-st-lane-mixte" />
+                    <rect x="78" y="190" width="596" height="58" rx="10" className="sp-st-lane" />
+                    <text x="68" y="91"  textAnchor="end" className="sp-st-lane-label">FILLES</text>
+                    <text x="68" y="157" textAnchor="end" className="sp-st-lane-label">MIXTE</text>
+                    <text x="68" y="223" textAnchor="end" className="sp-st-lane-label">GARÇONS</text>
+
+                    {DESKTOP_LINES.map((d, i) => <path key={i} d={d} className="sp-st-line" />)}
+                    {DESKTOP_STATIONS.map(st => <StationNode key={st.slug} st={st} nameSize={11} subSize={7.5} />)}
+
+                    <line x1="92" y1="266" x2="668" y2="266" className="sp-st-axis" />
+                    {[['6 – 8 ANS', 130], ['8 – 12 ANS', 235], ['12 – 16 ANS', 345], ['16 – 18 ANS', 450], ['18 ANS +', 585]].map(([t, x]) => (
+                        <text key={t} x={x} y={284} textAnchor="middle" className="sp-st-age">{t}</text>
+                    ))}
                 </svg>
             </motion.div>
 
-            {/* ── Mobile: vertical list ── */}
-            <motion.div
-                className="sp-journey-mobile"
-                variants={stagger}
-                initial="hidden"
-                whileInView="visible"
-                viewport={{ once: true, amount: 0.1 }}
-            >
-                {JOURNEY_ORDER.map(slug => {
-                    const s = SECTIONS.find(sec => sec.slug === slug)!;
-                    return (
-                        <motion.div
-                            key={slug}
-                            className="sp-jm-step"
-                            variants={staggerItem}
-                            style={{ '--sc': s.color } as React.CSSProperties}
-                        >
-                            <div className="sp-jm-dot" />
-                            <div className="sp-jm-info">
-                                <div className="sp-jm-name">{s.name}</div>
-                                <div className="sp-jm-age">{s.age}</div>
-                            </div>
-                        </motion.div>
-                    );
-                })}
+            {/* ── Mobile : sélecteur d'âge ── */}
+            <motion.div className="sp-journey-mobile" {...fadeUp(0.2)}>
+                <AgeSelector />
             </motion.div>
         </Container>
     </section>
