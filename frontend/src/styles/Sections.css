@@ -406,7 +406,7 @@
 }
 /* Largeur max : le schéma (et donc ses textes) ne grossit plus sur les grands écrans */
 .sp-journey-graph .sp-journey-svg {
-    max-width: 900px;
+    max-width: 1080px;
     margin: 0 auto;
 }
 
