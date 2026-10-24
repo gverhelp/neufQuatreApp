@@ -6,6 +6,7 @@ services:
       context: ./backend
       dockerfile: Dockerfile.prod
     command: pipenv run gunicorn core.wsgi:application --bind 0.0.0.0:8000
+    restart: unless-stopped
     volumes:
       - static_volume:/app/staticfiles
       - media_volume:/app/mediafiles
@@ -18,6 +19,7 @@ services:
 
   db:
     image: postgres:15
+    restart: unless-stopped
     volumes:
       - postgres_data:/var/lib/postgresql/data/
     env_file:
@@ -27,6 +29,7 @@ services:
     build:
       context: .
       dockerfile: nginx/Dockerfile.prod
+    restart: unless-stopped
     ports:
       - 80:80
       - 443:443

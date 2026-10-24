@@ -24,7 +24,8 @@ jobs:
 
       - name: Deploy to EC2
         run: |
-          ssh -o StrictHostKeyChecking=no ${{ secrets.EC2_HOST }} 'bash -s' << 'EOF'
+          # Keepalive : évite que la connexion tombe pendant un build long
+          ssh -o StrictHostKeyChecking=no -o ServerAliveInterval=30 -o ServerAliveCountMax=20 ${{ secrets.EC2_HOST }} 'bash -s' << 'EOF'
             # Stoppe au premier échec : le job passe en rouge au lieu d'afficher « successful »
             set -euo pipefail
             cd ${{ secrets.EC2_PATH }}
@@ -38,8 +39,10 @@ jobs:
             # Les anciens containers tournent toujours pendant le build.
             # Cache des layers conservé : seules les étapes dont les fichiers ont changé sont rejouées.
             # --pull : récupère les mises à jour de sécurité des images de base.
+            # Une image après l'autre : en parallèle, pipenv + npm + vite saturent la RAM du serveur.
             echo "==> Building images"
-            $COMPOSE build --pull web nginx
+            $COMPOSE build --pull web
+            $COMPOSE build --pull nginx
 
             # Recrée uniquement les containers dont l'image ou la config a changé ; la DB n'est pas touchée
             echo "==> Recreating updated containers"
